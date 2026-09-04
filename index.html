@@ -1,0 +1,1780 @@
+<!doctype html>
+<html lang="th" class="">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#262447">
+<title>Parking-A-Lot Version 0.9.0 BETA TEST</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            50: '#f6f7fe',
+            100: '#eeeffd',
+            200: '#D9B1E6',
+            300: '#BF87C9',
+            400: '#A680C2',
+            500: '#96A4DD',
+            600: '#7c6ee6',
+            700: '#6a5bdc',
+            800: '#4d3fb0',
+            900: '#262447',
+            950: '#0e0f1a'
+          },
+          pastel: {
+            mint: '#CAE0DC',
+            sky: '#95BBE6',
+            periwinkle: '#96A4DD',
+            lavender: '#A680C2',
+            orchid: '#BF87C9',
+            lilac: '#D9B1E6'
+          }
+        }
+      }
+    }
+  }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#6a5bdc;
+  --brand-dark:#262447;
+  --brand-light:#96A4DD;
+  --pastel-mint:#CAE0DC;
+  --pastel-sky:#95BBE6;
+  --pastel-periwinkle:#96A4DD;
+  --pastel-lavender:#A680C2;
+  --pastel-orchid:#BF87C9;
+  --pastel-lilac:#D9B1E6;
+  --paper:#f6f8fd;
+  --ink:#181b2e;
+  --ink-secondary:#5a627a;
+  --ink-muted:#8f9bb3;
+  --card-bg:#ffffff;
+  --card-border:#e2e8f4;
+  --grid-bg:#f4f7fc;
+  --grid-line:#dce4f4;
+  --subtle-bg:#f1f4fb;
+}
+html.dark{
+  --brand:#8c7ef0;
+  --brand-dark:#191830;
+  --brand-light:#96A4DD;
+  --paper:#0e0f1a;
+  --ink:#f1f3fc;
+  --ink-secondary:#9da7c5;
+  --ink-muted:#6d7796;
+  --card-bg:#161729;
+  --card-border:#262845;
+  --grid-bg:#121324;
+  --grid-line:#1e203b;
+  --subtle-bg:#1c1d33;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Google Sans","Work Sans","Noto Sans Thai",sans-serif;color:var(--ink);background:var(--paper);transition:background-color .25s ease,color .25s ease}
+.app-view{display:none;min-height:100dvh}
+.app-view.active{display:block;animation:appear .3s ease both}
+@keyframes appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.grid-map{background-color:var(--grid-bg);background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:26px 26px}
+.route-line{stroke-dasharray:8 9;animation:dash 2s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-34}}
+.nav-item.active{color:#6a5bdc;background:#f0edfc}
+html.dark .nav-item.active{color:#c4b5fd;background:#252347}
+.parking-card{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.parking-card:hover{transform:translateY(-3px);box-shadow:0 16px 30px rgba(38,36,71,.08)}
+html.dark .parking-card:hover{box-shadow:0 16px 30px rgba(0,0,0,.5)}
+.pulse-dot{animation:pulse 1.8s infinite}
+@keyframes pulse{50%{opacity:.35;transform:scale(.8)}}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #BF87C9;outline-offset:2px}
+.star-btn.active i{fill:#f59e0b;color:#f59e0b}
+.chip{border:1px solid #d5deed;border-radius:999px;padding:.4rem 1rem;font-size:.8rem;font-weight:700;color:#57617c;background:#fff;transition:all .15s ease}
+html.dark .chip{border-color:#2a2d4a;background:#161729;color:#9da7c5}
+.chip.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+html.dark .chip.active{background:#8c7ef0;color:#0e0f1a;border-color:#8c7ef0}
+::placeholder{color:#8f9bb3}
+html.dark ::placeholder{color:#646d8c}
+.settings-pill{display:inline-flex;align-items:center;background:#e9edf8;border-radius:9999px;padding:3px;gap:2px}
+html.dark .settings-pill{background:#22243d}
+.settings-pill button{border-radius:9999px;padding:4px 10px;font-size:12px;font-weight:700;transition:all .2s ease;color:#5a627a}
+html.dark .settings-pill button{color:#9da7c5}
+.settings-pill button.active{background:#fff;color:#262447;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+html.dark .settings-pill button.active{background:#8c7ef0;color:#0e0f1a;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+
+/* ==========================================================================
+   LANDING MODERN TRANSITIONS & MICRO-INTERACTIONS
+   ========================================================================== */
+@keyframes heroFadeUp {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes heroFadeScale {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+@keyframes subtleFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.hero-anim-1 { animation: heroFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both; }
+.hero-anim-2 { animation: heroFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both; }
+.hero-anim-3 { animation: heroFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both; }
+.hero-anim-4 { animation: heroFadeUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both; }
+.hero-card-anim { animation: heroFadeScale 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both; }
+.footer-anim { animation: heroFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both; }
+
+.interactive-btn {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+  will-change: transform;
+}
+.interactive-btn:hover {
+  transform: translateY(-2px) scale(1.015);
+}
+.interactive-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.stat-card-anim {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+  will-change: transform;
+}
+.stat-card-anim:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px -6px rgba(106, 91, 220, 0.15);
+}
+html.dark .stat-card-anim:hover {
+  box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.45);
+}
+
+.feature-item-hover {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+}
+.feature-item-hover:hover {
+  transform: translateX(4px);
+}
+
+.floating-icon {
+  animation: subtleFloat 3.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-anim-1, .hero-anim-2, .hero-anim-3, .hero-anim-4, .hero-card-anim, .footer-anim, .floating-icon {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+</style>
+</head>
+<body class="w-full bg-[#f6f8fd] dark:bg-[#0e0f1a] text-[#181b2e] dark:text-[#f1f3fc]">
+
+<!-- QUICK GLOBAL CONTROLS HEADER BAR (Available on sub-pages or via headers) -->
+<div id="quick-controls-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+  <div class="w-full max-w-sm rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
+    <div class="flex items-center justify-between pb-4 border-b border-[#edf1f8] dark:border-[#262845]">
+      <h3 class="font-bold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="quick_settings_title">การตั้งค่าด่วน</h3>
+      <button type="button" onclick="toggleQuickSettings(false)" class="rounded-full p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0edfc] dark:hover:bg-[#252347]"><i data-lucide="x" class="h-5 w-5"></i></button>
+    </div>
+    <div class="mt-5 space-y-5">
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-[#5a627a] dark:text-[#9da7c5] mb-2" data-i18n="language_label">ภาษา / Language</label>
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" onclick="setLanguage('th')" id="modal-lang-th" class="flex items-center justify-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-sm font-bold transition hover:border-[#6a5bdc]">
+            <span>ภาษาไทย</span>
+          </button>
+          <button type="button" onclick="setLanguage('en')" id="modal-lang-en" class="flex items-center justify-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-sm font-bold transition hover:border-[#6a5bdc]">
+            <span>English</span>
+          </button>
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-[#5a627a] dark:text-[#9da7c5] mb-2" data-i18n="theme_label">ธีมการแสดงผล / Appearance</label>
+        <div class="grid grid-cols-3 gap-2">
+          <button type="button" onclick="setTheme('light')" id="modal-theme-light" class="flex flex-col items-center justify-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-xs font-bold transition hover:border-[#6a5bdc]">
+            <i data-lucide="sun" class="h-5 w-5 text-amber-500"></i>
+            <span data-i18n="theme_light">สว่าง</span>
+          </button>
+          <button type="button" onclick="setTheme('dark')" id="modal-theme-dark" class="flex flex-col items-center justify-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-xs font-bold transition hover:border-[#6a5bdc]">
+            <i data-lucide="moon" class="h-5 w-5 text-[#96A4DD]"></i>
+            <span data-i18n="theme_dark">มืด</span>
+          </button>
+          <button type="button" onclick="setTheme('system')" id="modal-theme-system" class="flex flex-col items-center justify-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-xs font-bold transition hover:border-[#6a5bdc]">
+            <i data-lucide="laptop" class="h-5 w-5 text-[#6a5bdc] dark:text-[#c4b5fd]"></i>
+            <span data-i18n="theme_system">ตามอุปกรณ์</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <button type="button" onclick="toggleQuickSettings(false)" class="mt-6 w-full rounded-xl bg-[#6a5bdc] py-3 text-sm font-bold text-white shadow-md hover:bg-[#5949d0] transition" data-i18n="done_btn">เสร็จสิ้น</button>
+  </div>
+</div>
+
+<!-- LANDING -->
+<section id="landing" class="app-view active">
+  <header class="mx-auto flex max-w-6xl items-center justify-between px-5 py-6 md:px-10 hero-anim-1">
+    <button type="button" onclick="showView('landing')" class="flex items-center gap-3 text-left group">
+      <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#262447] dark:bg-[#6a5bdc] text-white shadow-md shadow-indigo-900/10 floating-icon"><i data-lucide="car-front" class="h-5 w-5"></i></span>
+      <span class="font-extrabold text-lg tracking-tight text-[#262447] dark:text-[#c4b5fd] group-hover:text-[#6a5bdc] transition">Parking-A-Lot</span>
+    </button>
+    <div class="flex items-center gap-3">
+      <!-- Language Pill -->
+      <div class="settings-pill" aria-label="Language Selector">
+        <button type="button" onclick="setLanguage('th')" id="landing-lang-th" class="active">TH</button>
+        <button type="button" onclick="setLanguage('en')" id="landing-lang-en">EN</button>
+      </div>
+      <!-- Theme Quick Toggle -->
+      <button type="button" onclick="cycleTheme()" id="landing-theme-toggle" aria-label="Toggle Theme" class="flex h-9 w-9 items-center justify-center rounded-full bg-[#e9edf8] dark:bg-[#22243d] text-[#262447] dark:text-[#c4b5fd] hover:opacity-80 transition">
+        <i data-lucide="sun" class="h-4 w-4" id="landing-theme-icon"></i>
+      </button>
+      <div class="hidden gap-2 md:flex">
+        <button type="button" onclick="showView(state.currentUser?'user-dashboard':'auth-login')" class="rounded-full px-4 py-2 text-sm font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f0edfc] dark:hover:bg-[#252347] transition interactive-btn" data-i18n="login_nav">เข้าใช้งาน</button>
+        <button type="button" onclick="showView('admin-dashboard')" class="rounded-full border border-[#262447] dark:border-[#c4b5fd] px-4 py-2 text-sm font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f0edfc] dark:hover:bg-[#252347] transition interactive-btn" data-i18n="admin_nav">สำหรับผู้ดูแล</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto grid max-w-6xl gap-10 px-5 pb-12 pt-4 md:grid-cols-2 md:px-10">
+    <div>
+      <div class="hero-anim-1 mb-5 inline-flex items-center gap-2 rounded-full bg-[#f0edfc] dark:bg-[#252347] px-4 py-2 text-xs font-bold text-[#6a5bdc] dark:text-[#D9B1E6] shadow-sm">
+        <span class="h-2 w-2 rounded-full bg-[#6a5bdc] dark:bg-[#D9B1E6] pulse-dot"></span>
+        <span data-i18n="beta_badge">เว็บแอพพลิเคชันนี้อยู่ในระหว่างการทดสอบเบต้า ไม่ใช่ผลิตภัณฑ์ที่ใช้งานจริงแต่อย่างใด</span>
+      </div>
+      <h1 class="hero-anim-2 max-w-xl text-4xl font-extrabold leading-[1.15] tracking-tight text-[#262447] dark:text-[#c4b5fd] md:text-5xl" data-i18n="hero_title">ค้นหาที่จอดรถในช่วงเวลาเร่งด่วน</h1>
+      <p class="hero-anim-3 mt-6 max-w-lg text-lg leading-8 text-[#5a627a] dark:text-[#9da7c5]" data-i18n="hero_subtitle">ค้นหาลานจอดรถอย่างรวดเร็วทันใจ ด้วยระบบแนะนำลานจอดรถที่ใกล้ที่สุดพร้อมเส้นทางการเดินทางในทันที</p>
+      
+      <div class="hero-anim-3 mt-8 flex flex-wrap gap-3">
+        <button type="button" onclick="showView(state.currentUser?'user-dashboard':'auth-login')" class="interactive-btn inline-flex items-center gap-2 rounded-xl bg-[#6a5bdc] px-6 py-4 font-bold text-white shadow-lg shadow-indigo-500/25 hover:bg-[#5949d0] transition"><i data-lucide="navigation" class="h-5 w-5"></i><span data-i18n="start_finding">เริ่มหาที่จอด</span></button>
+        <button type="button" onclick="showView('admin-dashboard')" class="interactive-btn inline-flex items-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-6 py-4 font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038] transition"><i data-lucide="layout-dashboard" class="h-5 w-5"></i><span data-i18n="manage_lots">จัดการลานจอด</span></button>
+      </div>
+
+      <div class="hero-anim-4 mt-10 grid grid-cols-3 gap-4 rounded-2xl bg-white dark:bg-[#161729] p-5 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
+        <div class="stat-card-anim rounded-xl p-2 text-center md:text-left"><p id="landing-space" class="text-3xl font-extrabold text-[#6a5bdc] dark:text-[#c4b5fd]">0</p><p class="mt-1 text-xs md:text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="spaces_available_now">ช่องว่างตอนนี้</p></div>
+        <div class="stat-card-anim rounded-xl p-2 text-center md:text-left"><p id="landing-lots" class="text-3xl font-extrabold text-[#262447] dark:text-[#e0e7ff]">0</p><p class="mt-1 text-xs md:text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="total_lots">ลานจอดทั้งหมด</p></div>
+        <div class="stat-card-anim rounded-xl p-2 text-center md:text-left"><p id="landing-buildings" class="text-3xl font-extrabold text-[#262447] dark:text-[#e0e7ff]">0</p><p class="mt-1 text-xs md:text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="supported_buildings">อาคารที่รองรับ</p></div>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-5">
+      <div class="hero-card-anim rounded-3xl bg-gradient-to-br from-[#262447] to-[#362e60] dark:from-[#191830] dark:to-[#232042] border border-transparent dark:border-[#393466] p-7 text-white shadow-xl">
+        <p class="text-xs font-bold uppercase tracking-wider text-[#D9B1E6]" data-i18n="app_highlights">จุดเด่นของแอป</p>
+        <h2 class="mt-1 text-2xl font-extrabold text-white" data-i18n="highlight_title">แนะนำลานจอดรถที่ใกล้ที่สุด</h2>
+        <ul class="mt-6 space-y-3.5 text-sm text-[#e0e4f7] dark:text-[#cbd2ea]">
+          <li class="feature-item-hover flex items-start gap-3 rounded-xl p-1.5 transition"><i data-lucide="search" class="mt-0.5 h-4 w-4 shrink-0 text-[#95BBE6]"></i><span data-i18n="feat_1">ค้นหาอาคารเรียน ลานจอดรถ และอาคารสำนักงาน</span></li>
+          <li class="feature-item-hover flex items-start gap-3 rounded-xl p-1.5 transition"><i data-lucide="route" class="mt-0.5 h-4 w-4 shrink-0 text-[#96A4DD]"></i><span data-i18n="feat_2">นำทางไปยังทุกอาคารในมหาวิทยาลัย พร้อมเลือกเส้นทางที่ปลอดภัยที่สุด</span></li>
+          <li class="feature-item-hover flex items-start gap-3 rounded-xl p-1.5 transition"><i data-lucide="bell" class="mt-0.5 h-4 w-4 shrink-0 text-[#BF87C9]"></i><span data-i18n="feat_3">แจ้งเตือนอัตโนมัติเมื่อจอดรถสำเร็จ</span></li>
+          <li class="feature-item-hover flex items-start gap-3 rounded-xl p-1.5 transition"><i data-lucide="star" class="mt-0.5 h-4 w-4 shrink-0 text-[#f59e0b]"></i><span data-i18n="feat_4">ให้คะแนนและรีวิวการใช้งาน</span></li>
+        </ul>
+      </div>
+
+      <!-- CHANGELOG BANNER -->
+      <a href="https://docs.google.com/document/d/1QQ2nvePn2MsxNwh_2KmTXQbrHRarNDiYpR3ptZoC5ls/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="hero-card-anim flex items-center justify-between rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm hover:border-[#6a5bdc] transition group interactive-btn">
+        <div class="flex items-center gap-3.5">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#f0edfc] dark:bg-[#252347] text-[#6a5bdc] dark:text-[#c4b5fd]">
+            <i data-lucide="file-text" class="h-5 w-5"></i>
+          </div>
+          <div>
+            <p class="font-bold text-sm text-[#262447] dark:text-[#c4b5fd] group-hover:text-[#6a5bdc] transition" data-i18n="changelog_title">บันทึกการเปลี่ยนแปลง (Changelog)</p>
+            <p class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="changelog_sub">ประวัติการพัฒนาและรายการอัปเดตเวอร์ชัน</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-1.5 text-xs font-bold text-[#6a5bdc] dark:text-[#c4b5fd]">
+          <span class="hidden sm:inline" data-i18n="view_doc">เปิดเอกสาร</span>
+          <i data-lucide="external-link" class="h-4 w-4"></i>
+        </div>
+      </a>
+    </div>
+  </main>
+
+  <!-- COPYRIGHT FOOTER -->
+  <footer class="footer-anim mx-auto mt-6 max-w-6xl border-t border-[#e2e8f4] dark:border-[#262845] px-5 py-8 md:px-10">
+    <div class="flex flex-col items-center justify-between gap-4 text-center text-xs text-[#5a627a] dark:text-[#9da7c5] md:flex-row md:text-left">
+      <div class="flex items-center gap-2">
+        <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-[#262447] dark:bg-[#6a5bdc] text-white text-[10px] font-bold"><i data-lucide="car-front" class="h-3.5 w-3.5"></i></span>
+        <span class="font-extrabold text-[#262447] dark:text-[#c4b5fd]">Parking-A-Lot</span>
+        <span class="text-[#8f9bb3] dark:text-[#6d7796]">• Version 0.9.0 BETA</span>
+      </div>
+      <a href="https://docs.google.com/document/d/1QQ2nvePn2MsxNwh_2KmTXQbrHRarNDiYpR3ptZoC5ls/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 font-semibold text-[#6a5bdc] dark:text-[#c4b5fd] hover:underline">
+        <i data-lucide="file-text" class="h-3.5 w-3.5"></i>
+        <span data-i18n="changelog_link_text">ดูบันทึกการเปลี่ยนแปลง (Changelog)</span>
+        <i data-lucide="external-link" class="h-3 w-3"></i>
+      </a>
+      <p class="font-medium tracking-wide">Developed by ให้รถในวงเวียนไปก่อน</p>
+    </div>
+  </footer>
+</section>
+
+<!-- LOGIN -->
+<section id="auth-login" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
+  <div class="mx-auto max-w-md px-5 py-10">
+    <div class="flex items-center justify-between mb-6">
+      <button type="button" onclick="showView('landing')" class="inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd]"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back_to_home">กลับหน้าแรก</span></button>
+      <button type="button" onclick="toggleQuickSettings(true)" class="rounded-full p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0edfc] dark:hover:bg-[#252347]"><i data-lucide="settings" class="h-5 w-5"></i></button>
+    </div>
+    <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="login_title">เข้าสู่ระบบ</h1>
+    <p class="mt-2 text-[#5a627a] dark:text-[#9da7c5]" data-i18n="login_subtitle">เข้าใช้งานบัญชีของคุณ (ระบบจะจำบัญชีไว้ตลอด ไม่ต้องสมัครใหม่)</p>
+    <div class="mt-6 space-y-4">
+      <div>
+        <label class="mb-1 block text-sm font-bold" data-i18n="username">ชื่อผู้ใช้</label>
+        <input id="login-username" type="text" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 shadow-sm focus:border-[#6a5bdc]">
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-bold" data-i18n="password">รหัสผ่าน</label>
+        <input id="login-password" type="password" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 shadow-sm focus:border-[#6a5bdc]">
+      </div>
+      <p id="login-error" class="hidden text-sm font-semibold text-[#e11d48] dark:text-[#fb7185]"></p>
+      <button type="button" onclick="login()" class="interactive-btn w-full rounded-xl bg-[#6a5bdc] py-3.5 font-bold text-white hover:bg-[#5949d0] transition shadow-md shadow-indigo-500/20" data-i18n="login_btn">เข้าสู่ระบบ</button>
+      <p class="text-center text-sm text-[#5a627a] dark:text-[#9da7c5]">
+        <span data-i18n="no_account">ยังไม่มีบัญชี?</span> 
+        <button type="button" onclick="showView('auth-register')" class="font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" data-i18n="register_link">สมัครสมาชิก</button>
+      </p>
+
+      <div class="mt-6 rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-[#f0edfc]/50 dark:bg-[#252347]/40 p-4 text-xs text-[#5a627a] dark:text-[#9da7c5]">
+        <span class="font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" data-i18n="quick_test_hint">💡 สำหรับทดสอบด่วน:</span> <span data-i18n="quick_test_desc">คุณสามารถใช้ชื่อผู้ใช้ <b>Project Alpine</b> รหัสผ่าน <b>orchid</b> หรือสร้างบัญชีใหม่ตามต้องการ</span>
+      </div>
+    </div>
+    <p class="mt-10 text-center text-xs text-[#8f9bb3] dark:text-[#6d7796]">Developed by Ardeshir</p>
+  </div>
+</section>
+
+<!-- REGISTER (S5) -->
+<section id="auth-register" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
+  <div class="mx-auto max-w-md px-5 py-10">
+    <button type="button" onclick="showView('auth-login')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd]"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
+    <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="register_title">สมัครสมาชิก</h1>
+    <p class="mt-2 text-[#5a627a] dark:text-[#9da7c5]" data-i18n="register_subtitle">สร้างบัญชีเพื่อบันทึกรายการโปรดและประวัติการใช้งานอย่างถาวร</p>
+    <div class="mt-6 space-y-4">
+      <div>
+        <label class="mb-1 block text-sm font-bold" data-i18n="fullname">ชื่อ-นามสกุล</label>
+        <input id="reg-name" type="text" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 shadow-sm">
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-bold" data-i18n="username">ชื่อผู้ใช้</label>
+        <input id="reg-username" type="text" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 shadow-sm">
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-bold" data-i18n="password">รหัสผ่าน</label>
+        <input id="reg-password" type="password" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 shadow-sm">
+      </div>
+      <p id="reg-error" class="hidden text-sm font-semibold text-[#e11d48] dark:text-[#fb7185]"></p>
+      <button type="button" onclick="register()" class="interactive-btn w-full rounded-xl bg-[#6a5bdc] py-3.5 font-bold text-white hover:bg-[#5949d0] transition shadow-md shadow-indigo-500/20" data-i18n="register_btn">สมัครสมาชิก</button>
+    </div>
+    <p class="mt-10 text-center text-xs text-[#8f9bb3] dark:text-[#6d7796]">Developed by Ardeshir</p>
+  </div>
+</section>
+
+<!-- USER DASHBOARD (S1) -->
+<section id="user-dashboard" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
+  <header class="sticky top-0 z-10 bg-[#f6f8fd]/95 dark:bg-[#0e0f1a]/95 px-5 py-4 backdrop-blur border-b border-[#e2e8f4] dark:border-[#262845]">
+    <div class="mx-auto flex max-w-6xl items-center justify-between">
+      <button type="button" onclick="showView('landing')" class="flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd]">
+        <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#262447] dark:bg-[#6a5bdc] text-white"><i data-lucide="car-front" class="h-4 w-4"></i></span>
+        <span>Parking-A-Lot</span>
+      </button>
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="toggleQuickSettings(true)" aria-label="Quick Settings" class="rounded-lg p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0edfc] dark:hover:bg-[#252347]"><i data-lucide="settings" class="h-5 w-5"></i></button>
+        <button type="button" onclick="showView('user-notifications')" aria-label="Notifications" class="relative rounded-lg p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0edfc] dark:hover:bg-[#252347]"><i data-lucide="bell" class="h-5 w-5"></i><span id="notif-dot" class="pulse-dot absolute right-2 top-2 hidden h-2 w-2 rounded-full bg-[#ec4899]"></span></button>
+        <button type="button" onclick="showView('user-profile')" class="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-[#f0edfc] dark:bg-[#252347] font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" id="header-avatar">?</button>
+      </div>
+    </div>
+  </header>
+  <main class="mx-auto max-w-6xl px-5 pb-28 pt-4">
+    <p class="text-sm font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" id="dashboard-greeting">สวัสดี</p>
+    <h1 class="mt-1 text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="dashboard_headline">ที่จอดรถวันนี้เป็นอย่างไรบ้าง</h1>
+    <div class="mt-6 grid grid-cols-3 gap-3" id="dashboard-lot-stats"></div>
+    <div class="mt-6 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
+      <p class="text-sm font-bold" data-i18n="overview_map_title">แผนที่ลานจอดรถโดยรวม</p>
+      <p class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="overview_map_sub">ตำแหน่งลานจอดรถเทียบกับอาคารทั้งหมด</p>
+      <svg id="overview-map" viewBox="0 0 100 100" class="mt-3 h-48 w-full rounded-2xl grid-map"></svg>
+    </div>
+    <div class="mt-6 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
+      <p class="text-sm font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" data-i18n="recommended_for_you">แนะนำสำหรับคุณ</p>
+      <h2 class="mt-1 font-bold" data-i18n="nearest_lot_now">ลานจอดรถที่ใกล้ที่สุดตอนนี้</h2>
+      <div id="recommend-box" class="mt-4 rounded-2xl bg-[#f1f4fb] dark:bg-[#1c1d33] p-4 border border-[#e2e8f4] dark:border-[#262845]"></div>
+      <button type="button" onclick="showView('user-search')" class="interactive-btn mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#6a5bdc] py-3.5 font-bold text-white hover:bg-[#5949d0] transition shadow-md shadow-indigo-500/20"><i data-lucide="navigation" class="h-4 w-4"></i><span data-i18n="select_destination">เลือกอาคารปลายทาง</span></button>
+    </div>
+    <p class="mt-8 text-center text-xs text-[#8f9bb3] dark:text-[#6d7796]">Developed by Ardeshir</p>
+  </main>
+  <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] py-2 backdrop-blur">
+    <button type="button" onclick="showView('user-dashboard')" class="nav-item active flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="house" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
+    <button type="button" onclick="showView('user-search')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
+    <button type="button" onclick="showView('user-favorites')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
+    <button type="button" onclick="showView('user-profile')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
+  </nav>
+</section>
+
+<!-- SEARCH (S2) -->
+<section id="user-search" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
+  <div class="mx-auto max-w-3xl px-5 pb-28 pt-6">
+    <button type="button" onclick="showView('user-dashboard')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd]"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back_home">กลับหน้าหลัก</span></button>
+    <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="search_title">ค้นหาอาคาร / ลานจอดรถ</h1>
+    <p class="mt-2 text-[#5a627a] dark:text-[#9da7c5]" data-i18n="search_sub">พิมพ์ชื่ออาคารหรือลานจอดรถ แล้วเลือกหมวดหมู่ที่ต้องการ</p>
+    <div class="relative mt-5"><i data-lucide="search" class="absolute left-4 top-4 h-5 w-5 text-[#8f9bb3]"></i>
+      <input id="search-input" type="search" oninput="renderSearchResults()" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] py-4 pl-12 pr-4 shadow-sm focus:border-[#6a5bdc]">
+    </div>
+    <div class="mt-4 flex flex-wrap gap-2" id="search-chips"></div>
+    <div id="search-results" class="mt-6 space-y-3"></div>
+  </div>
+  <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] py-2 backdrop-blur">
+    <button type="button" onclick="showView('user-dashboard')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="house" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
+    <button type="button" onclick="showView('user-search')" class="nav-item active flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
+    <button type="button" onclick="showView('user-favorites')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
+    <button type="button" onclick="showView('user-profile')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
+  </nav>
+</section>
+
+<!-- MAP / NAVIGATION (S3) -->
+<section id="user-map" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
+  <div class="mx-auto max-w-3xl px-5 pb-16 pt-6">
+    <button type="button" onclick="showView('user-search')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd]"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
+    <div class="rounded-3xl bg-gradient-to-br from-[#262447] to-[#362e60] dark:from-[#191830] dark:to-[#232042] border border-transparent dark:border-[#393466] p-6 text-white shadow-lg">
+      <p class="text-sm font-semibold text-[#D9B1E6]" data-i18n="destination_label">ปลายทาง</p>
+      <h1 id="route-title" class="mt-1 text-xl font-extrabold">-</h1>
+      <p id="route-description" class="mt-2 text-sm text-[#e0e4f7]">ระบบแนะนำลานจอดรถที่ใกล้ที่สุดให้แล้ว</p>
+    </div>
+    <div class="mt-4 flex gap-2">
+      <button type="button" onclick="setRouteType('fast')" id="route-type-fast" class="chip active flex-1" data-i18n="route_fast">เส้นทางที่ใกล้ที่สุด</button>
+      <button type="button" onclick="setRouteType('safe')" id="route-type-safe" class="chip flex-1" data-i18n="route_safe">เส้นทางที่ปลอดภัยที่สุด</button>
+    </div>
+    <svg id="route-map" viewBox="0 0 100 100" class="mt-4 h-56 w-full rounded-2xl grid-map border border-[#e2e8f4] dark:border-[#262845]"></svg>
+    <div class="mt-4 grid grid-cols-3 divide-x divide-[#e2e8f4] dark:divide-[#262845] rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] text-center shadow-sm">
+      <div class="p-4"><b id="route-time" class="block text-xl text-[#262447] dark:text-[#c4b5fd]">-</b><span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="walk_minutes">นาทีเดิน</span></div>
+      <div class="p-4"><b id="route-distance" class="block text-xl text-[#262447] dark:text-[#c4b5fd]">-</b><span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="meters_unit">เมตร</span></div>
+      <div class="p-4"><i data-lucide="car-front" class="mx-auto h-5 w-5 text-[#6a5bdc] dark:text-[#c4b5fd]"></i><span id="route-lot-name" class="mt-1 block text-xs text-[#5a627a] dark:text-[#9da7c5]">-</span></div>
+    </div>
+    <button type="button" onclick="finishRoute()" class="interactive-btn mt-5 w-full rounded-xl bg-[#6a5bdc] py-4 font-bold text-white shadow-lg shadow-indigo-500/20 hover:bg-[#5949d0] transition" data-i18n="finish_nav">ถึงลานจอดรถแล้ว / จบการนำทาง</button>
+    <p id="route-finished" class="mt-4 hidden rounded-xl bg-[#f0edfc] dark:bg-[#252347] p-4 text-center font-semibold text-[#6a5bdc] dark:text-[#D9B1E6] border border-[#d5deed] dark:border-[#262845]" aria-live="polite" data-i18n="finish_success">บันทึกการจอดรถแล้ว — ขอบคุณที่ใช้บริการครับ/ค่ะ</p>
+  </div>
+</section>
+
+<!-- FAVORITES (S4) -->
+<section id="user-favorites" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
+  <div class="mx-auto max-w-3xl px-5 pb-28 pt-6">
+    <button type="button" onclick="showView('user-dashboard')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd]"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
+    <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="favorites_title">รายการโปรด</h1>
+    <p class="mt-2 text-[#5a627a] dark:text-[#9da7c5]" data-i18n="favorites_sub">ลานจอดรถที่คุณบันทึกไว้</p>
+    <div id="favorites-list" class="mt-6 space-y-3"></div>
+  </div>
+  <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] py-2 backdrop-blur">
+    <button type="button" onclick="showView('user-dashboard')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="house" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
+    <button type="button" onclick="showView('user-search')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
+    <button type="button" onclick="showView('user-favorites')" class="nav-item active flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
+    <button type="button" onclick="showView('user-profile')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
+  </nav>
+</section>
+
+<!-- PROFILE (S6) -->
+<section id="user-profile" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
+  <div class="bg-gradient-to-br from-[#262447] to-[#362e60] dark:from-[#191830] dark:to-[#232042] px-5 pb-10 pt-8 text-white">
+    <div class="mx-auto max-w-3xl">
+      <div class="flex items-center justify-between mb-6">
+        <button type="button" onclick="showView('user-dashboard')" class="inline-flex items-center gap-2 font-bold text-white"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
+        <button type="button" onclick="toggleQuickSettings(true)" class="rounded-full p-2 text-[#D9B1E6] hover:bg-[#3f3770] transition"><i data-lucide="settings" class="h-5 w-5"></i></button>
+      </div>
+      <div class="flex items-center gap-4">
+        <label class="relative h-16 w-16 cursor-pointer overflow-hidden rounded-full bg-[#f0edfc] dark:bg-[#252347] text-2xl font-bold text-[#6a5bdc] dark:text-[#c4b5fd] shadow-md ring-2 ring-[#96A4DD]" title="อัปโหลดรูปโปรไฟล์">
+          <span id="profile-avatar" class="flex h-full w-full items-center justify-center">?</span>
+          <input type="file" accept="image/*" class="hidden" onchange="uploadAvatar(event)">
+        </label>
+        <div>
+          <h1 id="profile-name" class="text-xl font-extrabold text-white">-</h1>
+          <p class="mt-1 text-sm text-[#D9B1E6]" id="profile-role" data-i18n="role_kku">นักศึกษา / บุคลากร มหาวิทยาลัยขอนแก่น</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mx-auto max-w-3xl space-y-4 px-5 py-6 pb-28">
+
+    <!-- SETTINGS CARD -->
+    <div class="rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm space-y-4">
+      <div class="flex items-center gap-2 pb-2 border-b border-[#edf1f8] dark:border-[#262845]">
+        <i data-lucide="sliders-horizontal" class="h-5 w-5 text-[#6a5bdc] dark:text-[#c4b5fd]"></i>
+        <h2 class="font-extrabold text-base text-[#262447] dark:text-[#c4b5fd]" data-i18n="settings_section">การตั้งค่าระบบ</h2>
+      </div>
+      
+      <!-- Language Picker -->
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-[#5a627a] dark:text-[#9da7c5] mb-2" data-i18n="language_label">ภาษา / Language</label>
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" onclick="setLanguage('th')" id="profile-lang-th" class="flex items-center justify-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-sm font-bold transition hover:border-[#6a5bdc]">
+            <span>ภาษาไทย (TH)</span>
+          </button>
+          <button type="button" onclick="setLanguage('en')" id="profile-lang-en" class="flex items-center justify-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-sm font-bold transition hover:border-[#6a5bdc]">
+            <span>English (EN)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Theme Picker -->
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-[#5a627a] dark:text-[#9da7c5] mb-2" data-i18n="theme_label">ธีมการแสดงผล / Appearance</label>
+        <div class="grid grid-cols-3 gap-2">
+          <button type="button" onclick="setTheme('light')" id="profile-theme-light" class="flex flex-col items-center justify-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-xs font-bold transition hover:border-[#6a5bdc]">
+            <i data-lucide="sun" class="h-5 w-5 text-amber-500"></i>
+            <span data-i18n="theme_light">สว่าง</span>
+          </button>
+          <button type="button" onclick="setTheme('dark')" id="profile-theme-dark" class="flex flex-col items-center justify-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-xs font-bold transition hover:border-[#6a5bdc]">
+            <i data-lucide="moon" class="h-5 w-5 text-[#96A4DD]"></i>
+            <span data-i18n="theme_dark">มืด</span>
+          </button>
+          <button type="button" onclick="setTheme('system')" id="profile-theme-system" class="flex flex-col items-center justify-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-xs font-bold transition hover:border-[#6a5bdc]">
+            <i data-lucide="laptop" class="h-5 w-5 text-[#6a5bdc] dark:text-[#c4b5fd]"></i>
+            <span data-i18n="theme_system">ตามอุปกรณ์</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" onclick="toggleProfileEdit()" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#6a5bdc] transition">
+      <span class="flex items-center gap-3">
+        <i data-lucide="user-pen" class="text-[#6a5bdc] dark:text-[#c4b5fd]"></i>
+        <span class="font-semibold" data-i18n="edit_profile_btn">แก้ไขข้อมูลส่วนตัว / เปลี่ยนรหัสผ่าน</span>
+      </span>
+      <i data-lucide="chevron-right" class="text-[#8f9bb3]"></i>
+    </button>
+
+    <div id="profile-edit-box" class="hidden space-y-3 rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-[#f1f4fb] dark:bg-[#1c1d33] p-5">
+      <div>
+        <label class="mb-1 block text-sm font-bold" data-i18n="fullname">ชื่อ-นามสกุล</label>
+        <input id="edit-name" type="text" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 shadow-sm">
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-bold" data-i18n="new_password_label">รหัสผ่านใหม่ (เว้นว่างหากไม่ต้องการเปลี่ยนรหัสผ่าน)</label>
+        <input id="edit-password" type="password" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 shadow-sm">
+      </div>
+      <button type="button" onclick="saveProfile()" class="w-full rounded-xl bg-[#6a5bdc] py-3 font-bold text-white hover:bg-[#5949d0] transition shadow-md" data-i18n="save_changes">บันทึกการเปลี่ยนแปลง</button>
+      <p id="profile-saved" class="hidden text-center text-sm font-semibold text-[#6a5bdc] dark:text-[#c4b5fd]" data-i18n="saved_profile_msg">บันทึกข้อมูลแล้ว</p>
+    </div>
+
+    <!-- CHANGELOG LINK IN PROFILE -->
+    <a href="https://docs.google.com/document/d/1QQ2nvePn2MsxNwh_2KmTXQbrHRarNDiYpR3ptZoC5ls/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#6a5bdc] transition group">
+      <span class="flex items-center gap-3">
+        <i data-lucide="file-text" class="text-[#6a5bdc] dark:text-[#c4b5fd]"></i>
+        <div>
+          <span class="font-semibold block" data-i18n="changelog_link_text">ดูบันทึกการเปลี่ยนแปลง (Changelog)</span>
+          <span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="changelog_sub">ประวัติการพัฒนาและรายการอัปเดตเวอร์ชัน</span>
+        </div>
+      </span>
+      <i data-lucide="external-link" class="text-[#8f9bb3] group-hover:text-[#6a5bdc] transition"></i>
+    </a>
+
+    <button type="button" onclick="showView('user-history')" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#6a5bdc] transition">
+      <span class="flex items-center gap-3"><i data-lucide="clock-3" class="text-[#6a5bdc] dark:text-[#c4b5fd]"></i><span class="font-semibold" data-i18n="history_btn">ประวัติการใช้งานและการค้นหา</span></span><i data-lucide="chevron-right" class="text-[#8f9bb3]"></i>
+    </button>
+    <button type="button" onclick="showView('user-review')" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#6a5bdc] transition">
+      <span class="flex items-center gap-3"><i data-lucide="star" class="text-[#f59e0b]"></i><span class="font-semibold" data-i18n="review_btn">ให้คะแนนและรีวิว</span></span><i data-lucide="chevron-right" class="text-[#8f9bb3]"></i>
+    </button>
+    <button type="button" onclick="showView('user-notifications')" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#6a5bdc] transition">
+      <span class="flex items-center gap-3"><i data-lucide="bell" class="text-[#6a5bdc] dark:text-[#c4b5fd]"></i><span class="font-semibold" data-i18n="notif_btn">การแจ้งเตือน</span></span><i data-lucide="chevron-right" class="text-[#8f9bb3]"></i>
+    </button>
+
+    <div class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-[#f0edfc]/50 dark:bg-[#252347]/40 p-4 text-sm text-[#5a627a] dark:text-[#9da7c5]">
+      <b data-i18n="pwa_notice_title">เกี่ยวกับแถบสถานะด้านบน:</b> <span data-i18n="pwa_notice_desc">เว็บที่เปิดผ่านเบราว์เซอร์ทั่วไปจะลบแถบเวลา/สัญญาณของโทรศัพท์ไม่ได้ เพราะเป็นส่วนหนึ่งของระบบปฏิบัติการ หากต้องการหน้าจอเต็ม ให้เพิ่มหน้านี้ไปยังหน้าจอหลัก (Add to Home Screen) เพื่อเปิดแบบแอปเต็มจอ</span>
+    </div>
+
+    <button type="button" onclick="logout()" class="interactive-btn flex w-full items-center justify-center gap-2 rounded-2xl border border-[#fecdd3] dark:border-[#4c1d24] bg-white dark:bg-[#1a1215] p-4 font-bold text-[#e11d48] dark:text-[#fb7185] hover:bg-[#fff1f2] dark:hover:bg-[#251619] transition">
+      <i data-lucide="log-out" class="h-4 w-4"></i><span data-i18n="logout_btn">ออกจากระบบ</span>
+    </button>
+
+    <p class="pt-4 text-center text-xs text-[#8f9bb3] dark:text-[#6d7796]">Developed by Ardeshir</p>
+  </div>
+  <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] py-2 backdrop-blur">
+    <button type="button" onclick="showView('user-dashboard')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="house" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
+    <button type="button" onclick="showView('user-search')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
+    <button type="button" onclick="showView('user-favorites')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
+    <button type="button" onclick="showView('user-profile')" class="nav-item active flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
+  </nav>
+</section>
+
+<!-- HISTORY (S7) -->
+<section id="user-history" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
+  <div class="mx-auto max-w-3xl px-5 pb-16 pt-6">
+    <button type="button" onclick="showView('user-profile')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd]"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
+    <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="history_title">ประวัติการใช้งาน</h1>
+    <div class="mt-4 flex gap-2">
+      <button type="button" onclick="setHistoryTab('nav')" id="history-tab-nav" class="chip active flex-1" data-i18n="tab_parking">ประวัติการจอดรถ</button>
+      <button type="button" onclick="setHistoryTab('search')" id="history-tab-search" class="chip flex-1" data-i18n="tab_search">ประวัติการค้นหา</button>
+    </div>
+    <div id="history-list" class="mt-6 space-y-3"></div>
+  </div>
+</section>
+
+<!-- REVIEW (S8) -->
+<section id="user-review" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
+  <div class="mx-auto max-w-3xl px-5 pb-16 pt-6">
+    <button type="button" onclick="showView('user-profile')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd]"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
+    <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="review_title">ให้คะแนนและรีวิว</h1>
+    <div class="mt-4 rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 text-center shadow-sm">
+      <p class="text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="avg_rating_label">คะแนนเฉลี่ยจากผู้ใช้งาน</p>
+      <p id="review-average" class="mt-1 text-4xl font-extrabold text-[#6a5bdc] dark:text-[#c4b5fd]">-</p>
+      <p id="review-count" class="text-sm text-[#5a627a] dark:text-[#9da7c5]">ยังไม่มีรีวิว</p>
+    </div>
+    <div class="mt-5 rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
+      <p class="font-bold" data-i18n="rate_prompt">ให้คะแนนการใช้งาน</p>
+      <div id="star-input" class="mt-3 flex gap-2"></div>
+      <textarea id="review-text" rows="3" class="mt-3 w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3"></textarea>
+      <button type="button" onclick="submitReview()" class="interactive-btn mt-3 w-full rounded-xl bg-[#6a5bdc] py-3 font-bold text-white hover:bg-[#5949d0] transition shadow-md" data-i18n="submit_review_btn">ส่งรีวิว</button>
+    </div>
+    <div id="review-list" class="mt-5 space-y-3"></div>
+  </div>
+</section>
+
+<!-- NOTIFICATIONS -->
+<section id="user-notifications" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
+  <div class="mx-auto max-w-3xl px-5 pb-16 pt-6">
+    <button type="button" onclick="showView('user-dashboard')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd]"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
+    <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="notif_title">การแจ้งเตือน</h1>
+    <div id="notifications-list" class="mt-6 space-y-3"></div>
+  </div>
+</section>
+
+<!-- ADMIN (S9) -->
+<section id="admin-dashboard" class="app-view bg-[#f4f6fc] dark:bg-[#0e0f1a]">
+  <header class="bg-gradient-to-r from-[#262447] to-[#362e60] dark:from-[#191830] dark:to-[#232042] border-b border-transparent dark:border-[#262845] px-5 py-6 text-white">
+    <div class="mx-auto flex max-w-4xl items-center justify-between">
+      <div>
+        <p class="text-sm text-[#D9B1E6]" data-i18n="admin_tag">สำหรับผู้ดูแลระบบ</p>
+        <h1 class="text-2xl font-extrabold tracking-tight" data-i18n="admin_heading">จัดการลานจอดรถ</h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <button type="button" onclick="toggleQuickSettings(true)" class="rounded-xl border border-[#96A4DD] p-2 hover:bg-[#3f3770] transition"><i data-lucide="settings" class="h-5 w-5"></i></button>
+        <button type="button" onclick="showView('landing')" class="rounded-xl border border-[#96A4DD] px-4 py-2 text-sm font-bold hover:bg-[#3f3770] transition" data-i18n="exit_admin">ออกจากหน้านี้</button>
+      </div>
+    </div>
+  </header>
+  <main class="mx-auto max-w-4xl px-5 py-8">
+    <div class="grid grid-cols-2 gap-4 md:grid-cols-3">
+      <div class="rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 shadow-sm">
+        <p class="text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="admin_stat_lots">ลานจอดรถทั้งหมด</p>
+        <p id="admin-lot-count" class="mt-2 text-3xl font-extrabold text-[#262447] dark:text-[#c4b5fd]">0</p>
+      </div>
+      <div class="rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 shadow-sm">
+        <p class="text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="admin_stat_spaces">ช่องว่างรวม</p>
+        <p id="admin-total" class="mt-2 text-4xl font-extrabold text-[#6a5bdc] dark:text-[#c4b5fd]">0</p>
+      </div>
+      <div class="rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 shadow-sm">
+        <p class="text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="admin_stat_bldgs">อาคารที่รองรับ</p>
+        <p id="admin-building-count" class="mt-2 text-3xl font-extrabold text-[#262447] dark:text-[#c4b5fd]">0</p>
+      </div>
+    </div>
+
+    <div class="mt-8 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" data-i18n="add_lot_heading">เพิ่มลานจอดรถใหม่</p>
+          <h2 class="mt-1 font-extrabold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="add_lot_sub">ลานจอดรถจะปรากฏในระบบค้นหาทันที</h2>
+        </div>
+      </div>
+      <div class="mt-4 grid gap-3 md:grid-cols-2">
+        <div>
+          <label class="mb-1 block text-sm font-bold" data-i18n="lot_name_label">ชื่อลานจอดรถ</label>
+          <input id="new-lot-name" type="text" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-bold" data-i18n="near_bldg_label">อาคารใกล้เคียง</label>
+          <select id="new-lot-building" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3"></select>
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-bold" data-i18n="capacity_label">ความจุ (ช่อง)</label>
+          <input id="new-lot-capacity" type="number" min="1" value="20" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+        </div>
+      </div>
+      <button type="button" onclick="addLot()" class="interactive-btn mt-4 inline-flex items-center gap-2 rounded-xl bg-[#6a5bdc] px-4 py-3 font-bold text-white shadow hover:bg-[#5949d0] transition">
+        <i data-lucide="plus" class="h-4 w-4"></i><span data-i18n="add_lot_btn">เพิ่มลานจอดรถ</span>
+      </button>
+      <p id="admin-message" class="mt-3 hidden rounded-xl bg-[#f0edfc] dark:bg-[#252347] p-3 text-sm font-semibold text-[#6a5bdc] dark:text-[#c4b5fd] border border-[#d5deed] dark:border-[#262845]"></p>
+    </div>
+
+    <div class="mt-8 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
+      <p class="text-sm font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" data-i18n="lot_list_title">รายการลานจอดรถ</p>
+      <h2 class="mt-1 font-extrabold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="lot_list_sub">ปรับจำนวนช่องว่าง หรือ ลบลานจอดรถ</h2>
+      <div id="admin-lot-list" class="mt-4 space-y-3"></div>
+    </div>
+
+    <div class="mt-8 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
+      <p class="text-sm font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" data-i18n="recent_reviews">ล่าสุด</p>
+      <h2 class="mt-1 font-extrabold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="user_reviews_heading">รีวิวจากผู้ใช้งาน</h2>
+      <div id="admin-review-list" class="mt-4 space-y-3"></div>
+    </div>
+
+    <p class="mt-8 text-center text-xs text-[#8f9bb3] dark:text-[#6d7796]">Developed by Ardeshir</p>
+  </main>
+</section>
+
+<!-- CONFIRM DIALOG -->
+<div id="confirm-dialog" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm p-5">
+  <div class="w-full max-w-sm rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
+    <p id="confirm-message" class="font-semibold text-lg">ยืนยันการลบหรือไม่</p>
+    <div class="mt-5 flex gap-3">
+      <button type="button" onclick="closeConfirm(false)" class="flex-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] py-3 font-bold hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" data-i18n="cancel_btn">ยกเลิก</button>
+      <button type="button" onclick="closeConfirm(true)" class="flex-1 rounded-xl bg-[#e11d48] py-3 font-bold text-white hover:bg-[#be123c]" data-i18n="delete_btn">ลบ</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==========================================================================
+   TRANSLATIONS & INTERNATIONALIZATION (i18n)
+   ========================================================================== */
+const i18n = {
+  th: {
+    quick_settings_title: "การตั้งค่าด่วน",
+    language_label: "ภาษา",
+    theme_label: "ธีมการแสดงผล",
+    theme_light: "สว่าง",
+    theme_dark: "มืด",
+    theme_system: "ตามอุปกรณ์",
+    done_btn: "เสร็จสิ้น",
+    login_nav: "เข้าใช้งาน",
+    admin_nav: "สำหรับผู้ดูแล",
+    beta_badge: "เว็บแอพพลิเคชันนี้อยู่ในระหว่างการทดสอบเบต้า ไม่ใช่ผลิตภัณฑ์ที่ใช้งานจริงแต่อย่างใด",
+    hero_title: "ค้นหาที่จอดรถในช่วงเวลาเร่งด่วน",
+    hero_subtitle: "ค้นหาลานจอดรถอย่างรวดเร็วทันใจ ด้วยระบบแนะนำลานจอดรถที่ใกล้ที่สุดพร้อมเส้นทางการเดินทางในทันที",
+    start_finding: "เริ่มค้นหาที่จอด",
+    manage_lots: "จัดการลานจอด",
+    spaces_available_now: "ช่องว่างตอนนี้",
+    total_lots: "ลานจอดทั้งหมด",
+    supported_buildings: "อาคารที่รองรับ",
+    app_highlights: "จุดเด่นของแอป",
+    highlight_title: "แนะนำลานจอดรถที่ใกล้ที่สุด",
+    feat_1: "ค้นหาอาคารเรียน ลานจอดรถ และอาคารสำนักงาน",
+    feat_2: "นำทางไปยังทุกอาคารในมหาวิทยาลัย พร้อมเลือกเส้นทางที่ปลอดภัยที่สุด",
+    feat_3: "แจ้งเตือนอัตโนมัติเมื่อจอดรถสำเร็จ",
+    feat_4: "ให้คะแนนและรีวิวการใช้งาน",
+    back_to_home: "กลับหน้าแรก",
+    back: "กลับ",
+    back_home: "กลับหน้าหลัก",
+    login_title: "เข้าสู่ระบบ",
+    login_subtitle: "เข้าใช้งานบัญชีของคุณ (ระบบจะจำบัญชีไว้ตลอด ไม่ต้องสมัครใหม่)",
+    username: "ชื่อผู้ใช้",
+    password: "รหัสผ่าน",
+    login_btn: "เข้าสู่ระบบ",
+    no_account: "ยังไม่มีบัญชี?",
+    register_link: "สมัครสมาชิก",
+    register_title: "สมัครสมาชิก",
+    register_subtitle: "สร้างบัญชีเพื่อบันทึกรายการโปรดและประวัติการใช้งานอย่างถาวร",
+    fullname: "ชื่อ-นามสกุล",
+    register_btn: "สมัครสมาชิก",
+    err_invalid_login: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง",
+    err_fill_all: "กรุณากรอกข้อมูลให้ครบถ้วน",
+    err_user_exists: "ชื่อผู้ใช้นี้ถูกใช้แล้ว",
+    greeting_guest: "สวัสดี ผู้เยี่ยมชม",
+    greeting_user: "สวัสดี {name}",
+    dashboard_headline: "ที่จอดรถวันนี้เป็นอย่างไรบ้าง",
+    from_total: "จาก {cap} ช่อง",
+    overview_map_title: "แผนที่ลานจอดรถโดยรวม",
+    overview_map_sub: "ตำแหน่งลานจอดรถเทียบกับอาคารทั้งหมด",
+    recommended_for_you: "แนะนำสำหรับคุณ",
+    nearest_lot_now: "ลานจอดรถที่ใกล้ที่สุดตอนนี้",
+    select_destination: "เลือกอาคารปลายทาง",
+    no_lots_in_system: "ยังไม่มีลานจอดรถในระบบ",
+    near_prefix: "ใกล้ {building}",
+    slots_left_prefix: "เหลือ {avail}/{cap} ช่อง",
+    nav_home: "หน้าหลัก",
+    nav_search: "ค้นหา",
+    nav_favorites: "รายการโปรด",
+    nav_profile: "โปรไฟล์",
+    search_title: "ค้นหาอาคาร / ลานจอดรถ",
+    search_sub: "พิมพ์ชื่ออาคารหรือลานจอดรถ แล้วเลือกหมวดหมู่ที่ต้องการ",
+    search_placeholder: "ค้นหาชื่ออาคาร หรือ ลานจอดรถ",
+    cat_all: "ทั้งหมด",
+    cat_classroom: "อาคารเรียน",
+    cat_parking: "ลานจอดรถ",
+    cat_office: "อาคารสำนักงาน",
+    no_search_results: "ไม่พบผลลัพธ์ ลองค้นหาด้วยคำอื่น",
+    destination_label: "ปลายทาง",
+    route_rec_desc: "ระบบแนะนำ {lot} เป็นลานจอดรถที่ใกล้ที่สุด",
+    route_rec_default: "ระบบแนะนำลานจอดรถที่ใกล้ที่สุดให้แล้ว",
+    route_fast: "เส้นทางที่ใกล้ที่สุด",
+    route_safe: "เส้นทางที่ปลอดภัยที่สุด",
+    walk_minutes: "นาทีเดิน",
+    meters_unit: "เมตร",
+    finish_nav: "ถึงลานจอดรถแล้ว / จบการนำทาง",
+    finish_success: "บันทึกการจอดรถแล้ว — ขอบคุณที่ใช้บริการครับ/ค่ะ",
+    nav_finish_notif: "ขอบคุณที่ใช้บริการครับ/ค่ะ จอดรถที่ {lot} สำเร็จ",
+    favorites_title: "รายการโปรด",
+    favorites_sub: "ลานจอดรถที่คุณบันทึกไว้",
+    no_favorites: "ยังไม่มีลานจอดรถในรายการโปรด",
+    role_kku: "นักศึกษา / บุคลากร มหาวิทยาลัยขอนแก่น",
+    guest_user: "ผู้เยี่ยมชม",
+    settings_section: "การตั้งค่าระบบ",
+    edit_profile_btn: "แก้ไขข้อมูลส่วนตัว / เปลี่ยนรหัสผ่าน",
+    new_password_label: "รหัสผ่านใหม่ (เว้นว่างหากไม่ต้องการเปลี่ยนรหัสผ่าน)",
+    save_changes: "บันทึกการเปลี่ยนแปลง",
+    saved_profile_msg: "บันทึกข้อมูลแล้ว",
+    history_btn: "ประวัติการใช้งานและการค้นหา",
+    review_btn: "ให้คะแนนและรีวิว",
+    notif_btn: "การแจ้งเตือน",
+    pwa_notice_title: "เกี่ยวกับแถบสถานะด้านบน:",
+    pwa_notice_desc: "เว็บที่เปิดผ่านเบราว์เซอร์ทั่วไปจะลบแถบเวลา/สัญญาณของโทรศัพท์ไม่ได้ เพราะเป็นส่วนหนึ่งของระบบปฏิบัติการ หากต้องการหน้าจอเต็ม ให้เพิ่มหน้านี้ไปยังหน้าจอหลัก (Add to Home Screen) เพื่อเปิดแบบแอปเต็มจอ",
+    logout_btn: "ออกจากระบบ",
+    history_title: "ประวัติการใช้งาน",
+    tab_parking: "ประวัติการจอดรถ",
+    tab_search: "ประวัติการค้นหา",
+    no_parking_history: "ยังไม่มีประวัติการจอดรถ",
+    no_search_history: "ยังไม่มีประวัติการค้นหา",
+    history_to: "ไปยัง {dest}",
+    review_title: "ให้คะแนนและรีวิว",
+    avg_rating_label: "คะแนนเฉลี่ยจากผู้ใช้งาน",
+    no_reviews: "ยังไม่มีรีวิว",
+    from_reviews_count: "จาก {count} รีวิว",
+    rate_prompt: "ให้คะแนนการใช้งาน",
+    review_placeholder: "เล่าประสบการณ์การใช้งานของคุณ",
+    submit_review_btn: "ส่งรีวิว",
+    notif_title: "การแจ้งเตือน",
+    no_notifications: "ยังไม่มีการแจ้งเตือน",
+    admin_tag: "สำหรับผู้ดูแลระบบ",
+    admin_heading: "จัดการลานจอดรถ",
+    exit_admin: "ออกจากหน้านี้",
+    admin_stat_lots: "ลานจอดรถทั้งหมด",
+    admin_stat_spaces: "ช่องว่างรวม",
+    admin_stat_bldgs: "อาคารที่รองรับ",
+    add_lot_heading: "เพิ่มลานจอดรถใหม่",
+    add_lot_sub: "ลานจอดรถจะปรากฏในระบบค้นหาทันที",
+    lot_name_label: "ชื่อลานจอดรถ",
+    near_bldg_label: "อาคารใกล้เคียง",
+    capacity_label: "ความจุ (ช่อง)",
+    add_lot_btn: "เพิ่มลานจอดรถ",
+    lot_added_success: "เพิ่มลานจอดรถและบันทึกลงระบบแล้ว — สามารถค้นหาได้ทันที",
+    lot_list_title: "รายการลานจอดรถ",
+    lot_list_sub: "ปรับจำนวนช่องว่าง หรือ ลบลานจอดรถ",
+    recent_reviews: "ล่าสุด",
+    user_reviews_heading: "รีวิวจากผู้ใช้งาน",
+    fill_lot_fields: "กรุณากรอกชื่อลานจอดรถและเลือกอาคารใกล้เคียง",
+    confirm_delete_lot: 'ยืนยันการลบ "{name}" หรือไม่',
+    cancel_btn: "ยกเลิก",
+    delete_btn: "ลบ",
+    changelog_title: "บันทึกการเปลี่ยนแปลง (Changelog)",
+    changelog_link_text: "ดูบันทึกการเปลี่ยนแปลง (Changelog)",
+    changelog_sub: "ประวัติการพัฒนาและรายการอัปเดตเวอร์ชัน",
+    view_doc: "เปิดเอกสาร",
+    quick_test_hint: "💡 สำหรับทดสอบด่วน:",
+    quick_test_desc: "คุณสามารถใช้ชื่อผู้ใช้ Project Alpine รหัสผ่าน orchid หรือสร้างบัญชีใหม่ตามต้องการ"
+  },
+  en: {
+    quick_settings_title: "Quick Settings",
+    language_label: "Language",
+    theme_label: "Appearance",
+    theme_light: "Light",
+    theme_dark: "Dark",
+    theme_system: "System Default",
+    done_btn: "Done",
+    login_nav: "Sign In",
+    admin_nav: "Admin Portal",
+    beta_badge: "This web-application is currently in BETA test. Not indicative of a final product.",
+    hero_title: "Find parking spots right within busy hours.",
+    hero_subtitle: "Search for parking lots and get the nearest parking spots with fastest routes instantly.",
+    start_finding: "Find Parking",
+    manage_lots: "Manage Lots",
+    spaces_available_now: "Available Spots",
+    total_lots: "Total Lots",
+    supported_buildings: "Supported Buildings",
+    app_highlights: "App Highlights",
+    highlight_title: "Smart Nearest Parking",
+    feat_1: "Search classrooms, parking lots, and administration buildings",
+    feat_2: "Navigate across campus with fastest or safest paths",
+    feat_3: "Instant notifications upon parking completion",
+    feat_4: "Rate and review your parking experience",
+    back_to_home: "Back to Home",
+    back: "Back",
+    back_home: "Back to Dashboard",
+    login_title: "Sign In",
+    login_subtitle: "Access your Parking-A-Lot account (Accounts are saved permanently)",
+    username: "Username",
+    password: "Password",
+    login_btn: "Sign In",
+    no_account: "Don't have an account?",
+    register_link: "Create Account",
+    register_title: "Create Account",
+    register_subtitle: "Create an account to permanently save favorites and activity history",
+    fullname: "Full Name",
+    register_btn: "Register Account",
+    err_invalid_login: "Invalid username or password",
+    err_fill_all: "Please fill in all fields",
+    err_user_exists: "This username is already taken",
+    greeting_guest: "Welcome, Guest",
+    greeting_user: "Hello, {name}",
+    dashboard_headline: "How is your parking today?",
+    from_total: "out of {cap} spots",
+    overview_map_title: "Campus Parking Map",
+    overview_map_sub: "Parking lots relative to campus buildings",
+    recommended_for_you: "Recommended For You",
+    nearest_lot_now: "Nearest Available Lot",
+    select_destination: "Select Destination Building",
+    no_lots_in_system: "No parking lots available in system",
+    near_prefix: "Near {building}",
+    slots_left_prefix: "{avail}/{cap} spots remaining",
+    nav_home: "Home",
+    nav_search: "Search",
+    nav_favorites: "Favorites",
+    nav_profile: "Profile",
+    search_title: "Search Buildings & Lots",
+    search_sub: "Type a building or lot name, then filter by category",
+    search_placeholder: "Search building or parking lot name...",
+    cat_all: "All",
+    cat_classroom: "Classrooms",
+    cat_parking: "Parking Lots",
+    cat_office: "Offices",
+    no_search_results: "No results found. Try another search query.",
+    destination_label: "Destination",
+    route_rec_desc: "Recommended {lot} as the closest available parking lot",
+    route_rec_default: "Nearest lot recommended by system",
+    route_fast: "Fastest Route",
+    route_safe: "Safest Route",
+    walk_minutes: "min walk",
+    meters_unit: "meters",
+    finish_nav: "Arrived at Lot / Finish Route",
+    finish_success: "Parking recorded. Thank you for using our service!",
+    nav_finish_notif: "Thank you! Successfully parked at {lot}",
+    favorites_title: "Favorite Lots",
+    favorites_sub: "Your saved parking spots",
+    no_favorites: "No favorite parking lots saved yet",
+    role_kku: "Student / Faculty, Khon Kaen University",
+    guest_user: "Guest Visitor",
+    settings_section: "System Settings",
+    edit_profile_btn: "Edit Profile / Change Password",
+    new_password_label: "New Password (leave blank to keep current)",
+    save_changes: "Save Changes",
+    saved_profile_msg: "Profile changes saved successfully",
+    history_btn: "Activity History & Searches",
+    review_btn: "Ratings & Reviews",
+    notif_btn: "Notifications",
+    pwa_notice_title: "About top status bar:",
+    pwa_notice_desc: "Web browsers cannot hide the native OS status bar. To experience full screen mode, select 'Add to Home Screen' in your browser options.",
+    logout_btn: "Sign Out",
+    history_title: "Activity History",
+    tab_parking: "Parking History",
+    tab_search: "Search History",
+    no_parking_history: "No parking history recorded yet",
+    no_search_history: "No search history recorded yet",
+    history_to: "To {dest}",
+    review_title: "Ratings & Reviews",
+    avg_rating_label: "Average Service Rating",
+    no_reviews: "No reviews yet",
+    from_reviews_count: "from {count} reviews",
+    rate_prompt: "Rate Your Experience",
+    review_placeholder: "Share your parking experience...",
+    submit_review_btn: "Submit Review",
+    notif_title: "Notifications",
+    no_notifications: "No notifications yet",
+    admin_tag: "Administrator Portal",
+    admin_heading: "Manage Parking Lots",
+    exit_admin: "Exit Admin Portal",
+    admin_stat_lots: "Total Lots",
+    admin_stat_spaces: "Total Available",
+    admin_stat_bldgs: "Supported Buildings",
+    add_lot_heading: "Add New Parking Lot",
+    add_lot_sub: "New lot will appear instantly in search & navigation",
+    lot_name_label: "Parking Lot Name",
+    near_bldg_label: "Nearby Building",
+    capacity_label: "Capacity (spots)",
+    add_lot_btn: "Add Parking Lot",
+    lot_added_success: "Parking lot added and saved to system — available for searching",
+    lot_list_title: "Parking Lots List",
+    lot_list_sub: "Adjust available spots or remove lots",
+    recent_reviews: "Recent",
+    user_reviews_heading: "User Reviews",
+    fill_lot_fields: "Please enter parking lot name and choose a nearest building",
+    confirm_delete_lot: 'Confirm deleting "{name}"?',
+    cancel_btn: "Cancel",
+    delete_btn: "Delete",
+    changelog_title: "Changelog & Updates",
+    changelog_link_text: "View Changelog & Updates",
+    changelog_sub: "Version history and development release notes",
+    view_doc: "Open Doc",
+    quick_test_hint: "💡 Quick Testing Hint:",
+    quick_test_desc: "You can use test username Project Alpine with password orchid or register any new account"
+  }
+};
+
+function t(key, params = {}) {
+  const lang = state.settings && state.settings.lang ? state.settings.lang : 'th';
+  let text = (i18n[lang] && i18n[lang][key]) || (i18n.th && i18n.th[key]) || key;
+  Object.keys(params).forEach(k => {
+    text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), params[k]);
+  });
+  return text;
+}
+
+function updateStaticTranslations() {
+  const lang = state.settings?.lang || 'th';
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    el.textContent = t(key);
+  });
+  // Update inputs placeholder
+  const searchInput = document.getElementById('search-input');
+  if(searchInput) searchInput.placeholder = t('search_placeholder');
+  const reviewText = document.getElementById('review-text');
+  if(reviewText) reviewText.placeholder = t('review_placeholder');
+}
+
+/* ==========================================================================
+   STATE & PERSISTENCE (With Persistent User Accounts Database)
+   ========================================================================== */
+const STORAGE_KEY = 'parkingalot-state-v5';
+const USERS_DB_KEY = 'parkingalot-users-db';
+let confirmResolver = null;
+
+function getStoredUsers(){
+  const usersMap = new Map();
+  
+  // Pre-seed test account for instant testing
+  const defaultUsers = [
+    { username: 'Project Alpine', password: 'orchid', name: 'ผู้ทดสอบระบบ (Tester)', avatar: null }
+  ];
+  defaultUsers.forEach(u => usersMap.set(u.username.toLowerCase(), u));
+
+  // Load from dedicated persistent users storage
+  try {
+    const rawUsers = localStorage.getItem(USERS_DB_KEY);
+    if(rawUsers){
+      const parsed = JSON.parse(rawUsers);
+      if(Array.isArray(parsed)){
+        parsed.forEach(u => { if(u && u.username) usersMap.set(u.username.toLowerCase(), u); });
+      }
+    }
+  } catch(e) {}
+
+  // Seamless migration from previous version keys
+  const oldKeys = ['parkingalot-state-v5', 'parkingalot-state-v4', 'parkingalot-state-v3', 'parkingalot-state-v2', 'parkingalot-state-v1'];
+  oldKeys.forEach(key => {
+    try {
+      const raw = localStorage.getItem(key);
+      if(raw){
+        const parsed = JSON.parse(raw);
+        if(parsed && Array.isArray(parsed.users)){
+          parsed.users.forEach(u => { if(u && u.username) usersMap.set(u.username.toLowerCase(), u); });
+        }
+      }
+    } catch(e) {}
+  });
+
+  return Array.from(usersMap.values());
+}
+
+function saveStoredUsers(usersList){
+  try {
+    localStorage.setItem(USERS_DB_KEY, JSON.stringify(usersList));
+  } catch(e) {}
+}
+
+function defaultState(){
+  return {
+    settings: {
+      lang: 'th',
+      theme: 'system' // 'light' | 'dark' | 'system'
+    },
+    buildings: [
+      {id:'b1', name:'อาคารเรียนรวม', nameEn:'Complex Lecture Building', category:'classroom', lat:40, lng:60},
+      {id:'b2', name:'คณะวิศวกรรมศาสตร์', nameEn:'Faculty of Engineering', category:'classroom', lat:78, lng:28},
+      {id:'b3', name:'หอสมุดกลาง', nameEn:'Central Library', category:'classroom', lat:18, lng:78},
+      {id:'b4', name:'อาคารสำนักงานอธิการบดี', nameEn:"President's Office Building", category:'office', lat:58, lng:12},
+      {id:'b5', name:'คณะเกษตรศาสตร์', nameEn:'Faculty of Agriculture', category:'classroom', lat:88, lng:70},
+      {id:'b6', name:'สำนักบริการวิชาการ', nameEn:'Academic Services Bureau', category:'office', lat:10, lng:38}
+    ],
+    lots: [
+      {id:'a', name:'ลาน A หน้าอาคารเรียนรวม', nameEn:'Lot A - Lecture Complex', buildingId:'b1', capacity:20, available:15, lat:38, lng:58},
+      {id:'b', name:'ลาน B ข้างวิศวกรรมศาสตร์', nameEn:'Lot B - Engineering Wing', buildingId:'b2', capacity:20, available:5, lat:75, lng:31},
+      {id:'d', name:'ลาน D หลังหอสมุดกลาง', nameEn:'Lot D - Behind Library', buildingId:'b3', capacity:20, available:8, lat:21, lng:75}
+    ],
+    users: getStoredUsers(),
+    currentUser: null,
+    favorites: [],
+    searchHistory: [],
+    navHistory: [],
+    notifications: [],
+    reviews: [],
+    ui: { routeType:'fast', destinationBuilding:null, historyTab:'nav', reviewStars:5, searchCategory:'all' }
+  };
+}
+
+function loadState(){
+  let s = defaultState();
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      s = {
+        ...s,
+        ...parsed,
+        settings: { ...s.settings, ...(parsed.settings || {}) },
+        ui: { ...s.ui, ...(parsed.ui || {}) }
+      };
+    }
+  }catch(e){}
+
+  // Merge and guarantee all persistent users are present
+  const allUsers = getStoredUsers();
+  const map = new Map();
+  allUsers.forEach(u => map.set(u.username.toLowerCase(), u));
+  if(Array.isArray(s.users)){
+    s.users.forEach(u => { if(u && u.username) map.set(u.username.toLowerCase(), u); });
+  }
+  s.users = Array.from(map.values());
+  saveStoredUsers(s.users);
+
+  return s;
+}
+
+function saveState(){
+  try {
+    if(state && Array.isArray(state.users)){
+      saveStoredUsers(state.users);
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch(e) {}
+}
+
+let state = loadState();
+
+/* ==========================================================================
+   THEME SYSTEM (Light, Dark, Device Default)
+   ========================================================================== */
+function getEffectiveTheme(){
+  const mode = state.settings.theme || 'system';
+  if(mode === 'system'){
+    try {
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    } catch(e) { return 'light'; }
+  }
+  return mode;
+}
+
+function applyTheme(){
+  const eff = getEffectiveTheme();
+  const isDark = eff === 'dark';
+  document.documentElement.classList.toggle('dark', isDark);
+
+  // Update theme-color meta tag
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if(metaTheme) metaTheme.setAttribute('content', isDark ? '#0e0f1a' : '#262447');
+
+  // Update icons and UI state
+  updateThemeUI();
+  drawAllMaps();
+}
+
+function setTheme(mode){
+  state.settings.theme = mode;
+  saveState();
+  applyTheme();
+}
+
+function cycleTheme(){
+  const cur = state.settings.theme || 'system';
+  const next = cur === 'light' ? 'dark' : (cur === 'dark' ? 'system' : 'light');
+  setTheme(next);
+}
+
+function updateThemeUI(){
+  const theme = state.settings.theme || 'system';
+  const eff = getEffectiveTheme();
+
+  // Landing theme icon
+  const icon = document.getElementById('landing-theme-icon');
+  if(icon){
+    icon.setAttribute('data-lucide', theme === 'system' ? 'laptop' : (eff === 'dark' ? 'moon' : 'sun'));
+  }
+
+  // Active styles in Settings cards / modal
+  ['modal', 'profile'].forEach(prefix => {
+    ['light', 'dark', 'system'].forEach(m => {
+      const btn = document.getElementById(`${prefix}-theme-${m}`);
+      if(btn){
+        btn.classList.toggle('border-[#6a5bdc]', theme === m);
+        btn.classList.toggle('bg-[#f0edfc]', theme === m);
+        btn.classList.toggle('dark:bg-[#252347]', theme === m);
+        btn.classList.toggle('dark:border-[#8c7ef0]', theme === m);
+      }
+    });
+  });
+
+  if(window.lucide) lucide.createIcons();
+}
+
+// System color scheme change listener
+if(typeof window !== 'undefined' && window.matchMedia){
+  try {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      if(state.settings.theme === 'system'){
+        applyTheme();
+      }
+    });
+  } catch(e) {}
+}
+
+/* ==========================================================================
+   LANGUAGE SYSTEM (Thai / English)
+   ========================================================================== */
+function setLanguage(lang){
+  state.settings.lang = lang;
+  saveState();
+  updateLanguageUI();
+  renderAll();
+}
+
+function updateLanguageUI(){
+  const lang = state.settings.lang || 'th';
+  
+  // Landing header pills
+  const lTh = document.getElementById('landing-lang-th');
+  const lEn = document.getElementById('landing-lang-en');
+  if(lTh) lTh.classList.toggle('active', lang === 'th');
+  if(lEn) lEn.classList.toggle('active', lang === 'en');
+
+  // Modal / Profile buttons
+  ['modal', 'profile'].forEach(prefix => {
+    ['th', 'en'].forEach(l => {
+      const btn = document.getElementById(`${prefix}-lang-${l}`);
+      if(btn){
+        btn.classList.toggle('border-[#6a5bdc]', lang === l);
+        btn.classList.toggle('bg-[#f0edfc]', lang === l);
+        btn.classList.toggle('dark:bg-[#252347]', lang === l);
+        btn.classList.toggle('dark:border-[#8c7ef0]', lang === l);
+      }
+    });
+  });
+
+  updateStaticTranslations();
+}
+
+function toggleQuickSettings(show){
+  const modal = document.getElementById('quick-controls-modal');
+  if(!modal) return;
+  modal.classList.toggle('hidden', !show);
+  modal.classList.toggle('flex', show);
+  if(show) updateThemeUI();
+}
+
+/* ==========================================================================
+   VIEW SWITCHING & HELPERS
+   ========================================================================== */
+function showView(id){
+  document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
+  const target = document.getElementById(id);
+  if(target) target.classList.add('active');
+  renderAll();
+  window.scrollTo(0,0);
+}
+
+function bName(b){
+  if(!b) return '-';
+  return state.settings.lang === 'en' ? (b.nameEn || b.name) : b.name;
+}
+
+function lName(l){
+  if(!l) return '-';
+  return state.settings.lang === 'en' ? (l.nameEn || l.name) : l.name;
+}
+
+function distanceMeters(a,b){
+  const dx = a.lat-b.lat, dy=a.lng-b.lng;
+  return Math.round(Math.sqrt(dx*dx+dy*dy) * 14); // grid unit ≈ 14m
+}
+function walkMinutes(m){ return Math.max(1, Math.round(m/75)); }
+function lotById(id){ return state.lots.find(l=>l.id===id); }
+function buildingById(id){ return state.buildings.find(b=>b.id===id); }
+function nearestLot(building){
+  const withDist = state.lots.map(l=>({lot:l, dist: distanceMeters(l, building)}));
+  withDist.sort((a,b)=>a.dist-b.dist);
+  return withDist[0];
+}
+function fmtTime(ts){
+  const d=new Date(ts);
+  const locale = state.settings.lang === 'en' ? 'en-US' : 'th-TH';
+  return d.toLocaleString(locale, {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit'});
+}
+function pushNotification(text){
+  state.notifications.unshift({id:'n'+Date.now(), text, ts:Date.now(), read:false});
+  saveState();
+}
+
+/* ==========================================================================
+   AUTH & PERSISTENT USERS
+   ========================================================================== */
+function login(){
+  const u = (document.getElementById('login-username').value || '').trim();
+  const p = document.getElementById('login-password').value;
+  
+  // Refresh accounts from storage before validating
+  const stored = getStoredUsers();
+  stored.forEach(su => {
+    if(!state.users.some(x=>x.username.toLowerCase()===su.username.toLowerCase())){
+      state.users.push(su);
+    }
+  });
+
+  const found = state.users.find(x=>x.username.toLowerCase()===u.toLowerCase() && x.password===p);
+  const err = document.getElementById('login-error');
+  if(!found){ err.textContent = t('err_invalid_login'); err.classList.remove('hidden'); return; }
+  err.classList.add('hidden');
+  state.currentUser = found.username;
+  saveState();
+  document.getElementById('login-username').value = '';
+  document.getElementById('login-password').value = '';
+  showView('user-dashboard');
+}
+
+function register(){
+  const name = (document.getElementById('reg-name').value || '').trim();
+  const username = (document.getElementById('reg-username').value || '').trim();
+  const password = document.getElementById('reg-password').value;
+  const err = document.getElementById('reg-error');
+  if(!name || !username || !password){ err.textContent = t('err_fill_all'); err.classList.remove('hidden'); return; }
+  
+  // Refresh accounts
+  const stored = getStoredUsers();
+  if(stored.some(x=>x.username.toLowerCase()===username.toLowerCase()) || state.users.some(x=>x.username.toLowerCase()===username.toLowerCase())){
+    err.textContent = t('err_user_exists'); err.classList.remove('hidden'); return;
+  }
+  err.classList.add('hidden');
+  
+  const newUser = {username, password, name, avatar:null};
+  state.users.push(newUser);
+  state.currentUser = username;
+  saveState();
+  
+  document.getElementById('reg-name').value = '';
+  document.getElementById('reg-username').value = '';
+  document.getElementById('reg-password').value = '';
+  showView('user-dashboard');
+}
+
+function logout(){ state.currentUser = null; saveState(); showView('landing'); }
+function currentUserObj(){ return state.users.find(u=>u.username.toLowerCase()===(state.currentUser||'').toLowerCase()); }
+
+/* ==========================================================================
+   RENDERING
+   ========================================================================== */
+function renderAll(){
+  updateStaticTranslations();
+  updateThemeUI();
+  updateLanguageUI();
+  renderLanding();
+  renderDashboard();
+  renderSearchChips();
+  renderSearchResults();
+  renderFavorites();
+  renderProfile();
+  renderHistory();
+  renderReview();
+  renderNotifications();
+  renderAdmin();
+  renderRoute();
+  drawAllMaps();
+  if(window.lucide) lucide.createIcons();
+}
+
+function drawAllMaps(){
+  drawMap('overview-map', null);
+  const view = document.getElementById('user-map');
+  if(view && view.classList.contains('active')){
+    const building = buildingById(state.ui.destinationBuilding) || state.buildings[0];
+    if(building){
+      const best = nearestLot(building);
+      if(best) drawMap('route-map', {lot:best.lot, building, safe: state.ui.routeType==='safe'});
+    }
+  }
+}
+
+function totalAvailable(){ return state.lots.reduce((s,l)=>s+l.available,0); }
+
+function renderLanding(){
+  document.getElementById('landing-space').textContent = totalAvailable();
+  document.getElementById('landing-lots').textContent = state.lots.length;
+  document.getElementById('landing-buildings').textContent = state.buildings.length;
+}
+
+function initialsAvatar(user){
+  return user && user.avatar ? `<img src="${user.avatar}" class="h-full w-full object-cover">` : (user? user.name.charAt(0).toUpperCase() : '?');
+}
+
+function renderDashboard(){
+  const user = currentUserObj();
+  document.getElementById('dashboard-greeting').textContent = user ? t('greeting_user', {name: user.name}) : t('greeting_guest');
+  document.getElementById('header-avatar').innerHTML = initialsAvatar(user);
+  document.getElementById('notif-dot').classList.toggle('hidden', !state.notifications.some(n=>!n.read));
+
+  const statsBox = document.getElementById('dashboard-lot-stats');
+  statsBox.innerHTML = state.lots.map(l=>`
+    <div class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 text-center shadow-sm stat-card-anim">
+      <p class="text-xs text-[#5a627a] dark:text-[#9da7c5] truncate font-medium">${lName(l)}</p>
+      <p class="mt-2 text-2xl font-extrabold text-[#6a5bdc] dark:text-[#c4b5fd]">${l.available}</p>
+      <p class="text-[10px] text-[#8f9bb3] dark:text-[#6d7796]">${t('from_total', {cap: l.capacity})}</p>
+    </div>`).join('');
+
+  const best = state.lots.slice().sort((a,b)=>b.available-a.available)[0];
+  const box = document.getElementById('recommend-box');
+  if(best){
+    const b = buildingById(best.buildingId);
+    box.innerHTML = `
+      <p class="font-bold text-[#262447] dark:text-[#c4b5fd]">${lName(best)}</p>
+      <p class="mt-1 text-sm text-[#5a627a] dark:text-[#9da7c5]">${t('near_prefix', {building: bName(b)})} · ${t('slots_left_prefix', {avail: best.available, cap: best.capacity})}</p>`;
+  } else {
+    box.innerHTML = `<p class="text-sm text-[#5a627a] dark:text-[#9da7c5]">${t('no_lots_in_system')}</p>`;
+  }
+}
+
+function categoryLabel(c){
+  if(c==='classroom') return t('cat_classroom');
+  if(c==='office') return t('cat_office');
+  return t('cat_parking');
+}
+
+function renderSearchChips(){
+  const wrap = document.getElementById('search-chips');
+  const cats = [['all', t('cat_all')], ['classroom', t('cat_classroom')], ['parking', t('cat_parking')], ['office', t('cat_office')]];
+  const active = state.ui.searchCategory || 'all';
+  wrap.innerHTML = cats.map(([id,label])=>`<button type="button" onclick="setSearchCategory('${id}')" class="chip ${active===id?'active':''}">${label}</button>`).join('');
+}
+function setSearchCategory(id){ state.ui.searchCategory = id; saveState(); renderSearchChips(); renderSearchResults(); }
+
+function renderSearchResults(){
+  const q = (document.getElementById('search-input')?.value || '').trim().toLowerCase();
+  const cat = state.ui.searchCategory || 'all';
+  if(q && state.currentUser){
+    if(!state.searchHistory.some(h=>h.q===q)){
+      state.searchHistory.unshift({q, ts:Date.now()});
+      state.searchHistory = state.searchHistory.slice(0,30);
+      saveState();
+    }
+  }
+  const results = document.getElementById('search-results');
+  const items = [];
+  state.buildings.forEach(b=>{
+    const catMatch = cat==='all' || cat===b.category;
+    const nameMatch = !q || b.name.toLowerCase().includes(q) || (b.nameEn && b.nameEn.toLowerCase().includes(q));
+    if(catMatch && nameMatch){
+      items.push({type:'building', data:b});
+    }
+  });
+  if(cat==='all' || cat==='parking'){
+    state.lots.forEach(l=>{
+      const lotMatch = !q || l.name.toLowerCase().includes(q) || (l.nameEn && l.nameEn.toLowerCase().includes(q));
+      if(lotMatch) items.push({type:'lot', data:l});
+    });
+  }
+  if(!items.length){ results.innerHTML = `<p class="rounded-2xl bg-white dark:bg-[#161729] p-6 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">${t('no_search_results')}</p>`; return; }
+  results.innerHTML = items.map(it=>{
+    if(it.type==='building'){
+      const b = it.data;
+      return `<button type="button" onclick="goToBuilding('${b.id}')" class="parking-card flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] p-4 text-left shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845] hover:ring-[#6a5bdc]">
+        <span class="flex items-center gap-3"><span class="rounded-xl bg-[#f0edfc] dark:bg-[#252347] p-3 text-[#6a5bdc] dark:text-[#c4b5fd]"><i data-lucide="map-pin" class="h-5 w-5"></i></span>
+        <span><b class="text-[#262447] dark:text-[#c4b5fd]">${bName(b)}</b><small class="mt-1 block text-[#5a627a] dark:text-[#9da7c5]">${categoryLabel(b.category)}</small></span></span>
+        <i data-lucide="chevron-right" class="text-[#6a5bdc] dark:text-[#c4b5fd]"></i></button>`;
+    } else {
+      const l = it.data; const b = buildingById(l.buildingId);
+      return `<div class="parking-card flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
+        <span class="flex items-center gap-3"><span class="rounded-xl bg-[#eef1fc] dark:bg-[#252347] p-3 text-[#6a5bdc] dark:text-[#c4b5fd]"><i data-lucide="parking-circle" class="h-5 w-5"></i></span>
+        <span><b class="text-[#262447] dark:text-[#c4b5fd]">${lName(l)}</b><small class="mt-1 block text-[#5a627a] dark:text-[#9da7c5]">${t('near_prefix', {building: bName(b)})} · ${t('slots_left_prefix', {avail: l.available, cap: l.capacity})}</small></span></span>
+        <span class="flex items-center gap-1">
+          <button type="button" onclick="toggleFavorite('${l.id}')" aria-label="Favorite" class="rounded-lg p-2 hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]"><i data-lucide="heart" class="h-5 w-5 ${state.favorites.includes(l.id)?'text-[#ec4899] fill-[#ec4899]':'text-[#9da7c5] dark:text-[#6d7796]'}"></i></button>
+          <button type="button" onclick="goToBuilding('${l.buildingId}')" class="rounded-lg p-2 text-[#6a5bdc] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]"><i data-lucide="navigation" class="h-5 w-5"></i></button>
+        </span></div>`;
+    }
+  }).join('');
+  if(window.lucide) lucide.createIcons();
+}
+
+function goToBuilding(buildingId){
+  state.ui.destinationBuilding = buildingId;
+  state.ui.routeType = 'fast';
+  saveState();
+  showView('user-map');
+}
+
+function setRouteType(tType){ state.ui.routeType = tType; saveState(); renderRoute(); }
+
+function renderRoute(){
+  const view = document.getElementById('user-map');
+  if(!view.classList.contains('active')) return;
+  const building = buildingById(state.ui.destinationBuilding) || state.buildings[0];
+  if(!building) return;
+  const best = nearestLot(building);
+  document.getElementById('route-title').textContent = bName(building);
+  document.getElementById('route-type-fast').classList.toggle('active', state.ui.routeType==='fast');
+  document.getElementById('route-type-safe').classList.toggle('active', state.ui.routeType==='safe');
+  if(!best){ document.getElementById('route-description').textContent = t('no_lots_in_system'); return; }
+  const multiplier = state.ui.routeType==='safe' ? 1.35 : 1;
+  const dist = Math.round(best.dist * multiplier);
+  document.getElementById('route-description').textContent = t('route_rec_desc', {lot: lName(best.lot)});
+  document.getElementById('route-time').textContent = walkMinutes(dist);
+  document.getElementById('route-distance').textContent = dist;
+  document.getElementById('route-lot-name').textContent = lName(best.lot);
+  document.getElementById('route-finished').classList.add('hidden');
+  drawMap('route-map', {lot:best.lot, building, safe: state.ui.routeType==='safe'});
+}
+
+function finishRoute(){
+  const building = buildingById(state.ui.destinationBuilding);
+  const best = building ? nearestLot(building) : null;
+  if(best && best.lot.available>0){ best.lot.available -= 1; }
+  const lotTitle = best ? lName(best.lot) : '';
+  const msg = t('nav_finish_notif', {lot: lotTitle});
+  pushNotification(msg);
+  state.navHistory.unshift({buildingId: building?building.id:null, lotId: best?best.lot.id:null, ts:Date.now()});
+  saveState();
+  document.getElementById('route-finished').classList.remove('hidden');
+  renderAll();
+}
+
+function drawMap(svgId, route){
+  const svg = document.getElementById(svgId);
+  if(!svg) return;
+  const isDark = getEffectiveTheme() === 'dark';
+  const bldgDotFill = isDark ? '#D9B1E6' : '#262447';
+  const bldgTextFill = isDark ? '#9da7c5' : '#5a627a';
+  const lotDotFill = isDark ? '#96A4DD' : '#6a5bdc';
+  const routeLineStroke = isDark ? '#D9B1E6' : '#BF87C9';
+
+  let markers = '';
+  state.buildings.forEach(b=>{
+    const name = bName(b);
+    markers += `<circle cx="${b.lat}" cy="${b.lng}" r="2.4" fill="${bldgDotFill}"></circle><text x="${b.lat+3}" y="${b.lng+1}" font-size="3.2" font-weight="600" fill="${bldgTextFill}">${name.length>10?name.slice(0,9)+'…':name}</text>`;
+  });
+  state.lots.forEach(l=>{
+    markers += `<circle cx="${l.lat}" cy="${l.lng}" r="2.8" fill="${lotDotFill}"></circle>`;
+  });
+  let line = '';
+  if(route){
+    const mid = route.safe ? `${(route.lot.lat+route.building.lat)/2+8},${(route.lot.lng+route.building.lng)/2-8}` : '';
+    const path = route.safe
+      ? `M${route.lot.lat},${route.lot.lng} Q${mid} ${route.building.lat},${route.building.lng}`
+      : `M${route.lot.lat},${route.lot.lng} L${route.building.lat},${route.building.lng}`;
+    line = `<path d="${path}" fill="none" stroke="${routeLineStroke}" stroke-width="1.6" class="route-line"></path>
+      <circle cx="${route.building.lat}" cy="${route.building.lng}" r="3.4" fill="none" stroke="${routeLineStroke}" stroke-width="1.2"></circle>`;
+  }
+  svg.innerHTML = line + markers;
+}
+
+function toggleFavorite(lotId){
+  const i = state.favorites.indexOf(lotId);
+  if(i>=0) state.favorites.splice(i,1); else state.favorites.push(lotId);
+  saveState();
+  renderSearchResults();
+  renderFavorites();
+}
+
+function renderFavorites(){
+  const list = document.getElementById('favorites-list');
+  if(!state.favorites.length){ list.innerHTML = `<p class="rounded-2xl bg-white dark:bg-[#161729] p-6 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">${t('no_favorites')}</p>`; return; }
+  list.innerHTML = state.favorites.map(id=>{
+    const l = lotById(id); if(!l) return '';
+    const b = buildingById(l.buildingId);
+    return `<div class="flex items-center justify-between rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
+      <span class="flex items-center gap-3"><span class="rounded-xl bg-[#f0edfc] dark:bg-[#252347] p-3 text-[#6a5bdc] dark:text-[#c4b5fd]"><i data-lucide="heart" class="h-5 w-5 fill-[#ec4899] text-[#ec4899]"></i></span>
+      <span><b class="text-[#262447] dark:text-[#c4b5fd]">${lName(l)}</b><small class="mt-1 block text-[#5a627a] dark:text-[#9da7c5]">${t('near_prefix', {building: bName(b)})} · ${t('slots_left_prefix', {avail: l.available, cap: l.capacity})}</small></span></span>
+      <button type="button" onclick="goToBuilding('${l.buildingId}')" class="rounded-lg p-2 text-[#6a5bdc] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]"><i data-lucide="navigation" class="h-5 w-5"></i></button></div>`;
+  }).join('');
+  if(window.lucide) lucide.createIcons();
+}
+
+function toggleProfileEdit(){
+  const box = document.getElementById('profile-edit-box');
+  box.classList.toggle('hidden');
+  const user = currentUserObj();
+  if(user) document.getElementById('edit-name').value = user.name;
+}
+function saveProfile(){
+  const user = currentUserObj();
+  if(!user) return;
+  const name = document.getElementById('edit-name').value.trim();
+  const pw = document.getElementById('edit-password').value;
+  if(name) user.name = name;
+  if(pw) user.password = pw;
+  saveState();
+  document.getElementById('edit-password').value='';
+  document.getElementById('profile-saved').classList.remove('hidden');
+  renderProfile();
+}
+function uploadAvatar(evt){
+  const file = evt.target.files[0];
+  const user = currentUserObj();
+  if(!file || !user) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{ user.avatar = reader.result; saveState(); renderProfile(); renderDashboard(); };
+  reader.readAsDataURL(file);
+}
+function renderProfile(){
+  const user = currentUserObj();
+  document.getElementById('profile-name').textContent = user ? user.name : t('guest_user');
+  document.getElementById('profile-avatar').innerHTML = initialsAvatar(user);
+}
+
+function setHistoryTab(tab){ state.ui.historyTab = tab; saveState(); renderHistory(); }
+function renderHistory(){
+  document.getElementById('history-tab-nav').classList.toggle('active', state.ui.historyTab==='nav');
+  document.getElementById('history-tab-search').classList.toggle('active', state.ui.historyTab==='search');
+  const list = document.getElementById('history-list');
+  if(state.ui.historyTab==='nav'){
+    if(!state.navHistory.length){ list.innerHTML=`<p class="rounded-2xl bg-white dark:bg-[#161729] p-6 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">${t('no_parking_history')}</p>`; return; }
+    list.innerHTML = state.navHistory.map(h=>{
+      const b=buildingById(h.buildingId), l=lotById(h.lotId);
+      return `<div class="rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
+        <p class="font-bold text-[#262447] dark:text-[#c4b5fd]">${l?lName(l):'-'}</p>
+        <p class="text-sm text-[#5a627a] dark:text-[#9da7c5]">${t('history_to', {dest: b?bName(b):'-'})} · ${fmtTime(h.ts)}</p>
+      </div>`;
+    }).join('');
+  } else {
+    if(!state.searchHistory.length){ list.innerHTML=`<p class="rounded-2xl bg-white dark:bg-[#161729] p-6 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">${t('no_search_history')}</p>`; return; }
+    list.innerHTML = state.searchHistory.map(h=>`<div class="flex items-center justify-between rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]"><span class="font-medium">${h.q}</span><span class="text-xs text-[#8f9bb3] dark:text-[#6d7796]">${fmtTime(h.ts)}</span></div>`).join('');
+  }
+}
+
+function renderReview(){
+  const stars = document.getElementById('star-input');
+  stars.innerHTML = [1,2,3,4,5].map(n=>`<button type="button" onclick="setStars(${n})" class="star-btn ${n<=state.ui.reviewStars?'active':''} rounded-lg p-1"><i data-lucide="star" class="h-6 w-6 ${n<=state.ui.reviewStars?'text-amber-500 fill-amber-500':'text-[#d5deed] dark:text-[#2a2d4a]'}"></i></button>`).join('');
+  const avgBox = document.getElementById('review-average');
+  const countBox = document.getElementById('review-count');
+  if(state.reviews.length){
+    const avg = (state.reviews.reduce((s,r)=>s+r.stars,0)/state.reviews.length).toFixed(1);
+    avgBox.textContent = avg;
+    countBox.textContent = t('from_reviews_count', {count: state.reviews.length});
+  } else { avgBox.textContent='-'; countBox.textContent = t('no_reviews'); }
+  const list = document.getElementById('review-list');
+  list.innerHTML = state.reviews.map(r=>`<div class="rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:border-[#262845]">
+    <div class="flex items-center gap-1 text-amber-500">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div>
+    <p class="mt-1 text-sm text-[#181b2e] dark:text-[#e0e4f7]">${r.text||''}</p>
+    <p class="mt-1 text-xs text-[#8f9bb3] dark:text-[#6d7796]">${r.name} · ${fmtTime(r.ts)}</p></div>`).join('');
+  if(window.lucide) lucide.createIcons();
+}
+function setStars(n){ state.ui.reviewStars = n; saveState(); renderReview(); }
+function submitReview(){
+  const user = currentUserObj();
+  const text = document.getElementById('review-text').value.trim();
+  state.reviews.unshift({stars: state.ui.reviewStars, text, name: user?user.name:t('guest_user'), ts:Date.now()});
+  document.getElementById('review-text').value='';
+  saveState();
+  renderReview();
+  renderAdmin();
+}
+
+function renderNotifications(){
+  const list = document.getElementById('notifications-list');
+  if(!state.notifications.length){ list.innerHTML = `<p class="rounded-2xl bg-white dark:bg-[#161729] p-6 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">${t('no_notifications')}</p>`; return; }
+  list.innerHTML = state.notifications.map(n=>`<div class="rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]"><p class="font-semibold text-[#262447] dark:text-[#c4b5fd]">${n.text}</p><p class="mt-1 text-xs text-[#8f9bb3] dark:text-[#6d7796]">${fmtTime(n.ts)}</p></div>`).join('');
+  state.notifications.forEach(n=>n.read=true);
+  saveState();
+}
+
+/* ==========================================================================
+   ADMIN
+   ========================================================================== */
+function populateBuildingSelect(){
+  const sel = document.getElementById('new-lot-building');
+  if(!sel) return;
+  sel.innerHTML = state.buildings.map(b=>`<option value="${b.id}">${bName(b)}</option>`).join('');
+}
+function renderAdmin(){
+  document.getElementById('admin-lot-count').textContent = state.lots.length;
+  document.getElementById('admin-total').textContent = totalAvailable();
+  document.getElementById('admin-building-count').textContent = state.buildings.length;
+  populateBuildingSelect();
+  const list = document.getElementById('admin-lot-list');
+  if(!state.lots.length){ list.innerHTML = `<p class="text-center text-[#5a627a] dark:text-[#9da7c5]">${t('no_lots_in_system')}</p>`; }
+  else {
+    list.innerHTML = state.lots.map(l=>{
+      const b = buildingById(l.buildingId);
+      return `<div class="flex items-center justify-between rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 shadow-sm">
+        <div><p class="font-bold text-[#262447] dark:text-[#c4b5fd]">${lName(l)}</p><p class="text-xs text-[#8f9bb3] dark:text-[#6d7796]">${t('near_prefix', {building: b?bName(b):'-'})} · ${t('from_total', {cap: l.capacity})}</p></div>
+        <div class="flex items-center gap-3">
+          <button type="button" onclick="adjustLot('${l.id}',-1)" class="rounded-lg border border-[#d5deed] dark:border-[#2a2d4a] p-2 hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" aria-label="Decrease available spots"><i data-lucide="minus" class="h-4 w-4"></i></button>
+          <b class="w-7 text-center font-bold text-[#6a5bdc] dark:text-[#c4b5fd]">${l.available}</b>
+          <button type="button" onclick="adjustLot('${l.id}',1)" class="rounded-lg border border-[#d5deed] dark:border-[#2a2d4a] p-2 hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" aria-label="Increase available spots"><i data-lucide="plus" class="h-4 w-4"></i></button>
+          <button type="button" onclick="deleteLot('${l.id}')" class="rounded-lg border border-[#fecdd3] dark:border-[#4c1d24] p-2 text-[#e11d48] dark:text-[#fb7185] hover:bg-[#fff1f2] dark:hover:bg-[#251619]" aria-label="Delete lot"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
+        </div></div>`;
+    }).join('');
+  }
+  const reviewList = document.getElementById('admin-review-list');
+  if(!state.reviews.length){ reviewList.innerHTML = `<p class="text-center text-[#5a627a] dark:text-[#9da7c5]">${t('no_reviews')}</p>`; }
+  else {
+    reviewList.innerHTML = state.reviews.slice(0,5).map(r=>`<div class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 shadow-sm"><div class="text-amber-500">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div><p class="mt-1 text-sm text-[#181b2e] dark:text-[#e0e4f7]">${r.text||''}</p></div>`).join('');
+  }
+  if(window.lucide) lucide.createIcons();
+}
+
+function adjustLot(id,change){
+  const lot = lotById(id);
+  if(!lot) return;
+  lot.available = Math.max(0, Math.min(lot.capacity, lot.available+change));
+  saveState();
+  renderAll();
+}
+
+async function addLot(){
+  const name = document.getElementById('new-lot-name').value.trim();
+  const buildingId = document.getElementById('new-lot-building').value;
+  const capacity = Math.max(1, parseInt(document.getElementById('new-lot-capacity').value,10) || 20);
+  const msg = document.getElementById('admin-message');
+  if(!name || !buildingId){ msg.textContent = t('fill_lot_fields'); msg.classList.remove('hidden'); return; }
+  const b = buildingById(buildingId);
+  const id = 'lot-'+Date.now();
+  state.lots.push({id, name, nameEn: name, buildingId, capacity, available: capacity, lat: b.lat+(Math.random()*4-2), lng: b.lng+(Math.random()*4-2)});
+  saveState();
+  document.getElementById('new-lot-name').value='';
+  msg.textContent = t('lot_added_success');
+  msg.classList.remove('hidden');
+  renderAll();
+}
+
+function deleteLot(id){
+  const lot = lotById(id);
+  if(!lot) return;
+  askConfirm(t('confirm_delete_lot', {name: lName(lot)})).then(ok=>{
+    if(!ok) return;
+    state.lots = state.lots.filter(l=>l.id!==id);
+    state.favorites = state.favorites.filter(f=>f!==id);
+    saveState();
+    renderAll();
+  });
+}
+
+function askConfirm(message){
+  document.getElementById('confirm-message').textContent = message;
+  const dialog = document.getElementById('confirm-dialog');
+  dialog.classList.remove('hidden');
+  dialog.classList.add('flex');
+  return new Promise(resolve=>{ confirmResolver = resolve; });
+}
+function closeConfirm(result){
+  const dialog = document.getElementById('confirm-dialog');
+  dialog.classList.add('hidden');
+  dialog.classList.remove('flex');
+  if(confirmResolver) confirmResolver(result);
+  confirmResolver = null;
+}
+
+/* ==========================================================================
+   BOOTSTRAP
+   ========================================================================== */
+document.addEventListener('DOMContentLoaded', ()=>{
+  applyTheme();
+  updateLanguageUI();
+  if(!state.ui.destinationBuilding && state.buildings.length) state.ui.destinationBuilding = state.buildings[0].id;
+  renderAll();
+});
+</script>
+</body>
+</html>
