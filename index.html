@@ -534,7 +534,7 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
     </div>
     <svg id="route-map" viewBox="0 0 100 100" class="mt-4 h-56 w-full rounded-2xl grid-map border border-[#e2e8f4] dark:border-[#262845]"></svg>
     <div class="mt-4 grid grid-cols-3 divide-x divide-[#e2e8f4] dark:divide-[#262845] rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] text-center shadow-sm">
-      <div class="p-4"><b id="route-time" class="block text-xl text-[#262447] dark:text-[#c4b5fd]">-</b><span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="walk_minutes">นาทีเดิน</span></div>
+      <div class="p-4"><b id="route-time" class="block text-xl text-[#262447] dark:text-[#c4b5fd]">-</b><span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="walk_minutes">นาที่ที่ใช้เดินทาง</span></div>
       <div class="p-4"><b id="route-distance" class="block text-xl text-[#262447] dark:text-[#c4b5fd]">-</b><span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="meters_unit">เมตร</span></div>
       <div class="p-4"><i data-lucide="car-front" class="mx-auto h-5 w-5 text-[#6a5bdc] dark:text-[#c4b5fd]"></i><span id="route-lot-name" class="mt-1 block text-xs text-[#5a627a] dark:text-[#9da7c5]">-</span></div>
     </div>
@@ -970,7 +970,7 @@ const i18n = {
     route_rec_default: "ระบบแนะนำลานจอดรถที่ใกล้ที่สุดให้แล้ว",
     route_fast: "เส้นทางที่ใกล้ที่สุด",
     route_safe: "เส้นทางที่ปลอดภัยที่สุด",
-    walk_minutes: "นาทีเดิน",
+    walk_minutes: "นาที่ที่ใช้เดินทาง",
     meters_unit: "เมตร",
     finish_nav: "ถึงลานจอดรถแล้ว / จบการนำทาง",
     finish_success: "บันทึกการจอดรถแล้ว — ขอบคุณที่ใช้บริการครับ/ค่ะ",
@@ -1199,7 +1199,7 @@ const i18n = {
     route_rec_default: "Nearest lot recommended by system",
     route_fast: "Fastest Route",
     route_safe: "Safest Route",
-    walk_minutes: "min walk",
+    walk_minutes: "min",
     meters_unit: "meters",
     finish_nav: "Arrived at Lot / Finish Route",
     finish_success: "Parking recorded. Thank you for using our service!",
