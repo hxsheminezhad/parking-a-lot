@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#262447">
-<title>Parking-A-Lot Version 0.9.0 BETA TEST</title>
+<title>Parking-A-Lot Version 0.9.5 BETA TEST</title>
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script>
   tailwind.config = {
@@ -106,81 +106,50 @@ html.dark .settings-pill button{color:#9da7c5}
 .settings-pill button.active{background:#fff;color:#262447;box-shadow:0 2px 6px rgba(0,0,0,.1)}
 html.dark .settings-pill button.active{background:#8c7ef0;color:#0e0f1a;box-shadow:0 2px 8px rgba(0,0,0,.35)}
 
-/* ==========================================================================
-   LANDING MODERN TRANSITIONS & MICRO-INTERACTIONS
-   ========================================================================== */
-@keyframes heroFadeUp {
-  0% {
-    opacity: 0;
-    transform: translate3d(0, 24px, 0);
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
+/* Modern Transitions & Skeleton Animations */
+@keyframes heroFadeUp { 0%{opacity:0;transform:translate3d(0,24px,0)} 100%{opacity:1;transform:translate3d(0,0,0)} }
+@keyframes heroFadeScale { 0%{opacity:0;transform:translate3d(0,20px,0) scale(0.96)} 100%{opacity:1;transform:translate3d(0,0,0) scale(1)} }
+@keyframes subtleFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+@keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+
+.skeleton{
+  background: linear-gradient(90deg, #edf2fb 25%, #f8faff 50%, #edf2fb 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
 }
-@keyframes heroFadeScale {
-  0% {
-    opacity: 0;
-    transform: translate3d(0, 20px, 0) scale(0.96);
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-}
-@keyframes subtleFloat {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-4px);
-  }
+html.dark .skeleton{
+  background: linear-gradient(90deg, #1b1d33 25%, #272a48 50%, #1b1d33 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
 }
 
-.hero-anim-1 { animation: heroFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both; }
-.hero-anim-2 { animation: heroFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both; }
-.hero-anim-3 { animation: heroFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both; }
-.hero-anim-4 { animation: heroFadeUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both; }
-.hero-card-anim { animation: heroFadeScale 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both; }
-.footer-anim { animation: heroFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both; }
+.hero-anim-1 { animation: heroFadeUp 0.6s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
+.hero-anim-2 { animation: heroFadeUp 0.65s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
+.hero-anim-3 { animation: heroFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s both; }
+.hero-anim-4 { animation: heroFadeUp 0.75s cubic-bezier(0.16,1,0.3,1) 0.35s both; }
+.hero-card-anim { animation: heroFadeScale 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s both; }
+.footer-anim { animation: heroFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.45s both; }
 
 .interactive-btn {
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+  transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s cubic-bezier(0.16,1,0.3,1), background-color 0.2s ease;
   will-change: transform;
 }
-.interactive-btn:hover {
-  transform: translateY(-2px) scale(1.015);
-}
-.interactive-btn:active {
-  transform: translateY(0) scale(0.98);
-}
+.interactive-btn:hover { transform: translateY(-2px) scale(1.015); }
+.interactive-btn:active { transform: translateY(0) scale(0.98); }
 
 .stat-card-anim {
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+  transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s cubic-bezier(0.16,1,0.3,1), border-color 0.2s ease;
   will-change: transform;
 }
-.stat-card-anim:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 24px -6px rgba(106, 91, 220, 0.15);
-}
-html.dark .stat-card-anim:hover {
-  box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.45);
-}
+.stat-card-anim:hover { transform: translateY(-3px); box-shadow: 0 12px 24px -6px rgba(106,91,220,0.15); }
+html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45); }
 
-.feature-item-hover {
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
-}
-.feature-item-hover:hover {
-  transform: translateX(4px);
-}
-
-.floating-icon {
-  animation: subtleFloat 3.5s ease-in-out infinite;
-}
+.feature-item-hover { transition: transform 0.2s cubic-bezier(0.16,1,0.3,1), background-color 0.2s ease; }
+.feature-item-hover:hover { transform: translateX(4px); }
+.floating-icon { animation: subtleFloat 3.5s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-anim-1, .hero-anim-2, .hero-anim-3, .hero-anim-4, .hero-card-anim, .footer-anim, .floating-icon {
+  .hero-anim-1, .hero-anim-2, .hero-anim-3, .hero-anim-4, .hero-card-anim, .footer-anim, .floating-icon, .skeleton {
     animation: none !important;
     transform: none !important;
   }
@@ -189,14 +158,81 @@ html.dark .stat-card-anim:hover {
 </head>
 <body class="w-full bg-[#f6f8fd] dark:bg-[#0e0f1a] text-[#181b2e] dark:text-[#f1f3fc]">
 
-<!-- QUICK GLOBAL CONTROLS HEADER BAR (Available on sub-pages or via headers) -->
+<!-- GLOBAL NOTIFICATION TOAST / ERROR BANNER -->
+<div id="toast-banner" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden max-w-md w-[92%] rounded-2xl p-4 shadow-2xl transition-all duration-300 transform border">
+  <div class="flex items-start gap-3">
+    <div id="toast-icon-wrap" class="mt-0.5 rounded-full p-1 text-white"></div>
+    <div class="flex-1">
+      <h4 id="toast-title" class="font-bold text-sm">แจ้งเตือน</h4>
+      <p id="toast-message" class="text-xs mt-0.5 leading-relaxed"></p>
+    </div>
+    <button type="button" onclick="hideToast()" class="rounded-lg p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"><i data-lucide="x" class="h-4 w-4"></i></button>
+  </div>
+</div>
+
+<!-- GOOGLE SHEETS & QUICK SETTINGS MODAL -->
 <div id="quick-controls-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-  <div class="w-full max-w-sm rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
+  <div class="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
     <div class="flex items-center justify-between pb-4 border-b border-[#edf1f8] dark:border-[#262845]">
-      <h3 class="font-bold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="quick_settings_title">การตั้งค่าด่วน</h3>
+      <div class="flex items-center gap-2">
+        <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-[#6a5bdc] text-white"><i data-lucide="sliders" class="h-4 w-4"></i></span>
+        <h3 class="font-bold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="quick_settings_title">การตั้งค่าระบบ & Google Sheets</h3>
+      </div>
       <button type="button" onclick="toggleQuickSettings(false)" class="rounded-full p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0edfc] dark:hover:bg-[#252347]"><i data-lucide="x" class="h-5 w-5"></i></button>
     </div>
-    <div class="mt-5 space-y-5">
+    
+    <div class="mt-5 space-y-6">
+      <!-- GOOGLE SHEETS DATABASE CONNECTOR -->
+      <div id="modal-sheets-db-section" class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-[#f8fafd] dark:bg-[#1c1d33] p-4 space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i data-lucide="table" class="h-4 w-4 text-[#6a5bdc] dark:text-[#c4b5fd]"></i>
+            <span class="text-xs font-bold uppercase tracking-wider text-[#262447] dark:text-[#c4b5fd]" data-i18n="sheets_db_title">Google Sheets Database</span>
+          </div>
+          <span id="db-status-badge" class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300">
+            <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
+            <span id="db-status-text">โหมดออฟไลน์ / สำรองข้อมูลในเครื่อง</span>
+          </span>
+        </div>
+        
+        <div>
+          <label class="block text-[11px] font-semibold text-[#5a627a] dark:text-[#9da7c5] mb-1" data-i18n="sheets_url_label">Google Apps Script Web App URL</label>
+          <input id="sheets-url-input" type="url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-3 py-2 text-xs font-mono focus:border-[#6a5bdc]">
+        </div>
+        
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" onclick="testAndSaveSheetsUrl()" id="btn-test-db" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl bg-[#6a5bdc] py-2 text-xs font-bold text-white shadow-sm hover:bg-[#5949d0]">
+            <i data-lucide="check-circle" class="h-3.5 w-3.5"></i>
+            <span data-i18n="test_and_save_btn">บันทึก & ทดสอบ</span>
+          </button>
+          <button type="button" onclick="syncWithSheets(true)" id="btn-sync-db" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-3 py-2 text-xs font-bold hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]">
+            <i data-lucide="refresh-cw" class="h-3.5 w-3.5" id="sync-icon"></i>
+            <span data-i18n="sync_now_btn">ซิงค์ข้อมูล</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" onclick="testWriteToSheets()" id="btn-test-write" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl border border-[#6a5bdc] bg-[#f0edfc] dark:bg-[#252347] py-2 text-xs font-bold text-[#6a5bdc] dark:text-[#c4b5fd] hover:bg-[#e4ddfa] transition">
+            <i data-lucide="pencil-line" class="h-3.5 w-3.5"></i>
+            <span data-i18n="test_write_btn">ทดสอบเขียนลง Sheet</span>
+          </button>
+          <button type="button" onclick="initSheetsStructure()" id="btn-init-sheets" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] py-2 text-xs font-bold hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038] transition">
+            <i data-lucide="layers" class="h-3.5 w-3.5"></i>
+            <span data-i18n="init_sheets_btn">สร้างตาราง 8 ชีต</span>
+          </button>
+        </div>
+
+        <p id="db-latency-info" class="text-[11px] text-[#5a627a] dark:text-[#9da7c5]"></p>
+
+        <!-- SETUP INSTRUCTION ACCORDION -->
+        <details class="text-[11px] text-[#5a627a] dark:text-[#9da7c5] pt-1">
+          <summary class="cursor-pointer font-bold text-[#6a5bdc] dark:text-[#c4b5fd] hover:underline" data-i18n="how_to_setup_sheets">📖 วิธีเชื่อมต่อ Google Sheets ด้วยตนเอง</summary>
+          <div class="mt-2 space-y-2 pl-2 border-l-2 border-[#6a5bdc] dark:border-[#8c7ef0]" data-i18n-html="how_to_setup_sheets_body">
+          </div>
+        </details>
+      </div>
+
+      <!-- LANGUAGE SELECTOR -->
       <div>
         <label class="block text-xs font-bold uppercase tracking-wider text-[#5a627a] dark:text-[#9da7c5] mb-2" data-i18n="language_label">ภาษา / Language</label>
         <div class="grid grid-cols-2 gap-2">
@@ -208,6 +244,8 @@ html.dark .stat-card-anim:hover {
           </button>
         </div>
       </div>
+
+      <!-- THEME SELECTOR -->
       <div>
         <label class="block text-xs font-bold uppercase tracking-wider text-[#5a627a] dark:text-[#9da7c5] mb-2" data-i18n="theme_label">ธีมการแสดงผล / Appearance</label>
         <div class="grid grid-cols-3 gap-2">
@@ -226,7 +264,8 @@ html.dark .stat-card-anim:hover {
         </div>
       </div>
     </div>
-    <button type="button" onclick="toggleQuickSettings(false)" class="mt-6 w-full rounded-xl bg-[#6a5bdc] py-3 text-sm font-bold text-white shadow-md hover:bg-[#5949d0] transition" data-i18n="done_btn">เสร็จสิ้น</button>
+    
+    <button type="button" onclick="toggleQuickSettings(false)" class="interactive-btn mt-6 w-full rounded-xl bg-[#6a5bdc] py-3 text-sm font-bold text-white shadow-md hover:bg-[#5949d0] transition" data-i18n="done_btn">เสร็จสิ้น</button>
   </div>
 </div>
 
@@ -243,13 +282,16 @@ html.dark .stat-card-anim:hover {
         <button type="button" onclick="setLanguage('th')" id="landing-lang-th" class="active">TH</button>
         <button type="button" onclick="setLanguage('en')" id="landing-lang-en">EN</button>
       </div>
+
       <!-- Theme Quick Toggle -->
       <button type="button" onclick="cycleTheme()" id="landing-theme-toggle" aria-label="Toggle Theme" class="flex h-9 w-9 items-center justify-center rounded-full bg-[#e9edf8] dark:bg-[#22243d] text-[#262447] dark:text-[#c4b5fd] hover:opacity-80 transition">
         <i data-lucide="sun" class="h-4 w-4" id="landing-theme-icon"></i>
       </button>
+
       <div class="hidden gap-2 md:flex">
+        <button type="button" onclick="loginAsGuest()" class="rounded-full bg-[#e9edf8] dark:bg-[#22243d] px-4 py-2 text-sm font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#d8e1f5] dark:hover:bg-[#2e3153] transition interactive-btn" data-i18n="guest_nav_btn">ผู้เยี่ยมชม</button>
         <button type="button" onclick="showView(state.currentUser?'user-dashboard':'auth-login')" class="rounded-full px-4 py-2 text-sm font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f0edfc] dark:hover:bg-[#252347] transition interactive-btn" data-i18n="login_nav">เข้าใช้งาน</button>
-        <button type="button" onclick="showView('admin-dashboard')" class="rounded-full border border-[#262447] dark:border-[#c4b5fd] px-4 py-2 text-sm font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f0edfc] dark:hover:bg-[#252347] transition interactive-btn" data-i18n="admin_nav">สำหรับผู้ดูแล</button>
+        <button type="button" id="landing-admin-nav-btn" onclick="showView('admin-dashboard')" class="rounded-full border border-[#262447] dark:border-[#c4b5fd] px-4 py-2 text-sm font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f0edfc] dark:hover:bg-[#252347] transition interactive-btn" data-i18n="admin_nav">สำหรับผู้ดูแล</button>
       </div>
     </div>
   </header>
@@ -265,7 +307,8 @@ html.dark .stat-card-anim:hover {
       
       <div class="hero-anim-3 mt-8 flex flex-wrap gap-3">
         <button type="button" onclick="showView(state.currentUser?'user-dashboard':'auth-login')" class="interactive-btn inline-flex items-center gap-2 rounded-xl bg-[#6a5bdc] px-6 py-4 font-bold text-white shadow-lg shadow-indigo-500/25 hover:bg-[#5949d0] transition"><i data-lucide="navigation" class="h-5 w-5"></i><span data-i18n="start_finding">เริ่มหาที่จอด</span></button>
-        <button type="button" onclick="showView('admin-dashboard')" class="interactive-btn inline-flex items-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-6 py-4 font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038] transition"><i data-lucide="layout-dashboard" class="h-5 w-5"></i><span data-i18n="manage_lots">จัดการลานจอด</span></button>
+        <button type="button" onclick="loginAsGuest()" class="interactive-btn inline-flex items-center gap-2 rounded-xl border border-[#6a5bdc] bg-[#f0edfc] dark:bg-[#252347] px-5 py-4 font-bold text-[#6a5bdc] dark:text-[#c4b5fd] hover:bg-[#e4ddfa] transition"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="guest_btn">ใช้งานในฐานะผู้เยี่ยมชม</span></button>
+        <button type="button" id="landing-manage-lots-btn" onclick="showView('admin-dashboard')" class="interactive-btn inline-flex items-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-6 py-4 font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038] transition"><i data-lucide="layout-dashboard" class="h-5 w-5"></i><span data-i18n="manage_lots">จัดการลานจอด</span></button>
       </div>
 
       <div class="hero-anim-4 mt-10 grid grid-cols-3 gap-4 rounded-2xl bg-white dark:bg-[#161729] p-5 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
@@ -312,7 +355,7 @@ html.dark .stat-card-anim:hover {
       <div class="flex items-center gap-2">
         <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-[#262447] dark:bg-[#6a5bdc] text-white text-[10px] font-bold"><i data-lucide="car-front" class="h-3.5 w-3.5"></i></span>
         <span class="font-extrabold text-[#262447] dark:text-[#c4b5fd]">Parking-A-Lot</span>
-        <span class="text-[#8f9bb3] dark:text-[#6d7796]">• Version 0.9.0 BETA</span>
+        <span class="text-[#8f9bb3] dark:text-[#6d7796]">• Version 0.5.4 BETA</span>
       </div>
       <a href="https://docs.google.com/document/d/1QQ2nvePn2MsxNwh_2KmTXQbrHRarNDiYpR3ptZoC5ls/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 font-semibold text-[#6a5bdc] dark:text-[#c4b5fd] hover:underline">
         <i data-lucide="file-text" class="h-3.5 w-3.5"></i>
@@ -343,14 +386,30 @@ html.dark .stat-card-anim:hover {
         <input id="login-password" type="password" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 shadow-sm focus:border-[#6a5bdc]">
       </div>
       <p id="login-error" class="hidden text-sm font-semibold text-[#e11d48] dark:text-[#fb7185]"></p>
-      <button type="button" onclick="login()" class="interactive-btn w-full rounded-xl bg-[#6a5bdc] py-3.5 font-bold text-white hover:bg-[#5949d0] transition shadow-md shadow-indigo-500/20" data-i18n="login_btn">เข้าสู่ระบบ</button>
+      
+      <button type="button" id="login-submit-btn" onclick="login()" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl bg-[#6a5bdc] py-3.5 font-bold text-white hover:bg-[#5949d0] transition shadow-md shadow-indigo-500/20">
+        <i data-lucide="log-in" class="h-4 w-4" id="login-btn-icon"></i>
+        <span data-i18n="login_btn" id="login-btn-text">เข้าสู่ระบบ</span>
+      </button>
+
+      <div class="relative flex py-1 items-center">
+        <div class="flex-grow border-t border-[#d5deed] dark:border-[#2a2d4a]"></div>
+        <span class="flex-shrink mx-3 text-xs text-[#8f9bb3] dark:text-[#6d7796] font-bold uppercase" data-i18n="guest_or_divider">หรือ</span>
+        <div class="flex-grow border-t border-[#d5deed] dark:border-[#2a2d4a]"></div>
+      </div>
+
+      <button type="button" id="login-guest-btn" onclick="loginAsGuest()" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] py-3 font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038] transition">
+        <i data-lucide="user" class="h-4 w-4"></i>
+        <span data-i18n="guest_btn">ใช้งานในฐานะผู้เยี่ยมชม</span>
+      </button>
+
       <p class="text-center text-sm text-[#5a627a] dark:text-[#9da7c5]">
         <span data-i18n="no_account">ยังไม่มีบัญชี?</span> 
         <button type="button" onclick="showView('auth-register')" class="font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" data-i18n="register_link">สมัครสมาชิก</button>
       </p>
 
       <div class="mt-6 rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-[#f0edfc]/50 dark:bg-[#252347]/40 p-4 text-xs text-[#5a627a] dark:text-[#9da7c5]">
-        <span class="font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" data-i18n="quick_test_hint">💡 สำหรับทดสอบด่วน:</span> <span data-i18n="quick_test_desc">คุณสามารถใช้ชื่อผู้ใช้ <b>Project Alpine</b> รหัสผ่าน <b>orchid</b> หรือสร้างบัญชีใหม่ตามต้องการ</span>
+        <span class="font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" data-i18n="quick_test_hint">💡 สำหรับทดสอบด่วน:</span> <span data-i18n-html="quick_test_desc">คุณสามารถใช้ <b>Ardeshir</b> (รหัสผ่าน <b>hassanzxdeh</b>) หรือ <b>Project Alpine</b> (รหัสผ่าน <b>orchid</b>) หรือใช้งานแบบผู้เยี่ยมชม</span>
       </div>
     </div>
     <p class="mt-10 text-center text-xs text-[#8f9bb3] dark:text-[#6d7796]">Developed by ให้รถในวงเวียนไปก่อน</p>
@@ -377,7 +436,11 @@ html.dark .stat-card-anim:hover {
         <input id="reg-password" type="password" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 shadow-sm">
       </div>
       <p id="reg-error" class="hidden text-sm font-semibold text-[#e11d48] dark:text-[#fb7185]"></p>
-      <button type="button" onclick="register()" class="interactive-btn w-full rounded-xl bg-[#6a5bdc] py-3.5 font-bold text-white hover:bg-[#5949d0] transition shadow-md shadow-indigo-500/20" data-i18n="register_btn">สมัครสมาชิก</button>
+      
+      <button type="button" id="reg-submit-btn" onclick="register()" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl bg-[#6a5bdc] py-3.5 font-bold text-white hover:bg-[#5949d0] transition shadow-md shadow-indigo-500/20">
+        <i data-lucide="user-plus" class="h-4 w-4" id="reg-btn-icon"></i>
+        <span data-i18n="register_btn" id="reg-btn-text">สมัครสมาชิก</span>
+      </button>
     </div>
     <p class="mt-10 text-center text-xs text-[#8f9bb3] dark:text-[#6d7796]">Developed by ให้รถในวงเวียนไปก่อน</p>
   </div>
@@ -399,20 +462,33 @@ html.dark .stat-card-anim:hover {
     </div>
   </header>
   <main class="mx-auto max-w-6xl px-5 pb-28 pt-4">
-    <p class="text-sm font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" id="dashboard-greeting">สวัสดี</p>
-    <h1 class="mt-1 text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="dashboard_headline">ที่จอดรถวันนี้เป็นอย่างไรบ้าง</h1>
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" id="dashboard-greeting">สวัสดี</p>
+        <h1 class="mt-1 text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="dashboard_headline">ที่จอดรถวันนี้เป็นอย่างไรบ้าง</h1>
+      </div>
+      <button type="button" onclick="syncWithSheets(false)" class="interactive-btn flex items-center gap-1 text-xs font-bold text-[#6a5bdc] dark:text-[#c4b5fd] bg-white dark:bg-[#161729] border border-[#e2e8f4] dark:border-[#262845] rounded-xl px-3 py-2 shadow-sm">
+        <i data-lucide="rotate-cw" class="h-3.5 w-3.5"></i>
+        <span data-i18n="refresh_btn">รีเฟรช</span>
+      </button>
+    </div>
+
+    <!-- DASHBOARD STATS WITH SKELETON LOADING -->
     <div class="mt-6 grid grid-cols-3 gap-3" id="dashboard-lot-stats"></div>
+
     <div class="mt-6 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
       <p class="text-sm font-bold" data-i18n="overview_map_title">แผนที่ลานจอดรถโดยรวม</p>
       <p class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="overview_map_sub">ตำแหน่งลานจอดรถเทียบกับอาคารทั้งหมด</p>
       <svg id="overview-map" viewBox="0 0 100 100" class="mt-3 h-48 w-full rounded-2xl grid-map"></svg>
     </div>
+
     <div class="mt-6 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
       <p class="text-sm font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" data-i18n="recommended_for_you">แนะนำสำหรับคุณ</p>
       <h2 class="mt-1 font-bold" data-i18n="nearest_lot_now">ลานจอดรถที่ใกล้ที่สุดตอนนี้</h2>
       <div id="recommend-box" class="mt-4 rounded-2xl bg-[#f1f4fb] dark:bg-[#1c1d33] p-4 border border-[#e2e8f4] dark:border-[#262845]"></div>
       <button type="button" onclick="showView('user-search')" class="interactive-btn mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#6a5bdc] py-3.5 font-bold text-white hover:bg-[#5949d0] transition shadow-md shadow-indigo-500/20"><i data-lucide="navigation" class="h-4 w-4"></i><span data-i18n="select_destination">เลือกอาคารปลายทาง</span></button>
     </div>
+
     <p class="mt-8 text-center text-xs text-[#8f9bb3] dark:text-[#6d7796]">Developed by ให้รถในวงเวียนไปก่อน</p>
   </main>
   <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] py-2 backdrop-blur">
@@ -462,7 +538,12 @@ html.dark .stat-card-anim:hover {
       <div class="p-4"><b id="route-distance" class="block text-xl text-[#262447] dark:text-[#c4b5fd]">-</b><span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="meters_unit">เมตร</span></div>
       <div class="p-4"><i data-lucide="car-front" class="mx-auto h-5 w-5 text-[#6a5bdc] dark:text-[#c4b5fd]"></i><span id="route-lot-name" class="mt-1 block text-xs text-[#5a627a] dark:text-[#9da7c5]">-</span></div>
     </div>
-    <button type="button" onclick="finishRoute()" class="interactive-btn mt-5 w-full rounded-xl bg-[#6a5bdc] py-4 font-bold text-white shadow-lg shadow-indigo-500/20 hover:bg-[#5949d0] transition" data-i18n="finish_nav">ถึงลานจอดรถแล้ว / จบการนำทาง</button>
+    
+    <button type="button" id="finish-route-btn" onclick="finishRoute()" class="interactive-btn mt-5 w-full flex items-center justify-center gap-2 rounded-xl bg-[#6a5bdc] py-4 font-bold text-white shadow-lg shadow-indigo-500/20 hover:bg-[#5949d0] transition">
+      <i data-lucide="check" class="h-5 w-5" id="finish-btn-icon"></i>
+      <span data-i18n="finish_nav" id="finish-btn-text">ถึงลานจอดรถแล้ว / จบการนำทาง</span>
+    </button>
+    
     <p id="route-finished" class="mt-4 hidden rounded-xl bg-[#f0edfc] dark:bg-[#252347] p-4 text-center font-semibold text-[#6a5bdc] dark:text-[#D9B1E6] border border-[#d5deed] dark:border-[#262845]" aria-live="polite" data-i18n="finish_success">บันทึกการจอดรถแล้ว — ขอบคุณที่ใช้บริการครับ/ค่ะ</p>
   </div>
 </section>
@@ -497,13 +578,62 @@ html.dark .stat-card-anim:hover {
           <input type="file" accept="image/*" class="hidden" onchange="uploadAvatar(event)">
         </label>
         <div>
-          <h1 id="profile-name" class="text-xl font-extrabold text-white">-</h1>
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 id="profile-name" class="text-xl font-extrabold text-white">-</h1>
+            <span id="profile-role-badge" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#6a5bdc] text-white shadow-sm">
+              <i data-lucide="user-check" class="h-3 w-3"></i>
+              <span data-i18n="role_member">สมาชิกทั่วไป</span>
+            </span>
+          </div>
           <p class="mt-1 text-sm text-[#D9B1E6]" id="profile-role" data-i18n="role_kku">นักศึกษา / บุคลากร มหาวิทยาลัยขอนแก่น</p>
         </div>
       </div>
     </div>
   </div>
   <div class="mx-auto max-w-3xl space-y-4 px-5 py-6 pb-28">
+
+    <!-- GUEST PROMPT BANNER (Visible only to guests) -->
+    <div id="profile-guest-banner" class="hidden rounded-3xl border border-amber-300 dark:border-amber-700/60 bg-gradient-to-br from-amber-50 to-amber-100/60 dark:from-amber-950/40 dark:to-amber-900/20 p-5 shadow-sm space-y-3">
+      <div class="flex items-start gap-3">
+        <div class="rounded-xl bg-amber-500/20 p-2 text-amber-600 dark:text-amber-400">
+          <i data-lucide="info" class="h-5 w-5"></i>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-bold text-sm text-[#262447] dark:text-[#fef3c7]" data-i18n="guest_banner_title">คุณกำลังใช้งานในฐานะผู้เยี่ยมชม (Guest)</h3>
+          <p class="mt-1 text-xs text-[#5a627a] dark:text-[#fde68a]/80 leading-relaxed" data-i18n="guest_banner_desc">ประวัติและรายการโปรดจะถูกบันทึกชั่วคราวในอุปกรณ์นี้ สมัครสมาชิกเพื่อบันทึกข้อมูลอย่างถาวรและเข้าถึงได้จากทุกอุปกรณ์</p>
+        </div>
+      </div>
+      <button type="button" onclick="showView('auth-register')" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl bg-[#6a5bdc] py-3 text-xs font-bold text-white shadow hover:bg-[#5949d0] transition">
+        <i data-lucide="user-plus" class="h-4 w-4"></i>
+        <span data-i18n="guest_register_btn">สมัครสมาชิกเพื่อบันทึกถาวร</span>
+      </button>
+    </div>
+
+    <!-- ADMIN PORTAL SHORTCUT TILE (Visible only to admins) -->
+    <button type="button" id="profile-admin-tile" onclick="showView('admin-dashboard')" class="hidden flex w-full items-center justify-between rounded-2xl bg-gradient-to-r from-[#262447] to-[#433878] dark:from-[#1e1a38] dark:to-[#33285c] p-5 text-left text-white shadow-md hover:opacity-95 transition group">
+      <span class="flex items-center gap-3">
+        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ec4899] text-white shadow-sm">
+          <i data-lucide="shield-alert" class="h-5 w-5"></i>
+        </span>
+        <div>
+          <span class="font-bold text-sm block text-white" data-i18n="admin_portal_btn">ไปยังระบบจัดการลานจอด (Admin Portal)</span>
+          <span class="text-xs text-[#D9B1E6]" data-i18n="admin_only_badge">เฉพาะผู้ดูแลระบบ</span>
+        </div>
+      </span>
+      <i data-lucide="arrow-right" class="text-[#D9B1E6] group-hover:translate-x-1 transition"></i>
+    </button>
+
+    <!-- GOOGLE SHEETS CONNECTOR TILE (Gated to Admin only) -->
+    <button type="button" id="profile-sheets-tile" onclick="toggleQuickSettings(true)" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#6a5bdc] transition group">
+      <span class="flex items-center gap-3">
+        <i data-lucide="database" class="text-[#6a5bdc] dark:text-[#c4b5fd]"></i>
+        <div>
+          <span class="font-semibold block" data-i18n="sheets_settings_btn">การตั้งค่าฐานข้อมูล Google Sheets</span>
+          <span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" id="profile-db-status">เชื่อมต่อแล้ว (Live)</span>
+        </div>
+      </span>
+      <i data-lucide="chevron-right" class="text-[#8f9bb3] group-hover:text-[#6a5bdc] transition"></i>
+    </button>
 
     <!-- SETTINGS CARD -->
     <div class="rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm space-y-4">
@@ -545,7 +675,7 @@ html.dark .stat-card-anim:hover {
       </div>
     </div>
 
-    <button type="button" onclick="toggleProfileEdit()" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#6a5bdc] transition">
+    <button type="button" id="profile-edit-btn" onclick="toggleProfileEdit()" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#6a5bdc] transition">
       <span class="flex items-center gap-3">
         <i data-lucide="user-pen" class="text-[#6a5bdc] dark:text-[#c4b5fd]"></i>
         <span class="font-semibold" data-i18n="edit_profile_btn">แก้ไขข้อมูลส่วนตัว / เปลี่ยนรหัสผ่าน</span>
@@ -562,7 +692,11 @@ html.dark .stat-card-anim:hover {
         <label class="mb-1 block text-sm font-bold" data-i18n="new_password_label">รหัสผ่านใหม่ (เว้นว่างหากไม่ต้องการเปลี่ยนรหัสผ่าน)</label>
         <input id="edit-password" type="password" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 shadow-sm">
       </div>
-      <button type="button" onclick="saveProfile()" class="w-full rounded-xl bg-[#6a5bdc] py-3 font-bold text-white hover:bg-[#5949d0] transition shadow-md" data-i18n="save_changes">บันทึกการเปลี่ยนแปลง</button>
+      
+      <button type="button" id="save-profile-btn" onclick="saveProfile()" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl bg-[#6a5bdc] py-3 font-bold text-white hover:bg-[#5949d0] transition shadow-md">
+        <i data-lucide="save" class="h-4 w-4" id="save-profile-icon"></i>
+        <span data-i18n="save_changes" id="save-profile-text">บันทึกการเปลี่ยนแปลง</span>
+      </button>
       <p id="profile-saved" class="hidden text-center text-sm font-semibold text-[#6a5bdc] dark:text-[#c4b5fd]" data-i18n="saved_profile_msg">บันทึกข้อมูลแล้ว</p>
     </div>
 
@@ -633,7 +767,11 @@ html.dark .stat-card-anim:hover {
       <p class="font-bold" data-i18n="rate_prompt">ให้คะแนนการใช้งาน</p>
       <div id="star-input" class="mt-3 flex gap-2"></div>
       <textarea id="review-text" rows="3" class="mt-3 w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3"></textarea>
-      <button type="button" onclick="submitReview()" class="interactive-btn mt-3 w-full rounded-xl bg-[#6a5bdc] py-3 font-bold text-white hover:bg-[#5949d0] transition shadow-md" data-i18n="submit_review_btn">ส่งรีวิว</button>
+      
+      <button type="button" id="review-submit-btn" onclick="submitReview()" class="interactive-btn mt-3 w-full flex items-center justify-center gap-2 rounded-xl bg-[#6a5bdc] py-3 font-bold text-white hover:bg-[#5949d0] transition shadow-md">
+        <i data-lucide="send" class="h-4 w-4" id="review-btn-icon"></i>
+        <span data-i18n="submit_review_btn" id="review-btn-text">ส่งรีวิว</span>
+      </button>
     </div>
     <div id="review-list" class="mt-5 space-y-3"></div>
   </div>
@@ -687,8 +825,12 @@ html.dark .stat-card-anim:hover {
       </div>
       <div class="mt-4 grid gap-3 md:grid-cols-2">
         <div>
-          <label class="mb-1 block text-sm font-bold" data-i18n="lot_name_label">ชื่อลานจอดรถ</label>
+          <label class="mb-1 block text-sm font-bold" data-i18n="lot_name_label">ชื่อลานจอดรถ (ไทย)</label>
           <input id="new-lot-name" type="text" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-bold" data-i18n="lot_name_en_label">ชื่อลานจอดรถ (English)</label>
+          <input id="new-lot-name-en" type="text" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
         </div>
         <div>
           <label class="mb-1 block text-sm font-bold" data-i18n="near_bldg_label">อาคารใกล้เคียง</label>
@@ -699,8 +841,10 @@ html.dark .stat-card-anim:hover {
           <input id="new-lot-capacity" type="number" min="1" value="20" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
         </div>
       </div>
-      <button type="button" onclick="addLot()" class="interactive-btn mt-4 inline-flex items-center gap-2 rounded-xl bg-[#6a5bdc] px-4 py-3 font-bold text-white shadow hover:bg-[#5949d0] transition">
-        <i data-lucide="plus" class="h-4 w-4"></i><span data-i18n="add_lot_btn">เพิ่มลานจอดรถ</span>
+      
+      <button type="button" id="btn-add-lot" onclick="addLot()" class="interactive-btn mt-4 inline-flex items-center gap-2 rounded-xl bg-[#6a5bdc] px-5 py-3 font-bold text-white shadow hover:bg-[#5949d0] transition">
+        <i data-lucide="plus" class="h-4 w-4" id="add-lot-icon"></i>
+        <span data-i18n="add_lot_btn" id="add-lot-text">เพิ่มลานจอดรถ</span>
       </button>
       <p id="admin-message" class="mt-3 hidden rounded-xl bg-[#f0edfc] dark:bg-[#252347] p-3 text-sm font-semibold text-[#6a5bdc] dark:text-[#c4b5fd] border border-[#d5deed] dark:border-[#262845]"></p>
     </div>
@@ -738,15 +882,34 @@ html.dark .stat-card-anim:hover {
    ========================================================================== */
 const i18n = {
   th: {
-    quick_settings_title: "การตั้งค่าด่วน",
-    language_label: "ภาษา",
+    quick_settings_title: "การตั้งค่าระบบ",
+    language_label: "ภาษา / Language",
     theme_label: "ธีมการแสดงผล",
     theme_light: "สว่าง",
     theme_dark: "มืด",
     theme_system: "ตามอุปกรณ์",
     done_btn: "เสร็จสิ้น",
     login_nav: "เข้าใช้งาน",
+    guest_nav_btn: "ผู้เยี่ยมชม",
     admin_nav: "สำหรับผู้ดูแล",
+    guest_btn: "ใช้งานในฐานะผู้เยี่ยมชม",
+    guest_or_divider: "หรือ",
+    role_admin: "ผู้ดูแลระบบ (Admin)",
+    role_member: "สมาชิกทั่วไป (Member)",
+    role_guest: "ผู้เยี่ยมชม (Guest)",
+    role_admin_sub: "ผู้ดูแลระบบ (System Administrator)",
+    role_guest_sub: "บัญชีผู้เยี่ยมชมชั่วคราว (Guest Account)",
+    role_member_sub: "นักศึกษา / บุคลากร มหาวิทยาลัยขอนแก่น",
+    guest_banner_title: "คุณกำลังใช้งานในฐานะผู้เยี่ยมชม (Guest)",
+    guest_banner_desc: "ประวัติและรายการโปรดจะถูกบันทึกชั่วคราวในอุปกรณ์นี้ สมัครสมาชิกเพื่อบันทึกข้อมูลอย่างถาวรและเข้าถึงได้จากทุกอุปกรณ์",
+    guest_register_btn: "สมัครสมาชิกเพื่อบันทึกถาวร",
+    admin_portal_btn: "ไปยังระบบจัดการลานจอด (Admin Portal)",
+    admin_access_denied_title: "ไม่อนุญาตให้เข้าถึง",
+    admin_access_denied_desc: "เฉพาะผู้ดูแลระบบ (Admin) เท่านั้นที่สามารถเข้าถึงส่วนนี้ได้",
+    toast_guest_welcome_title: "ยินดีต้อนรับ ผู้เยี่ยมชม",
+    toast_guest_welcome_desc: "คุณสามารถค้นหาและนำทางไปยังลานจอดรถได้ทันที",
+    admin_only_badge: "เฉพาะผู้ดูแลระบบ",
+    sheets_admin_only_hint: "การตั้งค่าฐานข้อมูล Google Sheets สงวนไว้สำหรับผู้ดูแลระบบเท่านั้น",
     beta_badge: "เว็บแอพพลิเคชันนี้อยู่ในระหว่างการทดสอบเบต้า ไม่ใช่ผลิตภัณฑ์ที่ใช้งานจริงแต่อย่างใด",
     hero_title: "ค้นหาที่จอดรถในช่วงเวลาเร่งด่วน",
     hero_subtitle: "ค้นหาลานจอดรถอย่างรวดเร็วทันใจ ด้วยระบบแนะนำลานจอดรถที่ใกล้ที่สุดพร้อมเส้นทางการเดินทางในทันที",
@@ -836,10 +999,10 @@ const i18n = {
     history_to: "ไปยัง {dest}",
     review_title: "ให้คะแนนและรีวิว",
     avg_rating_label: "คะแนนเฉลี่ยจากผู้ใช้งาน",
-    no_reviews: "ยังไม่มีรีวิว",
+    no_reviews: "ยังไม่มีรีวิวแรก มาร่วมเป็นคนแรกที่รีวิว!",
     from_reviews_count: "จาก {count} รีวิว",
     rate_prompt: "ให้คะแนนการใช้งาน",
-    review_placeholder: "เล่าประสบการณ์การใช้งานของคุณ",
+    review_placeholder: "เล่าประสบการณ์การใช้งานของคุณ (อย่างน้อย 3 ตัวอักษร)",
     submit_review_btn: "ส่งรีวิว",
     notif_title: "การแจ้งเตือน",
     no_notifications: "ยังไม่มีการแจ้งเตือน",
@@ -850,8 +1013,9 @@ const i18n = {
     admin_stat_spaces: "ช่องว่างรวม",
     admin_stat_bldgs: "อาคารที่รองรับ",
     add_lot_heading: "เพิ่มลานจอดรถใหม่",
-    add_lot_sub: "ลานจอดรถจะปรากฏในระบบค้นหาทันที",
-    lot_name_label: "ชื่อลานจอดรถ",
+    add_lot_sub: "ลานจอดรถจะบันทึกลง Google Sheets และปรากฏในระบบทันที",
+    lot_name_label: "ชื่อลานจอดรถ (ไทย)",
+    lot_name_en_label: "ชื่อลานจอดรถ (English)",
     near_bldg_label: "อาคารใกล้เคียง",
     capacity_label: "ความจุ (ช่อง)",
     add_lot_btn: "เพิ่มลานจอดรถ",
@@ -869,10 +1033,85 @@ const i18n = {
     changelog_sub: "ประวัติการพัฒนาและรายการอัปเดตเวอร์ชัน",
     view_doc: "เปิดเอกสาร",
     quick_test_hint: "💡 สำหรับทดสอบด่วน:",
-    quick_test_desc: "คุณสามารถใช้ชื่อผู้ใช้ Project Alpine รหัสผ่าน orchid หรือสร้างบัญชีใหม่ตามต้องการ"
+    quick_test_desc: "คุณสามารถใช้ <b>Project Alpine</b> (รหัสผ่าน <b>orchid</b>) หรือใช้งานแบบผู้เยี่ยมชม",
+    sheets_db_title: "ฐานข้อมูล Google Sheets (เฉพาะ Admin)",
+    sheets_url_label: "Google Apps Script Web App URL",
+    test_and_save_btn: "บันทึก & ทดสอบ",
+    test_write_btn: "ทดสอบเขียนลง Sheet",
+    init_sheets_btn: "สร้างตาราง 8 ชีต",
+    sync_now_btn: "ซิงค์ข้อมูล",
+    refresh_btn: "รีเฟรช",
+    how_to_setup_sheets: "📖 วิธีเชื่อมต่อ Google Sheets ด้วยตนเอง",
+    how_to_setup_sheets_body: `<p>1. เปิด Google Sheet ที่สร้างไว้ (หรือสร้างใหม่ที่ <a href="https://sheets.new" target="_blank" class="text-[#6a5bdc] underline font-bold">sheets.new</a>)</p>
+<p>2. ไปที่เมนู <b>ส่วนขยาย (Extensions)</b> &gt; <b>Apps Script</b></p>
+<p>3. ลบโค้ดเดิมทั้งหมดในไฟล์ Code.gs แล้วคัดลอกโค้ดจากไฟล์ <code>google_apps_script.js</code> มาวาง</p>
+<p>4. กดปุ่มบันทึก (Ctrl+S / Cmd+S)</p>
+<p>5. กด <b>การทำให้ใช้งานได้ (Deploy)</b> &gt; <b>การทำให้ใช้งานได้รายการใหม่ (New deployment)</b></p>
+<p>6. เลือกประเภทเป็น <b>เว็บแอป (Web app)</b></p>
+<p class="font-bold text-[#e11d48] dark:text-[#fb7185]">⚠️ สำคัญที่สุด: ตั้งค่า "ผู้มีสิทธิ์เข้าถึง (Who has access)" เป็น "ทุกคน (Anyone)"</p>
+<p>7. กด "การทำให้ใช้งานได้" (Deploy) และกดยอมรับสิทธิ์ (Authorize access)</p>
+<p>8. คัดลอก Web App URL (ลงท้ายด้วย <code>/exec</code>) มาวางในช่องด้านบน แล้วกดบันทึก</p>`,
+    sheets_settings_btn: "การตั้งค่าฐานข้อมูล Google Sheets",
+    loading_data: "กำลังโหลดข้อมูล...",
+    saving_data: "กำลังบันทึกข้อมูล...",
+    retry_btn: "ลองใหม่อีกครั้ง",
+    db_status_connected: "เชื่อมต่อแล้ว (Live)",
+    db_status_offline: "โหมดออฟไลน์ / สำรองข้อมูลในเครื่อง",
+    db_connected_with_latency: "เชื่อมต่อ Google Sheets แล้ว ({latency}ms)",
+    db_latency_online: "สถานะ: ออนไลน์สมบูรณ์ (Latency: {latency} ms)",
+    db_latency_offline: "สถานะ: ใช้งานออฟไลน์ด้วยพื้นที่จัดเก็บในเครื่อง",
+    toast_login_success_title: "เข้าสู่ระบบสำเร็จ",
+    toast_login_success_desc: "ยินดีต้อนรับ, {name}",
+    toast_logout_title: "ออกจากระบบแล้ว",
+    toast_logout_desc: "กลับสู่หน้าหลัก",
+    toast_register_success_title: "สมัครสมาชิกสำเร็จ",
+    toast_register_success_sheets: "บันทึกบัญชีลง Google Sheets เรียบร้อยแล้ว",
+    toast_register_success_local: "บันทึกในเครื่องแล้ว (ไม่สามารถเชื่อมต่อ Google Sheets ได้)",
+    toast_register_success_default: "บัญชีของคุณถูกบันทึกเรียบร้อยแล้ว",
+    toast_profile_saved_title: "บันทึกสำเร็จ",
+    toast_profile_saved_sheets: "อัปเดตข้อมูลโปรไฟล์ลง Google Sheets เรียบร้อยแล้ว",
+    toast_profile_saved_default: "อัปเดตข้อมูลโปรไฟล์เรียบร้อยแล้ว",
+    toast_avatar_success_title: "อัปโหลดสำเร็จ",
+    toast_avatar_success_desc: "เปลี่ยนรูปโปรไฟล์เรียบร้อย",
+    toast_sync_start_title: "กำลังซิงค์ข้อมูล",
+    toast_sync_start_desc: "กำลังดึงข้อมูลล่าสุดจาก Google Sheets...",
+    toast_sync_done_title: "ซิงค์เรียบร้อย",
+    toast_sync_done_desc: "ข้อมูลลานจอดและรีวิวอัปเดตเป็นปัจจุบันแล้ว",
+    toast_offline_title: "โหมดออฟไลน์",
+    toast_offline_desc: "ไม่สามารถเชื่อมต่อ Sheets ได้ จึงใช้ข้อมูลภายในเครื่อง",
+    toast_req_url_title: "กรุณาระบุ Web App URL",
+    toast_req_url_desc: "กรุณากรอก URL ที่ได้จากการ Deploy Apps Script",
+    toast_req_url_init_desc: "ต้องใส่ URL ของ Google Apps Script ก่อนสร้างตาราง",
+    toast_req_url_test_desc: "ต้องใส่ URL ของ Google Apps Script ก่อนทดสอบเขียน",
+    toast_test_write_success_title: "เขียนข้อมูลลง Sheet สำเร็จ!",
+    toast_test_write_success_desc: 'บันทึกแถวทดสอบลง "{sheetName}" ชีต SearchHistory เรียบร้อยแล้ว',
+    toast_test_write_fail_title: "เขียนข้อมูลไม่สำเร็จ",
+    toast_test_write_fail_desc: "ไม่สามารถส่งข้อมูลไปยัง Google Sheets ได้ กรุณาตรวจสอบสิทธิ์ Anyone ใน Apps Script",
+    toast_init_sheets_success_title: "สร้างโครงสร้างตารางสำเร็จ!",
+    toast_init_sheets_success_desc: "สร้างหัวตารางครบทั้ง 8 ชีตเรียบร้อยแล้ว",
+    toast_init_sheets_fail_title: "สร้างตารางไม่สำเร็จ",
+    toast_init_sheets_fail_desc: "เกิดข้อผิดพลาดในการสร้างชีต",
+    toast_ping_success_title: "เชื่อมต่อสำเร็จ!",
+    toast_ping_success_desc: "Google Sheets ตอบกลับใน {latency} ms (พบ {sheetCount} ชีต)",
+    toast_ping_fail_title: "การเชื่อมต่อไม่สำเร็จ",
+    toast_ping_fail_desc: "กรุณาตรวจสอบ Web App URL และการอนุญาตสิทธิ์ใน Google Apps Script",
+    toast_review_success_title: "ส่งรีวิวสำเร็จ",
+    toast_review_success_sheets: "บันทึกรีวิวของคุณลง Google Sheets เรียบร้อยแล้ว ขอบคุณสำหรับความคิดเห็น",
+    toast_review_success_default: "ขอบคุณสำหรับความคิดเห็นของคุณ",
+    toast_lot_added_title: "เพิ่มลานจอดแล้ว",
+    toast_lot_added_sheets: "บันทึกลง Google Sheets และระบบเรียบร้อย",
+    toast_lot_deleted_title: "ลบลานจอดแล้ว",
+    toast_fav_added_title: "เพิ่มรายการโปรดแล้ว",
+    toast_fav_removed_title: "นำออกจากรายการโปรดแล้ว",
+    toast_parked_success_title: "จอดรถสำเร็จ",
+    toast_missing_info_title: "ข้อมูลไม่ครบถ้วน",
+    toast_err_name_required_title: "กรุณากรอกชื่อ",
+    toast_err_name_required_desc: "ชื่อ-นามสกุลไม่สามารถเว้นว่างได้",
+    toast_err_review_short_title: "ข้อความสั้นเกินไป",
+    toast_err_review_short_desc: "กรุณาพิมพ์อย่างน้อย 3 ตัวอักษร"
   },
   en: {
-    quick_settings_title: "Quick Settings",
+    quick_settings_title: "System Settings",
     language_label: "Language",
     theme_label: "Appearance",
     theme_light: "Light",
@@ -880,7 +1119,26 @@ const i18n = {
     theme_system: "System Default",
     done_btn: "Done",
     login_nav: "Sign In",
+    guest_nav_btn: "Guest",
     admin_nav: "Admin Portal",
+    guest_btn: "Continue as Guest",
+    guest_or_divider: "or",
+    role_admin: "Administrator",
+    role_member: "Member",
+    role_guest: "Guest",
+    role_admin_sub: "System Administrator",
+    role_guest_sub: "Temporary Guest Account",
+    role_member_sub: "Student / Faculty, Khon Kaen University",
+    guest_banner_title: "You're using Parking-A-Lot as Guest",
+    guest_banner_desc: "History and favorites will be temporarily saved on this device. Create an account to permanently sync your data across all devices.",
+    guest_register_btn: "Create Account to Sync Permanently",
+    admin_portal_btn: "Manage Parking Lots (Admin Portal)",
+    admin_access_denied_title: "Access Denied",
+    admin_access_denied_desc: "Only administrators can access this section.",
+    toast_guest_welcome_title: "Welcome, Guest User",
+    toast_guest_welcome_desc: "You can find and navigate to parking lots immediately.",
+    admin_only_badge: "Admin Only",
+    sheets_admin_only_hint: "Google Sheets database settings are restricted to administrators only.",
     beta_badge: "This web-application is currently in BETA test. Not indicative of a final product.",
     hero_title: "Find parking spots right within busy hours.",
     hero_subtitle: "Search for parking lots and get the nearest parking spots with fastest routes instantly.",
@@ -912,7 +1170,7 @@ const i18n = {
     err_invalid_login: "Invalid username or password",
     err_fill_all: "Please fill in all fields",
     err_user_exists: "This username is already taken",
-    greeting_guest: "Welcome, Guest",
+    greeting_guest: "Welcome, Guest User",
     greeting_user: "Hello, {name}",
     dashboard_headline: "How is your parking today?",
     from_total: "out of {cap} spots",
@@ -950,7 +1208,7 @@ const i18n = {
     favorites_sub: "Your saved parking spots",
     no_favorites: "No favorite parking lots saved yet",
     role_kku: "Student / Faculty, Khon Kaen University",
-    guest_user: "Guest Visitor",
+    guest_user: "Guest User",
     settings_section: "System Settings",
     edit_profile_btn: "Edit Profile / Change Password",
     new_password_label: "New Password (leave blank to keep current)",
@@ -970,10 +1228,10 @@ const i18n = {
     history_to: "To {dest}",
     review_title: "Ratings & Reviews",
     avg_rating_label: "Average Service Rating",
-    no_reviews: "No reviews yet",
+    no_reviews: "No reviews yet. Be the first to share your thoughts!",
     from_reviews_count: "from {count} reviews",
     rate_prompt: "Rate Your Experience",
-    review_placeholder: "Share your parking experience...",
+    review_placeholder: "Share your parking experience (at least 3 characters)...",
     submit_review_btn: "Submit Review",
     notif_title: "Notifications",
     no_notifications: "No notifications yet",
@@ -984,8 +1242,9 @@ const i18n = {
     admin_stat_spaces: "Total Available",
     admin_stat_bldgs: "Supported Buildings",
     add_lot_heading: "Add New Parking Lot",
-    add_lot_sub: "New lot will appear instantly in search & navigation",
-    lot_name_label: "Parking Lot Name",
+    add_lot_sub: "Saves to Google Sheets and appears in search instantly",
+    lot_name_label: "Parking Lot Name (Thai)",
+    lot_name_en_label: "Parking Lot Name (English)",
     near_bldg_label: "Nearby Building",
     capacity_label: "Capacity (spots)",
     add_lot_btn: "Add Parking Lot",
@@ -1003,7 +1262,82 @@ const i18n = {
     changelog_sub: "Version history and development release notes",
     view_doc: "Open Doc",
     quick_test_hint: "💡 Quick Testing Hint:",
-    quick_test_desc: "You can use test username Project Alpine with password orchid or register any new account"
+    quick_test_desc: "You can use <b>Project Alpine</b> (password: <b>orchid</b>), or continue as Guest.",
+    sheets_db_title: "Google Sheets Database (Admin Only)",
+    sheets_url_label: "Google Apps Script Web App URL",
+    test_and_save_btn: "Save & Test",
+    test_write_btn: "Test Write to Sheet",
+    init_sheets_btn: "Init All 8 Sheets",
+    sync_now_btn: "Sync Data",
+    refresh_btn: "Refresh",
+    how_to_setup_sheets: "📖 How to connect Google Sheets yourself",
+    how_to_setup_sheets_body: `<p>1. Open your Google Spreadsheet (or create one at <a href="https://sheets.new" target="_blank" class="text-[#6a5bdc] underline font-bold">sheets.new</a>)</p>
+<p>2. Go to <b>Extensions</b> &gt; <b>Apps Script</b></p>
+<p>3. Replace all code in Code.gs with the code from <code>google_apps_script.js</code></p>
+<p>4. Save the project (Ctrl+S / Cmd+S)</p>
+<p>5. Click <b>Deploy</b> &gt; <b>New deployment</b></p>
+<p>6. Select type: <b>Web app</b></p>
+<p class="font-bold text-[#e11d48] dark:text-[#fb7185]">⚠️ Crucial: Set "Who has access" to "Anyone"</p>
+<p>7. Click <b>Deploy</b> and authorize access when prompted</p>
+<p>8. Copy your Web App URL (ending with <code>/exec</code>) into the field above and save</p>`,
+    sheets_settings_btn: "Google Sheets Database Settings",
+    loading_data: "Loading data...",
+    saving_data: "Saving data...",
+    retry_btn: "Retry",
+    db_status_connected: "Connected (Live)",
+    db_status_offline: "Offline Mode / Local Sync",
+    db_connected_with_latency: "Google Sheets Connected ({latency}ms)",
+    db_latency_online: "Status: Online & Synced (Latency: {latency} ms)",
+    db_latency_offline: "Status: Offline using local device storage",
+    toast_login_success_title: "Signed In Successfully",
+    toast_login_success_desc: "Welcome, {name}",
+    toast_logout_title: "Signed Out",
+    toast_logout_desc: "Returned to home page",
+    toast_register_success_title: "Registration Successful",
+    toast_register_success_sheets: "Account saved to Google Sheets successfully",
+    toast_register_success_local: "Account saved locally (Google Sheets unreachable)",
+    toast_register_success_default: "Your account has been registered successfully",
+    toast_profile_saved_title: "Saved Successfully",
+    toast_profile_saved_sheets: "Profile updated and saved to Google Sheets",
+    toast_profile_saved_default: "Profile updated successfully",
+    toast_avatar_success_title: "Upload Successful",
+    toast_avatar_success_desc: "Profile picture updated",
+    toast_sync_start_title: "Syncing Data",
+    toast_sync_start_desc: "Fetching latest data from Google Sheets...",
+    toast_sync_done_title: "Sync Complete",
+    toast_sync_done_desc: "Lots and reviews have been updated to the latest data",
+    toast_offline_title: "Offline Mode",
+    toast_offline_desc: "Cannot connect to Sheets; using local device storage",
+    toast_req_url_title: "Web App URL Required",
+    toast_req_url_desc: "Please enter your deployed Apps Script URL",
+    toast_req_url_init_desc: "Google Apps Script URL is required before initializing sheets",
+    toast_req_url_test_desc: "Google Apps Script URL is required before testing write",
+    toast_test_write_success_title: "Write Test Successful!",
+    toast_test_write_success_desc: 'Test row recorded to "{sheetName}" in Google Sheets',
+    toast_test_write_fail_title: "Write Test Failed",
+    toast_test_write_fail_desc: "Unable to write data to Google Sheets. Check permissions and deployment",
+    toast_init_sheets_success_title: "Sheets Initialized Successfully!",
+    toast_init_sheets_success_desc: "Created table headers across all 8 sheets",
+    toast_init_sheets_fail_title: "Initialization Failed",
+    toast_init_sheets_fail_desc: "An error occurred while initializing sheets",
+    toast_ping_success_title: "Connection Successful!",
+    toast_ping_success_desc: "Google Sheets responded in {latency} ms (found {sheetCount} sheets)",
+    toast_ping_fail_title: "Connection Failed",
+    toast_ping_fail_desc: "Please verify your Web App URL and Anyone access setting in Apps Script",
+    toast_review_success_title: "Review Submitted",
+    toast_review_success_sheets: "Review saved to Google Sheets. Thank you for your feedback!",
+    toast_review_success_default: "Thank you for sharing your feedback!",
+    toast_lot_added_title: "Lot Added",
+    toast_lot_added_sheets: "Saved to Google Sheets and active in system",
+    toast_lot_deleted_title: "Lot Deleted",
+    toast_fav_added_title: "Added to Favorites",
+    toast_fav_removed_title: "Removed from Favorites",
+    toast_parked_success_title: "Parking Recorded",
+    toast_missing_info_title: "Incomplete Information",
+    toast_err_name_required_title: "Name Required",
+    toast_err_name_required_desc: "Full name cannot be left blank",
+    toast_err_review_short_title: "Review Too Short",
+    toast_err_review_short_desc: "Please write at least 3 characters"
   }
 };
 
@@ -1023,7 +1357,10 @@ function updateStaticTranslations() {
     const key = el.getAttribute('data-i18n');
     el.textContent = t(key);
   });
-  // Update inputs placeholder
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    el.innerHTML = t(key);
+  });
   const searchInput = document.getElementById('search-input');
   if(searchInput) searchInput.placeholder = t('search_placeholder');
   const reviewText = document.getElementById('review-text');
@@ -1031,60 +1368,134 @@ function updateStaticTranslations() {
 }
 
 /* ==========================================================================
-   STATE & PERSISTENCE (With Persistent User Accounts Database)
+   TOAST & NOTIFICATION SYSTEM
    ========================================================================== */
-const STORAGE_KEY = 'parkingalot-state-v5';
+let toastTimeout = null;
+function showToast(title, message, type = 'info') {
+  const toast = document.getElementById('toast-banner');
+  const tTitle = document.getElementById('toast-title');
+  const tMsg = document.getElementById('toast-message');
+  const tIconWrap = document.getElementById('toast-icon-wrap');
+  if (!toast) return;
+
+  clearTimeout(toastTimeout);
+  tTitle.textContent = title;
+  tMsg.textContent = message;
+
+  toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-md w-[92%] rounded-2xl p-4 shadow-2xl transition-all duration-300 transform border ';
+  
+  if (type === 'success') {
+    toast.classList.add('bg-white', 'dark:bg-[#161729]', 'border-emerald-500', 'text-emerald-950', 'dark:text-emerald-100');
+    tIconWrap.className = 'mt-0.5 rounded-full p-1 bg-emerald-500 text-white';
+    tIconWrap.innerHTML = '<i data-lucide="check" class="h-4 w-4"></i>';
+  } else if (type === 'error') {
+    toast.classList.add('bg-white', 'dark:bg-[#161729]', 'border-rose-500', 'text-rose-950', 'dark:text-rose-100');
+    tIconWrap.className = 'mt-0.5 rounded-full p-1 bg-rose-500 text-white';
+    tIconWrap.innerHTML = '<i data-lucide="alert-triangle" class="h-4 w-4"></i>';
+  } else {
+    toast.classList.add('bg-white', 'dark:bg-[#161729]', 'border-[#6a5bdc]', 'text-[#181b2e]', 'dark:text-[#f1f3fc]');
+    tIconWrap.className = 'mt-0.5 rounded-full p-1 bg-[#6a5bdc] text-white';
+    tIconWrap.innerHTML = '<i data-lucide="info" class="h-4 w-4"></i>';
+  }
+
+  toast.classList.remove('hidden');
+  if (window.lucide) lucide.createIcons();
+
+  toastTimeout = setTimeout(() => { hideToast(); }, 4000);
+}
+
+function hideToast() {
+  const toast = document.getElementById('toast-banner');
+  if (toast) toast.classList.add('hidden');
+}
+
+/* ==========================================================================
+   STATE & PERSISTENCE WITH GOOGLE SHEETS API CLIENT
+   ========================================================================== */
+const STORAGE_KEY = 'parkingalot-state-v6';
 const USERS_DB_KEY = 'parkingalot-users-db';
+const SHEETS_CONFIG_KEY = 'parkingalot-sheets-url';
 let confirmResolver = null;
 
-function getStoredUsers(){
+function getStoredUsers() {
   const usersMap = new Map();
-  
-  // Pre-seed test account for instant testing
   const defaultUsers = [
-    { username: 'Project Alpine', password: 'orchid', name: 'ผู้ทดสอบระบบ (Tester)', avatar: null }
+    { username: 'Ardeshir', password: 'hassanzxdeh', name: 'Ardeshir (Admin)', role: 'admin', avatar: null },
+    { username: 'Project Alpine', password: 'orchid', name: 'Project Alpine (Admin)', role: 'admin', avatar: null }
   ];
   defaultUsers.forEach(u => usersMap.set(u.username.toLowerCase(), u));
 
-  // Load from dedicated persistent users storage
   try {
     const rawUsers = localStorage.getItem(USERS_DB_KEY);
-    if(rawUsers){
+    if (rawUsers) {
       const parsed = JSON.parse(rawUsers);
-      if(Array.isArray(parsed)){
-        parsed.forEach(u => { if(u && u.username) usersMap.set(u.username.toLowerCase(), u); });
+      if (Array.isArray(parsed)) {
+        parsed.forEach(u => {
+          if (u && u.username) {
+            const unLower = u.username.toLowerCase();
+            if (unLower === 'ardeshir' || unLower === 'project alpine') {
+              u.role = 'admin';
+            }
+            usersMap.set(unLower, u);
+          }
+        });
       }
     }
   } catch(e) {}
 
-  // Seamless migration from previous version keys
-  const oldKeys = ['parkingalot-state-v5', 'parkingalot-state-v4', 'parkingalot-state-v3', 'parkingalot-state-v2', 'parkingalot-state-v1'];
+  const oldKeys = ['parkingalot-state-v6', 'parkingalot-state-v5', 'parkingalot-state-v4', 'parkingalot-state-v3', 'parkingalot-state-v2'];
   oldKeys.forEach(key => {
     try {
       const raw = localStorage.getItem(key);
-      if(raw){
+      if (raw) {
         const parsed = JSON.parse(raw);
-        if(parsed && Array.isArray(parsed.users)){
-          parsed.users.forEach(u => { if(u && u.username) usersMap.set(u.username.toLowerCase(), u); });
+        if (parsed && Array.isArray(parsed.users)) {
+          parsed.users.forEach(u => {
+            if (u && u.username) {
+              const unLower = u.username.toLowerCase();
+              if (unLower === 'ardeshir' || unLower === 'project alpine') {
+                u.role = 'admin';
+              }
+              usersMap.set(unLower, u);
+            }
+          });
         }
       }
     } catch(e) {}
   });
 
+  // Enforce admin privileges and credentials for system admin accounts
+  if (usersMap.has('ardeshir')) {
+    const u = usersMap.get('ardeshir');
+    u.role = 'admin';
+    if (!u.password) u.password = 'hassanzxdeh';
+  } else {
+    usersMap.set('ardeshir', { username: 'Ardeshir', password: 'hassanzxdeh', name: 'Ardeshir (Admin)', role: 'admin', avatar: null });
+  }
+
+  if (usersMap.has('project alpine')) {
+    const u = usersMap.get('project alpine');
+    u.role = 'admin';
+    if (!u.password) u.password = 'orchid';
+  } else {
+    usersMap.set('project alpine', { username: 'Project Alpine', password: 'orchid', name: 'Project Alpine (Admin)', role: 'admin', avatar: null });
+  }
+
   return Array.from(usersMap.values());
 }
 
-function saveStoredUsers(usersList){
+function saveStoredUsers(usersList) {
   try {
     localStorage.setItem(USERS_DB_KEY, JSON.stringify(usersList));
   } catch(e) {}
 }
 
-function defaultState(){
+function defaultState() {
   return {
     settings: {
       lang: 'th',
-      theme: 'system' // 'light' | 'dark' | 'system'
+      theme: 'system',
+      sheetsApiUrl: localStorage.getItem(SHEETS_CONFIG_KEY) || ''
     },
     buildings: [
       {id:'b1', name:'อาคารเรียนรวม', nameEn:'Complex Lecture Building', category:'classroom', lat:40, lng:60},
@@ -1106,31 +1517,39 @@ function defaultState(){
     navHistory: [],
     notifications: [],
     reviews: [],
-    ui: { routeType:'fast', destinationBuilding:null, historyTab:'nav', reviewStars:5, searchCategory:'all' }
+    ui: {
+      routeType:'fast',
+      destinationBuilding:null,
+      historyTab:'nav',
+      reviewStars:5,
+      searchCategory:'all',
+      isLoading: false,
+      isSyncing: false,
+      dbStatus: 'offline' // 'online' | 'offline' | 'checking'
+    }
   };
 }
 
-function loadState(){
+function loadState() {
   let s = defaultState();
-  try{
+  try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if(raw){
+    if (raw) {
       const parsed = JSON.parse(raw);
       s = {
         ...s,
         ...parsed,
-        settings: { ...s.settings, ...(parsed.settings || {}) },
-        ui: { ...s.ui, ...(parsed.ui || {}) }
+        settings: { ...s.settings, ...(parsed.settings || {}), sheetsApiUrl: localStorage.getItem(SHEETS_CONFIG_KEY) || (parsed.settings?.sheetsApiUrl || '') },
+        ui: { ...s.ui, ...(parsed.ui || {}), isLoading: false, isSyncing: false }
       };
     }
-  }catch(e){}
+  } catch(e) {}
 
-  // Merge and guarantee all persistent users are present
   const allUsers = getStoredUsers();
   const map = new Map();
   allUsers.forEach(u => map.set(u.username.toLowerCase(), u));
-  if(Array.isArray(s.users)){
-    s.users.forEach(u => { if(u && u.username) map.set(u.username.toLowerCase(), u); });
+  if (Array.isArray(s.users)) {
+    s.users.forEach(u => { if (u && u.username) map.set(u.username.toLowerCase(), u); });
   }
   s.users = Array.from(map.values());
   saveStoredUsers(s.users);
@@ -1138,10 +1557,13 @@ function loadState(){
   return s;
 }
 
-function saveState(){
+function saveState() {
   try {
-    if(state && Array.isArray(state.users)){
+    if (state && Array.isArray(state.users)) {
       saveStoredUsers(state.users);
+    }
+    if (state && state.settings && state.settings.sheetsApiUrl) {
+      localStorage.setItem(SHEETS_CONFIG_KEY, state.settings.sheetsApiUrl);
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch(e) {}
@@ -1150,11 +1572,392 @@ function saveState(){
 let state = loadState();
 
 /* ==========================================================================
+   GOOGLE SHEETS API INTEGRATION CLIENT (Asynchronous & Resilient)
+   ========================================================================== */
+const SheetsDB = {
+  getUrl() {
+    return (state.settings?.sheetsApiUrl || '').trim();
+  },
+
+  isConfigured() {
+    const u = this.getUrl();
+    return u.length > 15 && u.startsWith('http');
+  },
+
+  async request(method, params = {}, body = null) {
+    const url = this.getUrl();
+    if (!this.isConfigured()) {
+      return { success: false, fallback: true, error: 'No Google Sheets API configured' };
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+    const action = params.action || (body && body.action) || 'ping';
+    const mergedPayload = Object.assign({}, params, body || {});
+
+    try {
+      // Strategy 1: URL query string (action + payload) + POST body for 100% redirect preservation
+      const qsParams = { action };
+      if (Object.keys(mergedPayload).length > 0) {
+        qsParams.payload = JSON.stringify(mergedPayload);
+      }
+      const qs = new URLSearchParams(qsParams).toString();
+      const targetUrl = url + (url.includes('?') ? '&' : '?') + qs;
+
+      const fetchOptions = {
+        method: method,
+        signal: controller.signal,
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        }
+      };
+
+      if (method === 'POST' && body) {
+        fetchOptions.body = JSON.stringify(body);
+      }
+
+      const res = await fetch(targetUrl, fetchOptions);
+      clearTimeout(timeoutId);
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status} ${res.statusText}`);
+      }
+
+      const data = await res.json();
+      return data;
+    } catch (primaryErr) {
+      clearTimeout(timeoutId);
+      console.warn('[SheetsDB] Primary request failed, retrying with GET fallback:', primaryErr.message);
+
+      // Strategy 2: Fallback GET request if POST was blocked or dropped
+      if (method === 'POST') {
+        try {
+          const fallbackController = new AbortController();
+          const fbTimeout = setTimeout(() => fallbackController.abort(), 12000);
+
+          const fbQs = new URLSearchParams({
+            action: action,
+            payload: JSON.stringify(mergedPayload)
+          }).toString();
+
+          const fbUrl = url + (url.includes('?') ? '&' : '?') + fbQs;
+          const fbRes = await fetch(fbUrl, {
+            method: 'GET',
+            signal: fallbackController.signal,
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+          });
+          clearTimeout(fbTimeout);
+
+          if (fbRes.ok) {
+            const fbData = await fbRes.json();
+            return fbData;
+          }
+        } catch (fbErr) {
+          console.warn('[SheetsDB] GET fallback also failed:', fbErr.message);
+        }
+      }
+
+      return { success: false, error: primaryErr.message };
+    }
+  },
+
+  async ping() {
+    if (!this.isConfigured()) return { success: false, status: 'offline' };
+    const t0 = performance.now();
+    const res = await this.request('GET', { action: 'ping' });
+    const latency = Math.round(performance.now() - t0);
+    if (res && res.success) {
+      return { success: true, status: 'online', latency, data: res };
+    }
+    return { success: false, status: 'offline', latency, error: res?.error };
+  },
+
+  async init() {
+    if (!this.isConfigured()) return { success: false, error: 'No URL configured' };
+    return await this.request('GET', { action: 'init' });
+  },
+
+  async testWrite() {
+    if (!this.isConfigured()) return { success: false, error: 'No URL configured' };
+    return await this.request('POST', { action: 'testWrite' }, {
+      action: 'testWrite',
+      message: 'Client UI diagnostic check',
+      username: state.currentUser || 'tester'
+    });
+  },
+
+  async fetchInitialData() {
+    if (!this.isConfigured()) return null;
+    const res = await this.request('GET', { action: 'getInitialData' });
+    if (res && res.success && res.data) {
+      if (Array.isArray(res.data.buildings) && res.data.buildings.length) {
+        state.buildings = res.data.buildings.map(b => ({
+          id: b.id,
+          name: b.name_th || b.name,
+          nameEn: b.name_en || b.nameEn || b.name,
+          category: b.category,
+          lat: parseFloat(b.lat) || 50,
+          lng: parseFloat(b.lng) || 50
+        }));
+      }
+      if (Array.isArray(res.data.lots) && res.data.lots.length) {
+        state.lots = res.data.lots.map(l => ({
+          id: l.id,
+          name: l.name_th || l.name,
+          nameEn: l.name_en || l.nameEn || l.name,
+          buildingId: l.building_id || l.buildingId,
+          capacity: parseInt(l.capacity, 10) || 20,
+          available: parseInt(l.available, 10) || 0,
+          lat: parseFloat(l.lat) || 50,
+          lng: parseFloat(l.lng) || 50
+        }));
+      }
+      if (Array.isArray(res.data.reviews)) {
+        state.reviews = res.data.reviews.map(r => ({
+          stars: parseInt(r.stars, 10) || 5,
+          text: r.text || '',
+          name: r.name || 'ผู้ใช้งาน',
+          ts: parseInt(r.timestamp, 10) || Date.now()
+        }));
+      }
+      saveState();
+      return true;
+    }
+    return false;
+  },
+
+  async fetchUserData(username) {
+    if (!this.isConfigured() || !username) return null;
+    const res = await this.request('GET', { action: 'getUserData', username });
+    if (res && res.success && res.data) {
+      if (Array.isArray(res.data.favorites)) state.favorites = res.data.favorites;
+      if (Array.isArray(res.data.parkingHistory)) {
+        state.navHistory = res.data.parkingHistory.map(h => ({
+          buildingId: h.building_id,
+          lotId: h.lot_id,
+          ts: parseInt(h.timestamp, 10) || Date.now()
+        }));
+      }
+      if (Array.isArray(res.data.searchHistory)) {
+        state.searchHistory = res.data.searchHistory.map(s => ({
+          q: s.query,
+          ts: parseInt(s.timestamp, 10) || Date.now()
+        }));
+      }
+      saveState();
+      return true;
+    }
+    return false;
+  },
+
+  async registerUser(name, username, password) {
+    return await this.request('POST', { action: 'register' }, {
+      action: 'register',
+      name,
+      username,
+      password
+    });
+  },
+
+  async loginUser(username, password) {
+    return await this.request('POST', { action: 'login' }, {
+      action: 'login',
+      username,
+      password
+    });
+  },
+
+  async updateProfile(username, data) {
+    return await this.request('POST', { action: 'updateProfile' }, {
+      action: 'updateProfile',
+      username,
+      ...data
+    });
+  },
+
+  async saveLot(lot) {
+    return await this.request('POST', { action: 'saveLot' }, {
+      action: 'saveLot',
+      lot
+    });
+  },
+
+  async adjustLot(id, change) {
+    return await this.request('POST', { action: 'adjustLotAvailability' }, {
+      action: 'adjustLotAvailability',
+      id,
+      change
+    });
+  },
+
+  async deleteLot(id) {
+    return await this.request('POST', { action: 'deleteLot' }, {
+      action: 'deleteLot',
+      id
+    });
+  },
+
+  async submitReview(review) {
+    return await this.request('POST', { action: 'submitReview' }, {
+      action: 'submitReview',
+      ...review
+    });
+  },
+
+  async recordParking(buildingId, lotId, username) {
+    return await this.request('POST', { action: 'recordParking' }, {
+      action: 'recordParking',
+      building_id: buildingId,
+      lot_id: lotId,
+      username
+    });
+  },
+
+  async recordSearch(query, username) {
+    return await this.request('POST', { action: 'recordSearch' }, {
+      action: 'recordSearch',
+      query,
+      username
+    });
+  },
+
+  async toggleFavorite(lotId, username) {
+    return await this.request('POST', { action: 'toggleFavorite' }, {
+      action: 'toggleFavorite',
+      lot_id: lotId,
+      username
+    });
+  }
+};
+
+/* ==========================================================================
+   UI SYNC & TEST ACTIONS
+   ========================================================================== */
+async function testAndSaveSheetsUrl() {
+  const input = document.getElementById('sheets-url-input');
+  const url = (input ? input.value : '').trim();
+  state.settings.sheetsApiUrl = url;
+  saveState();
+
+  const btn = document.getElementById('btn-test-db');
+  const latText = document.getElementById('db-latency-info');
+  if (btn) btn.innerHTML = '<i data-lucide="loader-2" class="h-3.5 w-3.5 animate-spin"></i><span>' + t('loading_data') + '</span>';
+  if (latText) latText.textContent = t('toast_sync_start_desc');
+  if (window.lucide) lucide.createIcons();
+
+  const res = await SheetsDB.ping();
+  updateDbStatusUI(res);
+
+  if (res.success) {
+    const sheetCount = res.data && res.data.sheets ? res.data.sheets.length : '8';
+    showToast(t('toast_ping_success_title'), t('toast_ping_success_desc', { latency: res.latency, sheetCount }), 'success');
+    await syncWithSheets(false);
+  } else {
+    showToast(t('toast_ping_fail_title'), res.error || t('toast_ping_fail_desc'), 'error');
+  }
+
+  if (btn) btn.innerHTML = '<i data-lucide="check-circle" class="h-3.5 w-3.5"></i><span>' + t('test_and_save_btn') + '</span>';
+  if (window.lucide) lucide.createIcons();
+}
+
+async function testWriteToSheets() {
+  if (!SheetsDB.isConfigured()) {
+    showToast(t('toast_req_url_title'), t('toast_req_url_test_desc'), 'error');
+    return;
+  }
+  const btn = document.getElementById('btn-test-write');
+  if (btn) btn.innerHTML = '<i data-lucide="loader-2" class="h-3.5 w-3.5 animate-spin"></i><span>' + t('saving_data') + '</span>';
+  if (window.lucide) lucide.createIcons();
+
+  const res = await SheetsDB.testWrite();
+  if (btn) btn.innerHTML = '<i data-lucide="pencil-line" class="h-3.5 w-3.5"></i><span>' + t('test_write_btn') + '</span>';
+  if (window.lucide) lucide.createIcons();
+
+  if (res && res.success) {
+    showToast(t('toast_test_write_success_title'), t('toast_test_write_success_desc', { sheetName: res.spreadsheetName || 'SearchHistory' }), 'success');
+  } else {
+    showToast(t('toast_test_write_fail_title'), res?.error || t('toast_test_write_fail_desc'), 'error');
+  }
+}
+
+async function initSheetsStructure() {
+  if (!SheetsDB.isConfigured()) {
+    showToast(t('toast_req_url_title'), t('toast_req_url_init_desc'), 'error');
+    return;
+  }
+  const btn = document.getElementById('btn-init-sheets');
+  if (btn) btn.innerHTML = '<i data-lucide="loader-2" class="h-3.5 w-3.5 animate-spin"></i><span>' + t('saving_data') + '</span>';
+  if (window.lucide) lucide.createIcons();
+
+  const res = await SheetsDB.init();
+  if (btn) btn.innerHTML = '<i data-lucide="layers" class="h-3.5 w-3.5"></i><span>' + t('init_sheets_btn') + '</span>';
+  if (window.lucide) lucide.createIcons();
+
+  if (res && res.success) {
+    showToast(t('toast_init_sheets_success_title'), t('toast_init_sheets_success_desc'), 'success');
+    await syncWithSheets(false);
+  } else {
+    showToast(t('toast_init_sheets_fail_title'), res?.error || t('toast_init_sheets_fail_desc'), 'error');
+  }
+}
+
+async function syncWithSheets(userTriggered = false) {
+  const syncIcon = document.getElementById('sync-icon');
+  if (syncIcon) syncIcon.classList.add('animate-spin');
+
+  if (userTriggered) {
+    showToast(t('toast_sync_start_title'), t('toast_sync_start_desc'), 'info');
+  }
+
+  const ok = await SheetsDB.fetchInitialData();
+  if (state.currentUser) {
+    await SheetsDB.fetchUserData(state.currentUser);
+  }
+
+  if (syncIcon) syncIcon.classList.remove('animate-spin');
+
+  if (ok) {
+    if (userTriggered) showToast(t('toast_sync_done_title'), t('toast_sync_done_desc'), 'success');
+  } else if (userTriggered) {
+    showToast(t('toast_offline_title'), t('toast_offline_desc'), 'info');
+  }
+
+  renderAll();
+}
+
+function updateDbStatusUI(pingRes) {
+  const isOnline = pingRes && pingRes.success;
+  const badge = document.getElementById('db-status-badge');
+  const statusText = document.getElementById('db-status-text');
+  const latInfo = document.getElementById('db-latency-info');
+  const profileStatus = document.getElementById('profile-db-status');
+
+  if (badge && statusText) {
+    if (isOnline) {
+      badge.className = 'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300';
+      statusText.textContent = t('db_connected_with_latency', { latency: pingRes.latency });
+    } else {
+      badge.className = 'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300';
+      statusText.textContent = t('db_status_offline');
+    }
+  }
+
+  if (latInfo) {
+    latInfo.textContent = isOnline ? t('db_latency_online', { latency: pingRes.latency }) : t('db_latency_offline');
+  }
+
+  if (profileStatus) {
+    profileStatus.textContent = isOnline ? t('db_status_connected') : t('db_status_offline');
+  }
+}
+
+/* ==========================================================================
    THEME SYSTEM (Light, Dark, Device Default)
    ========================================================================== */
-function getEffectiveTheme(){
+function getEffectiveTheme() {
   const mode = state.settings.theme || 'system';
-  if(mode === 'system'){
+  if (mode === 'system') {
     try {
       return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     } catch(e) { return 'light'; }
@@ -1162,47 +1965,43 @@ function getEffectiveTheme(){
   return mode;
 }
 
-function applyTheme(){
+function applyTheme() {
   const eff = getEffectiveTheme();
   const isDark = eff === 'dark';
   document.documentElement.classList.toggle('dark', isDark);
 
-  // Update theme-color meta tag
   const metaTheme = document.querySelector('meta[name="theme-color"]');
-  if(metaTheme) metaTheme.setAttribute('content', isDark ? '#0e0f1a' : '#262447');
+  if (metaTheme) metaTheme.setAttribute('content', isDark ? '#0e0f1a' : '#262447');
 
-  // Update icons and UI state
   updateThemeUI();
   drawAllMaps();
 }
 
-function setTheme(mode){
+function setTheme(mode) {
   state.settings.theme = mode;
   saveState();
   applyTheme();
 }
 
-function cycleTheme(){
+function cycleTheme() {
   const cur = state.settings.theme || 'system';
   const next = cur === 'light' ? 'dark' : (cur === 'dark' ? 'system' : 'light');
   setTheme(next);
 }
 
-function updateThemeUI(){
+function updateThemeUI() {
   const theme = state.settings.theme || 'system';
   const eff = getEffectiveTheme();
 
-  // Landing theme icon
   const icon = document.getElementById('landing-theme-icon');
-  if(icon){
+  if (icon) {
     icon.setAttribute('data-lucide', theme === 'system' ? 'laptop' : (eff === 'dark' ? 'moon' : 'sun'));
   }
 
-  // Active styles in Settings cards / modal
   ['modal', 'profile'].forEach(prefix => {
     ['light', 'dark', 'system'].forEach(m => {
       const btn = document.getElementById(`${prefix}-theme-${m}`);
-      if(btn){
+      if (btn) {
         btn.classList.toggle('border-[#6a5bdc]', theme === m);
         btn.classList.toggle('bg-[#f0edfc]', theme === m);
         btn.classList.toggle('dark:bg-[#252347]', theme === m);
@@ -1211,14 +2010,13 @@ function updateThemeUI(){
     });
   });
 
-  if(window.lucide) lucide.createIcons();
+  if (window.lucide) lucide.createIcons();
 }
 
-// System color scheme change listener
-if(typeof window !== 'undefined' && window.matchMedia){
+if (typeof window !== 'undefined' && window.matchMedia) {
   try {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-      if(state.settings.theme === 'system'){
+      if (state.settings.theme === 'system') {
         applyTheme();
       }
     });
@@ -1228,27 +2026,24 @@ if(typeof window !== 'undefined' && window.matchMedia){
 /* ==========================================================================
    LANGUAGE SYSTEM (Thai / English)
    ========================================================================== */
-function setLanguage(lang){
+function setLanguage(lang) {
   state.settings.lang = lang;
   saveState();
   updateLanguageUI();
   renderAll();
 }
 
-function updateLanguageUI(){
+function updateLanguageUI() {
   const lang = state.settings.lang || 'th';
-  
-  // Landing header pills
   const lTh = document.getElementById('landing-lang-th');
   const lEn = document.getElementById('landing-lang-en');
-  if(lTh) lTh.classList.toggle('active', lang === 'th');
-  if(lEn) lEn.classList.toggle('active', lang === 'en');
+  if (lTh) lTh.classList.toggle('active', lang === 'th');
+  if (lEn) lEn.classList.toggle('active', lang === 'en');
 
-  // Modal / Profile buttons
   ['modal', 'profile'].forEach(prefix => {
     ['th', 'en'].forEach(l => {
       const btn = document.getElementById(`${prefix}-lang-${l}`);
-      if(btn){
+      if (btn) {
         btn.classList.toggle('border-[#6a5bdc]', lang === l);
         btn.classList.toggle('bg-[#f0edfc]', lang === l);
         btn.classList.toggle('dark:bg-[#252347]', lang === l);
@@ -1260,115 +2055,242 @@ function updateLanguageUI(){
   updateStaticTranslations();
 }
 
-function toggleQuickSettings(show){
+function toggleQuickSettings(show) {
   const modal = document.getElementById('quick-controls-modal');
-  if(!modal) return;
+  if (!modal) return;
   modal.classList.toggle('hidden', !show);
   modal.classList.toggle('flex', show);
-  if(show) updateThemeUI();
+  if (show) {
+    const input = document.getElementById('sheets-url-input');
+    if (input) input.value = state.settings.sheetsApiUrl || '';
+
+    const sheetsSection = document.getElementById('modal-sheets-db-section');
+    if (sheetsSection) {
+      sheetsSection.classList.toggle('hidden', !isAdmin());
+    }
+
+    updateThemeUI();
+    SheetsDB.ping().then(res => updateDbStatusUI(res));
+  }
 }
 
 /* ==========================================================================
    VIEW SWITCHING & HELPERS
    ========================================================================== */
-function showView(id){
+function showView(id) {
+  if (id === 'admin-dashboard' && !isAdmin()) {
+    showToast(t('admin_access_denied_title'), t('admin_access_denied_desc'), 'error');
+    if (state.currentUser) {
+      id = 'user-dashboard';
+    } else {
+      id = 'landing';
+    }
+  }
+
   document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
   const target = document.getElementById(id);
-  if(target) target.classList.add('active');
+  if (target) target.classList.add('active');
   renderAll();
-  window.scrollTo(0,0);
+  window.scrollTo(0, 0);
 }
 
-function bName(b){
-  if(!b) return '-';
+function bName(b) {
+  if (!b) return '-';
   return state.settings.lang === 'en' ? (b.nameEn || b.name) : b.name;
 }
 
-function lName(l){
-  if(!l) return '-';
+function lName(l) {
+  if (!l) return '-';
   return state.settings.lang === 'en' ? (l.nameEn || l.name) : l.name;
 }
 
-function distanceMeters(a,b){
-  const dx = a.lat-b.lat, dy=a.lng-b.lng;
-  return Math.round(Math.sqrt(dx*dx+dy*dy) * 14); // grid unit ≈ 14m
+function distanceMeters(a, b) {
+  const dx = a.lat - b.lat, dy = a.lng - b.lng;
+  return Math.round(Math.sqrt(dx * dx + dy * dy) * 14);
 }
-function walkMinutes(m){ return Math.max(1, Math.round(m/75)); }
-function lotById(id){ return state.lots.find(l=>l.id===id); }
-function buildingById(id){ return state.buildings.find(b=>b.id===id); }
-function nearestLot(building){
-  const withDist = state.lots.map(l=>({lot:l, dist: distanceMeters(l, building)}));
-  withDist.sort((a,b)=>a.dist-b.dist);
+function walkMinutes(m) { return Math.max(1, Math.round(m / 75)); }
+function lotById(id) { return state.lots.find(l => l.id === id); }
+function buildingById(id) { return state.buildings.find(b => b.id === id); }
+function nearestLot(building) {
+  const withDist = state.lots.map(l => ({ lot: l, dist: distanceMeters(l, building) }));
+  withDist.sort((a, b) => a.dist - b.dist);
   return withDist[0];
 }
-function fmtTime(ts){
-  const d=new Date(ts);
+function fmtTime(ts) {
+  const d = new Date(ts);
   const locale = state.settings.lang === 'en' ? 'en-US' : 'th-TH';
-  return d.toLocaleString(locale, {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit'});
+  return d.toLocaleString(locale, { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
 }
-function pushNotification(text){
-  state.notifications.unshift({id:'n'+Date.now(), text, ts:Date.now(), read:false});
+function pushNotification(text) {
+  state.notifications.unshift({ id: 'n' + Date.now(), text, ts: Date.now(), read: false });
   saveState();
 }
 
 /* ==========================================================================
-   AUTH & PERSISTENT USERS
+   AUTHENTICATION & USER MANAGEMENT (Linked to Google Sheets & Local Storage)
    ========================================================================== */
-function login(){
-  const u = (document.getElementById('login-username').value || '').trim();
-  const p = document.getElementById('login-password').value;
-  
-  // Refresh accounts from storage before validating
+async function login() {
+  const u = (document.getElementById('login-username')?.value || '').trim();
+  const p = document.getElementById('login-password')?.value || '';
+  const err = document.getElementById('login-error');
+  const btn = document.getElementById('login-submit-btn');
+  const btnText = document.getElementById('login-btn-text');
+
+  if (!u || !p) {
+    if (err) { err.textContent = t('err_fill_all'); err.classList.remove('hidden'); }
+    return;
+  }
+
+  if (btn) btn.disabled = true;
+  if (btnText) btnText.innerHTML = '<i data-lucide="loader-2" class="h-4 w-4 animate-spin inline mr-1"></i> ' + t('loading_data');
+  if (window.lucide) lucide.createIcons();
+
+  let remoteSuccess = false;
+  if (SheetsDB.isConfigured()) {
+    const remoteRes = await SheetsDB.loginUser(u, p);
+    if (remoteRes && remoteRes.success && remoteRes.data) {
+      remoteSuccess = true;
+      const foundIdx = state.users.findIndex(x => x.username.toLowerCase() === u.toLowerCase());
+      if (foundIdx >= 0) {
+        state.users[foundIdx] = { ...state.users[foundIdx], ...remoteRes.data, password: p };
+      } else {
+        state.users.push({ ...remoteRes.data, username: u, password: p });
+      }
+    }
+  }
+
+  if (btn) btn.disabled = false;
+  if (btnText) btnText.textContent = t('login_btn');
+  if (window.lucide) lucide.createIcons();
+
   const stored = getStoredUsers();
   stored.forEach(su => {
-    if(!state.users.some(x=>x.username.toLowerCase()===su.username.toLowerCase())){
+    if (!state.users.some(x => x.username.toLowerCase() === su.username.toLowerCase())) {
       state.users.push(su);
     }
   });
 
-  const found = state.users.find(x=>x.username.toLowerCase()===u.toLowerCase() && x.password===p);
-  const err = document.getElementById('login-error');
-  if(!found){ err.textContent = t('err_invalid_login'); err.classList.remove('hidden'); return; }
-  err.classList.add('hidden');
-  state.currentUser = found.username;
+  const localFound = state.users.find(x => x.username.toLowerCase() === u.toLowerCase() && x.password === p);
+
+  if (!remoteSuccess && !localFound) {
+    if (err) { err.textContent = t('err_invalid_login'); err.classList.remove('hidden'); }
+    return;
+  }
+
+  if (err) err.classList.add('hidden');
+  state.currentUser = u;
   saveState();
+
   document.getElementById('login-username').value = '';
   document.getElementById('login-password').value = '';
+
+  showToast(t('toast_login_success_title'), t('toast_login_success_desc', { name: currentUserObj()?.name || u }), 'success');
   showView('user-dashboard');
+  SheetsDB.fetchUserData(u);
 }
 
-function register(){
-  const name = (document.getElementById('reg-name').value || '').trim();
-  const username = (document.getElementById('reg-username').value || '').trim();
-  const password = document.getElementById('reg-password').value;
+async function register() {
+  const name = (document.getElementById('reg-name')?.value || '').trim();
+  const username = (document.getElementById('reg-username')?.value || '').trim();
+  const password = document.getElementById('reg-password')?.value || '';
   const err = document.getElementById('reg-error');
-  if(!name || !username || !password){ err.textContent = t('err_fill_all'); err.classList.remove('hidden'); return; }
-  
-  // Refresh accounts
-  const stored = getStoredUsers();
-  if(stored.some(x=>x.username.toLowerCase()===username.toLowerCase()) || state.users.some(x=>x.username.toLowerCase()===username.toLowerCase())){
-    err.textContent = t('err_user_exists'); err.classList.remove('hidden'); return;
+  const btn = document.getElementById('reg-submit-btn');
+  const btnText = document.getElementById('reg-btn-text');
+
+  if (!name || !username || !password) {
+    if (err) { err.textContent = t('err_fill_all'); err.classList.remove('hidden'); }
+    return;
   }
-  err.classList.add('hidden');
-  
-  const newUser = {username, password, name, avatar:null};
+
+  if (btn) btn.disabled = true;
+  if (btnText) btnText.innerHTML = '<i data-lucide="loader-2" class="h-4 w-4 animate-spin inline mr-1"></i> ' + t('saving_data');
+  if (window.lucide) lucide.createIcons();
+
+  const stored = getStoredUsers();
+  if (stored.some(x => x.username.toLowerCase() === username.toLowerCase()) || state.users.some(x => x.username.toLowerCase() === username.toLowerCase())) {
+    if (btn) btn.disabled = false;
+    if (btnText) btnText.textContent = t('register_btn');
+    if (err) { err.textContent = t('err_user_exists'); err.classList.remove('hidden'); }
+    return;
+  }
+
+  let savedToSheets = false;
+  if (SheetsDB.isConfigured()) {
+    const remoteRes = await SheetsDB.registerUser(name, username, password);
+    if (remoteRes && !remoteRes.success && remoteRes.error && remoteRes.error.includes('already taken')) {
+      if (btn) btn.disabled = false;
+      if (btnText) btnText.textContent = t('register_btn');
+      if (err) { err.textContent = t('err_user_exists'); err.classList.remove('hidden'); }
+      return;
+    }
+    if (remoteRes && remoteRes.success) {
+      savedToSheets = true;
+    }
+  }
+
+  if (btn) btn.disabled = false;
+  if (btnText) btnText.textContent = t('register_btn');
+  if (err) err.classList.add('hidden');
+
+  const newUser = { username, password, name, role: 'user', avatar: null };
   state.users.push(newUser);
   state.currentUser = username;
   saveState();
-  
+
   document.getElementById('reg-name').value = '';
   document.getElementById('reg-username').value = '';
   document.getElementById('reg-password').value = '';
+
+  if (savedToSheets) {
+    showToast(t('toast_register_success_title'), t('toast_register_success_sheets'), 'success');
+  } else if (SheetsDB.isConfigured()) {
+    showToast(t('toast_register_success_title'), t('toast_register_success_local'), 'info');
+  } else {
+    showToast(t('toast_register_success_title'), t('toast_register_success_default'), 'success');
+  }
   showView('user-dashboard');
 }
 
-function logout(){ state.currentUser = null; saveState(); showView('landing'); }
-function currentUserObj(){ return state.users.find(u=>u.username.toLowerCase()===(state.currentUser||'').toLowerCase()); }
+function logout() {
+  state.currentUser = null;
+  saveState();
+  showToast(t('toast_logout_title'), t('toast_logout_desc'), 'info');
+  showView('landing');
+}
+
+function isGuest() {
+  return state.currentUser === 'guest';
+}
+
+function isAdmin() {
+  if (isGuest() || !state.currentUser) return false;
+  const user = currentUserObj();
+  return !!(user && user.role === 'admin');
+}
+
+function loginAsGuest() {
+  state.currentUser = 'guest';
+  saveState();
+  showToast(t('toast_guest_welcome_title'), t('toast_guest_welcome_desc'), 'info');
+  showView('user-dashboard');
+}
+
+function currentUserObj() {
+  if (isGuest()) {
+    return {
+      username: 'guest',
+      name: state.settings.lang === 'en' ? 'Guest User' : 'ผู้เยี่ยมชม',
+      role: 'guest',
+      avatar: null
+    };
+  }
+  return state.users.find(u => u.username.toLowerCase() === (state.currentUser || '').toLowerCase());
+}
 
 /* ==========================================================================
-   RENDERING
+   RENDERING VIEWS & STATES
    ========================================================================== */
-function renderAll(){
+function renderAll() {
   updateStaticTranslations();
   updateThemeUI();
   updateLanguageUI();
@@ -1384,165 +2306,221 @@ function renderAll(){
   renderAdmin();
   renderRoute();
   drawAllMaps();
-  if(window.lucide) lucide.createIcons();
+  if (window.lucide) lucide.createIcons();
 }
 
-function drawAllMaps(){
+function drawAllMaps() {
   drawMap('overview-map', null);
   const view = document.getElementById('user-map');
-  if(view && view.classList.contains('active')){
+  if (view && view.classList.contains('active')) {
     const building = buildingById(state.ui.destinationBuilding) || state.buildings[0];
-    if(building){
+    if (building) {
       const best = nearestLot(building);
-      if(best) drawMap('route-map', {lot:best.lot, building, safe: state.ui.routeType==='safe'});
+      if (best) drawMap('route-map', { lot: best.lot, building, safe: state.ui.routeType === 'safe' });
     }
   }
 }
 
-function totalAvailable(){ return state.lots.reduce((s,l)=>s+l.available,0); }
+function totalAvailable() {
+  return state.lots.reduce((s, l) => s + (parseInt(l.available, 10) || 0), 0);
+}
 
-function renderLanding(){
+function renderLanding() {
   document.getElementById('landing-space').textContent = totalAvailable();
   document.getElementById('landing-lots').textContent = state.lots.length;
   document.getElementById('landing-buildings').textContent = state.buildings.length;
 }
 
-function initialsAvatar(user){
-  return user && user.avatar ? `<img src="${user.avatar}" class="h-full w-full object-cover">` : (user? user.name.charAt(0).toUpperCase() : '?');
+function initialsAvatar(user) {
+  return user && user.avatar ? `<img src="${user.avatar}" class="h-full w-full object-cover">` : (user ? user.name.charAt(0).toUpperCase() : '?');
 }
 
-function renderDashboard(){
+function renderDashboard() {
   const user = currentUserObj();
-  document.getElementById('dashboard-greeting').textContent = user ? t('greeting_user', {name: user.name}) : t('greeting_guest');
+  document.getElementById('dashboard-greeting').textContent = user ? t('greeting_user', { name: user.name }) : t('greeting_guest');
   document.getElementById('header-avatar').innerHTML = initialsAvatar(user);
-  document.getElementById('notif-dot').classList.toggle('hidden', !state.notifications.some(n=>!n.read));
+  document.getElementById('notif-dot').classList.toggle('hidden', !state.notifications.some(n => !n.read));
 
   const statsBox = document.getElementById('dashboard-lot-stats');
-  statsBox.innerHTML = state.lots.map(l=>`
-    <div class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 text-center shadow-sm stat-card-anim">
-      <p class="text-xs text-[#5a627a] dark:text-[#9da7c5] truncate font-medium">${lName(l)}</p>
-      <p class="mt-2 text-2xl font-extrabold text-[#6a5bdc] dark:text-[#c4b5fd]">${l.available}</p>
-      <p class="text-[10px] text-[#8f9bb3] dark:text-[#6d7796]">${t('from_total', {cap: l.capacity})}</p>
-    </div>`).join('');
+  if (!state.lots.length) {
+    statsBox.innerHTML = `
+      <div class="col-span-3 rounded-2xl border border-dashed border-[#d5deed] dark:border-[#2a2d4a] p-6 text-center text-xs text-[#5a627a] dark:text-[#9da7c5]">
+        <i data-lucide="parking-circle" class="h-6 w-6 mx-auto text-[#8f9bb3] mb-1"></i>
+        ${t('no_lots_in_system')}
+      </div>`;
+  } else {
+    statsBox.innerHTML = state.lots.map(l => `
+      <div class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 text-center shadow-sm stat-card-anim">
+        <p class="text-xs text-[#5a627a] dark:text-[#9da7c5] truncate font-medium">${lName(l)}</p>
+        <p class="mt-2 text-2xl font-extrabold text-[#6a5bdc] dark:text-[#c4b5fd]">${l.available}</p>
+        <p class="text-[10px] text-[#8f9bb3] dark:text-[#6d7796]">${t('from_total', { cap: l.capacity })}</p>
+      </div>`).join('');
+  }
 
-  const best = state.lots.slice().sort((a,b)=>b.available-a.available)[0];
+  const best = state.lots.slice().sort((a, b) => (b.available || 0) - (a.available || 0))[0];
   const box = document.getElementById('recommend-box');
-  if(best){
+  if (best) {
     const b = buildingById(best.buildingId);
     box.innerHTML = `
       <p class="font-bold text-[#262447] dark:text-[#c4b5fd]">${lName(best)}</p>
-      <p class="mt-1 text-sm text-[#5a627a] dark:text-[#9da7c5]">${t('near_prefix', {building: bName(b)})} · ${t('slots_left_prefix', {avail: best.available, cap: best.capacity})}</p>`;
+      <p class="mt-1 text-sm text-[#5a627a] dark:text-[#9da7c5]">${t('near_prefix', { building: bName(b) })} · ${t('slots_left_prefix', { avail: best.available, cap: best.capacity })}</p>`;
   } else {
     box.innerHTML = `<p class="text-sm text-[#5a627a] dark:text-[#9da7c5]">${t('no_lots_in_system')}</p>`;
   }
 }
 
-function categoryLabel(c){
-  if(c==='classroom') return t('cat_classroom');
-  if(c==='office') return t('cat_office');
+function categoryLabel(c) {
+  if (c === 'classroom') return t('cat_classroom');
+  if (c === 'office') return t('cat_office');
   return t('cat_parking');
 }
 
-function renderSearchChips(){
+function renderSearchChips() {
   const wrap = document.getElementById('search-chips');
   const cats = [['all', t('cat_all')], ['classroom', t('cat_classroom')], ['parking', t('cat_parking')], ['office', t('cat_office')]];
   const active = state.ui.searchCategory || 'all';
-  wrap.innerHTML = cats.map(([id,label])=>`<button type="button" onclick="setSearchCategory('${id}')" class="chip ${active===id?'active':''}">${label}</button>`).join('');
+  wrap.innerHTML = cats.map(([id, label]) => `<button type="button" onclick="setSearchCategory('${id}')" class="chip ${active === id ? 'active' : ''}">${label}</button>`).join('');
 }
-function setSearchCategory(id){ state.ui.searchCategory = id; saveState(); renderSearchChips(); renderSearchResults(); }
+function setSearchCategory(id) {
+  state.ui.searchCategory = id;
+  saveState();
+  renderSearchChips();
+  renderSearchResults();
+}
 
-function renderSearchResults(){
+function renderSearchResults() {
   const q = (document.getElementById('search-input')?.value || '').trim().toLowerCase();
   const cat = state.ui.searchCategory || 'all';
-  if(q && state.currentUser){
-    if(!state.searchHistory.some(h=>h.q===q)){
-      state.searchHistory.unshift({q, ts:Date.now()});
-      state.searchHistory = state.searchHistory.slice(0,30);
+
+  if (q && state.currentUser) {
+    if (!state.searchHistory.some(h => h.q === q)) {
+      state.searchHistory.unshift({ q, ts: Date.now() });
+      state.searchHistory = state.searchHistory.slice(0, 30);
       saveState();
+      SheetsDB.recordSearch(q, state.currentUser);
     }
   }
+
   const results = document.getElementById('search-results');
   const items = [];
-  state.buildings.forEach(b=>{
-    const catMatch = cat==='all' || cat===b.category;
+
+  state.buildings.forEach(b => {
+    const catMatch = cat === 'all' || cat === b.category;
     const nameMatch = !q || b.name.toLowerCase().includes(q) || (b.nameEn && b.nameEn.toLowerCase().includes(q));
-    if(catMatch && nameMatch){
-      items.push({type:'building', data:b});
-    }
+    if (catMatch && nameMatch) items.push({ type: 'building', data: b });
   });
-  if(cat==='all' || cat==='parking'){
-    state.lots.forEach(l=>{
+
+  if (cat === 'all' || cat === 'parking') {
+    state.lots.forEach(l => {
       const lotMatch = !q || l.name.toLowerCase().includes(q) || (l.nameEn && l.nameEn.toLowerCase().includes(q));
-      if(lotMatch) items.push({type:'lot', data:l});
+      if (lotMatch) items.push({ type: 'lot', data: l });
     });
   }
-  if(!items.length){ results.innerHTML = `<p class="rounded-2xl bg-white dark:bg-[#161729] p-6 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">${t('no_search_results')}</p>`; return; }
-  results.innerHTML = items.map(it=>{
-    if(it.type==='building'){
+
+  if (!items.length) {
+    results.innerHTML = `
+      <div class="rounded-2xl bg-white dark:bg-[#161729] p-8 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">
+        <i data-lucide="search-x" class="h-8 w-8 mx-auto text-[#8f9bb3] mb-2"></i>
+        <p class="font-bold text-sm">${t('no_search_results')}</p>
+      </div>`;
+    if (window.lucide) lucide.createIcons();
+    return;
+  }
+
+  results.innerHTML = items.map(it => {
+    if (it.type === 'building') {
       const b = it.data;
       return `<button type="button" onclick="goToBuilding('${b.id}')" class="parking-card flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] p-4 text-left shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845] hover:ring-[#6a5bdc]">
         <span class="flex items-center gap-3"><span class="rounded-xl bg-[#f0edfc] dark:bg-[#252347] p-3 text-[#6a5bdc] dark:text-[#c4b5fd]"><i data-lucide="map-pin" class="h-5 w-5"></i></span>
         <span><b class="text-[#262447] dark:text-[#c4b5fd]">${bName(b)}</b><small class="mt-1 block text-[#5a627a] dark:text-[#9da7c5]">${categoryLabel(b.category)}</small></span></span>
         <i data-lucide="chevron-right" class="text-[#6a5bdc] dark:text-[#c4b5fd]"></i></button>`;
     } else {
-      const l = it.data; const b = buildingById(l.buildingId);
+      const l = it.data;
+      const b = buildingById(l.buildingId);
       return `<div class="parking-card flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
         <span class="flex items-center gap-3"><span class="rounded-xl bg-[#eef1fc] dark:bg-[#252347] p-3 text-[#6a5bdc] dark:text-[#c4b5fd]"><i data-lucide="parking-circle" class="h-5 w-5"></i></span>
-        <span><b class="text-[#262447] dark:text-[#c4b5fd]">${lName(l)}</b><small class="mt-1 block text-[#5a627a] dark:text-[#9da7c5]">${t('near_prefix', {building: bName(b)})} · ${t('slots_left_prefix', {avail: l.available, cap: l.capacity})}</small></span></span>
+        <span><b class="text-[#262447] dark:text-[#c4b5fd]">${lName(l)}</b><small class="mt-1 block text-[#5a627a] dark:text-[#9da7c5]">${t('near_prefix', { building: bName(b) })} · ${t('slots_left_prefix', { avail: l.available, cap: l.capacity })}</small></span></span>
         <span class="flex items-center gap-1">
-          <button type="button" onclick="toggleFavorite('${l.id}')" aria-label="Favorite" class="rounded-lg p-2 hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]"><i data-lucide="heart" class="h-5 w-5 ${state.favorites.includes(l.id)?'text-[#ec4899] fill-[#ec4899]':'text-[#9da7c5] dark:text-[#6d7796]'}"></i></button>
+          <button type="button" onclick="toggleFavorite('${l.id}')" aria-label="Favorite" class="rounded-lg p-2 hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]"><i data-lucide="heart" class="h-5 w-5 ${state.favorites.includes(l.id) ? 'text-[#ec4899] fill-[#ec4899]' : 'text-[#9da7c5] dark:text-[#6d7796]'}"></i></button>
           <button type="button" onclick="goToBuilding('${l.buildingId}')" class="rounded-lg p-2 text-[#6a5bdc] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]"><i data-lucide="navigation" class="h-5 w-5"></i></button>
         </span></div>`;
     }
   }).join('');
-  if(window.lucide) lucide.createIcons();
+  if (window.lucide) lucide.createIcons();
 }
 
-function goToBuilding(buildingId){
+function goToBuilding(buildingId) {
   state.ui.destinationBuilding = buildingId;
   state.ui.routeType = 'fast';
   saveState();
   showView('user-map');
 }
 
-function setRouteType(tType){ state.ui.routeType = tType; saveState(); renderRoute(); }
+function setRouteType(tType) {
+  state.ui.routeType = tType;
+  saveState();
+  renderRoute();
+}
 
-function renderRoute(){
+function renderRoute() {
   const view = document.getElementById('user-map');
-  if(!view.classList.contains('active')) return;
+  if (!view.classList.contains('active')) return;
   const building = buildingById(state.ui.destinationBuilding) || state.buildings[0];
-  if(!building) return;
+  if (!building) return;
   const best = nearestLot(building);
   document.getElementById('route-title').textContent = bName(building);
-  document.getElementById('route-type-fast').classList.toggle('active', state.ui.routeType==='fast');
-  document.getElementById('route-type-safe').classList.toggle('active', state.ui.routeType==='safe');
-  if(!best){ document.getElementById('route-description').textContent = t('no_lots_in_system'); return; }
-  const multiplier = state.ui.routeType==='safe' ? 1.35 : 1;
+  document.getElementById('route-type-fast').classList.toggle('active', state.ui.routeType === 'fast');
+  document.getElementById('route-type-safe').classList.toggle('active', state.ui.routeType === 'safe');
+
+  if (!best) {
+    document.getElementById('route-description').textContent = t('no_lots_in_system');
+    return;
+  }
+  const multiplier = state.ui.routeType === 'safe' ? 1.35 : 1;
   const dist = Math.round(best.dist * multiplier);
-  document.getElementById('route-description').textContent = t('route_rec_desc', {lot: lName(best.lot)});
+  document.getElementById('route-description').textContent = t('route_rec_desc', { lot: lName(best.lot) });
   document.getElementById('route-time').textContent = walkMinutes(dist);
   document.getElementById('route-distance').textContent = dist;
   document.getElementById('route-lot-name').textContent = lName(best.lot);
   document.getElementById('route-finished').classList.add('hidden');
-  drawMap('route-map', {lot:best.lot, building, safe: state.ui.routeType==='safe'});
+  drawMap('route-map', { lot: best.lot, building, safe: state.ui.routeType === 'safe' });
 }
 
-function finishRoute(){
+async function finishRoute() {
   const building = buildingById(state.ui.destinationBuilding);
   const best = building ? nearestLot(building) : null;
-  if(best && best.lot.available>0){ best.lot.available -= 1; }
+  const btn = document.getElementById('finish-route-btn');
+  const btnText = document.getElementById('finish-btn-text');
+
+  if (btn) btn.disabled = true;
+  if (btnText) btnText.innerHTML = '<i data-lucide="loader-2" class="h-4 w-4 animate-spin inline mr-1"></i> ' + t('saving_data');
+  if (window.lucide) lucide.createIcons();
+
+  if (best && best.lot.available > 0) {
+    best.lot.available -= 1;
+  }
   const lotTitle = best ? lName(best.lot) : '';
-  const msg = t('nav_finish_notif', {lot: lotTitle});
+  const msg = t('nav_finish_notif', { lot: lotTitle });
   pushNotification(msg);
-  state.navHistory.unshift({buildingId: building?building.id:null, lotId: best?best.lot.id:null, ts:Date.now()});
+
+  state.navHistory.unshift({ buildingId: building ? building.id : null, lotId: best ? best.lot.id : null, ts: Date.now() });
   saveState();
+
+  if (building && best) {
+    SheetsDB.recordParking(building.id, best.lot.id, state.currentUser || 'guest');
+  }
+
+  if (btn) btn.disabled = false;
+  if (btnText) btnText.textContent = t('finish_nav');
   document.getElementById('route-finished').classList.remove('hidden');
+
+  showToast(t('toast_parked_success_title'), msg, 'success');
   renderAll();
 }
 
-function drawMap(svgId, route){
+function drawMap(svgId, route) {
   const svg = document.getElementById(svgId);
-  if(!svg) return;
+  if (!svg) return;
   const isDark = getEffectiveTheme() === 'dark';
   const bldgDotFill = isDark ? '#D9B1E6' : '#262447';
   const bldgTextFill = isDark ? '#9da7c5' : '#5a627a';
@@ -1550,16 +2528,16 @@ function drawMap(svgId, route){
   const routeLineStroke = isDark ? '#D9B1E6' : '#BF87C9';
 
   let markers = '';
-  state.buildings.forEach(b=>{
+  state.buildings.forEach(b => {
     const name = bName(b);
-    markers += `<circle cx="${b.lat}" cy="${b.lng}" r="2.4" fill="${bldgDotFill}"></circle><text x="${b.lat+3}" y="${b.lng+1}" font-size="3.2" font-weight="600" fill="${bldgTextFill}">${name.length>10?name.slice(0,9)+'…':name}</text>`;
+    markers += `<circle cx="${b.lat}" cy="${b.lng}" r="2.4" fill="${bldgDotFill}"></circle><text x="${b.lat + 3}" y="${b.lng + 1}" font-size="3.2" font-weight="600" fill="${bldgTextFill}">${name.length > 10 ? name.slice(0, 9) + '…' : name}</text>`;
   });
-  state.lots.forEach(l=>{
+  state.lots.forEach(l => {
     markers += `<circle cx="${l.lat}" cy="${l.lng}" r="2.8" fill="${lotDotFill}"></circle>`;
   });
   let line = '';
-  if(route){
-    const mid = route.safe ? `${(route.lot.lat+route.building.lat)/2+8},${(route.lot.lng+route.building.lng)/2-8}` : '';
+  if (route) {
+    const mid = route.safe ? `${(route.lot.lat + route.building.lat) / 2 + 8},${(route.lot.lng + route.building.lng) / 2 - 8}` : '';
     const path = route.safe
       ? `M${route.lot.lat},${route.lot.lng} Q${mid} ${route.building.lat},${route.building.lng}`
       : `M${route.lot.lat},${route.lot.lng} L${route.building.lat},${route.building.lng}`;
@@ -1569,211 +2547,510 @@ function drawMap(svgId, route){
   svg.innerHTML = line + markers;
 }
 
-function toggleFavorite(lotId){
+async function toggleFavorite(lotId) {
   const i = state.favorites.indexOf(lotId);
-  if(i>=0) state.favorites.splice(i,1); else state.favorites.push(lotId);
+  const isAdding = i < 0;
+  if (i >= 0) state.favorites.splice(i, 1);
+  else state.favorites.push(lotId);
   saveState();
+
   renderSearchResults();
   renderFavorites();
-}
 
-function renderFavorites(){
-  const list = document.getElementById('favorites-list');
-  if(!state.favorites.length){ list.innerHTML = `<p class="rounded-2xl bg-white dark:bg-[#161729] p-6 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">${t('no_favorites')}</p>`; return; }
-  list.innerHTML = state.favorites.map(id=>{
-    const l = lotById(id); if(!l) return '';
-    const b = buildingById(l.buildingId);
-    return `<div class="flex items-center justify-between rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
-      <span class="flex items-center gap-3"><span class="rounded-xl bg-[#f0edfc] dark:bg-[#252347] p-3 text-[#6a5bdc] dark:text-[#c4b5fd]"><i data-lucide="heart" class="h-5 w-5 fill-[#ec4899] text-[#ec4899]"></i></span>
-      <span><b class="text-[#262447] dark:text-[#c4b5fd]">${lName(l)}</b><small class="mt-1 block text-[#5a627a] dark:text-[#9da7c5]">${t('near_prefix', {building: bName(b)})} · ${t('slots_left_prefix', {avail: l.available, cap: l.capacity})}</small></span></span>
-      <button type="button" onclick="goToBuilding('${l.buildingId}')" class="rounded-lg p-2 text-[#6a5bdc] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]"><i data-lucide="navigation" class="h-5 w-5"></i></button></div>`;
-  }).join('');
-  if(window.lucide) lucide.createIcons();
-}
+  showToast(
+    isAdding ? t('toast_fav_added_title') : t('toast_fav_removed_title'),
+    lName(lotById(lotId)),
+    'info'
+  );
 
-function toggleProfileEdit(){
-  const box = document.getElementById('profile-edit-box');
-  box.classList.toggle('hidden');
-  const user = currentUserObj();
-  if(user) document.getElementById('edit-name').value = user.name;
-}
-function saveProfile(){
-  const user = currentUserObj();
-  if(!user) return;
-  const name = document.getElementById('edit-name').value.trim();
-  const pw = document.getElementById('edit-password').value;
-  if(name) user.name = name;
-  if(pw) user.password = pw;
-  saveState();
-  document.getElementById('edit-password').value='';
-  document.getElementById('profile-saved').classList.remove('hidden');
-  renderProfile();
-}
-function uploadAvatar(evt){
-  const file = evt.target.files[0];
-  const user = currentUserObj();
-  if(!file || !user) return;
-  const reader = new FileReader();
-  reader.onload = ()=>{ user.avatar = reader.result; saveState(); renderProfile(); renderDashboard(); };
-  reader.readAsDataURL(file);
-}
-function renderProfile(){
-  const user = currentUserObj();
-  document.getElementById('profile-name').textContent = user ? user.name : t('guest_user');
-  document.getElementById('profile-avatar').innerHTML = initialsAvatar(user);
-}
-
-function setHistoryTab(tab){ state.ui.historyTab = tab; saveState(); renderHistory(); }
-function renderHistory(){
-  document.getElementById('history-tab-nav').classList.toggle('active', state.ui.historyTab==='nav');
-  document.getElementById('history-tab-search').classList.toggle('active', state.ui.historyTab==='search');
-  const list = document.getElementById('history-list');
-  if(state.ui.historyTab==='nav'){
-    if(!state.navHistory.length){ list.innerHTML=`<p class="rounded-2xl bg-white dark:bg-[#161729] p-6 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">${t('no_parking_history')}</p>`; return; }
-    list.innerHTML = state.navHistory.map(h=>{
-      const b=buildingById(h.buildingId), l=lotById(h.lotId);
-      return `<div class="rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
-        <p class="font-bold text-[#262447] dark:text-[#c4b5fd]">${l?lName(l):'-'}</p>
-        <p class="text-sm text-[#5a627a] dark:text-[#9da7c5]">${t('history_to', {dest: b?bName(b):'-'})} · ${fmtTime(h.ts)}</p>
-      </div>`;
-    }).join('');
-  } else {
-    if(!state.searchHistory.length){ list.innerHTML=`<p class="rounded-2xl bg-white dark:bg-[#161729] p-6 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">${t('no_search_history')}</p>`; return; }
-    list.innerHTML = state.searchHistory.map(h=>`<div class="flex items-center justify-between rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]"><span class="font-medium">${h.q}</span><span class="text-xs text-[#8f9bb3] dark:text-[#6d7796]">${fmtTime(h.ts)}</span></div>`).join('');
+  if (state.currentUser) {
+    SheetsDB.toggleFavorite(lotId, state.currentUser);
   }
 }
 
-function renderReview(){
+function renderFavorites() {
+  const list = document.getElementById('favorites-list');
+  if (!state.favorites.length) {
+    list.innerHTML = `
+      <div class="rounded-2xl bg-white dark:bg-[#161729] p-8 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">
+        <i data-lucide="heart" class="h-8 w-8 mx-auto text-[#8f9bb3] mb-2"></i>
+        <p class="font-bold text-sm">${t('no_favorites')}</p>
+        <button type="button" onclick="showView('user-search')" class="interactive-btn mt-3 inline-flex items-center gap-1.5 rounded-xl bg-[#6a5bdc] px-4 py-2 text-xs font-bold text-white">
+          <i data-lucide="search" class="h-3.5 w-3.5"></i>
+          <span>${t('start_finding')}</span>
+        </button>
+      </div>`;
+    if (window.lucide) lucide.createIcons();
+    return;
+  }
+  list.innerHTML = state.favorites.map(id => {
+    const l = lotById(id);
+    if (!l) return '';
+    const b = buildingById(l.buildingId);
+    return `<div class="flex items-center justify-between rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
+      <span class="flex items-center gap-3"><span class="rounded-xl bg-[#f0edfc] dark:bg-[#252347] p-3 text-[#6a5bdc] dark:text-[#c4b5fd]"><i data-lucide="heart" class="h-5 w-5 fill-[#ec4899] text-[#ec4899]"></i></span>
+      <span><b class="text-[#262447] dark:text-[#c4b5fd]">${lName(l)}</b><small class="mt-1 block text-[#5a627a] dark:text-[#9da7c5]">${t('near_prefix', { building: bName(b) })} · ${t('slots_left_prefix', { avail: l.available, cap: l.capacity })}</small></span></span>
+      <div class="flex items-center gap-1">
+        <button type="button" onclick="toggleFavorite('${l.id}')" class="rounded-lg p-2 text-rose-500 hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" title="นำออก"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
+        <button type="button" onclick="goToBuilding('${l.buildingId}')" class="rounded-lg p-2 text-[#6a5bdc] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]"><i data-lucide="navigation" class="h-5 w-5"></i></button>
+      </div></div>`;
+  }).join('');
+  if (window.lucide) lucide.createIcons();
+}
+
+function toggleProfileEdit() {
+  const box = document.getElementById('profile-edit-box');
+  box.classList.toggle('hidden');
+  const user = currentUserObj();
+  if (user) document.getElementById('edit-name').value = user.name;
+}
+
+async function saveProfile() {
+  const user = currentUserObj();
+  if (!user) return;
+  const name = (document.getElementById('edit-name')?.value || '').trim();
+  const pw = document.getElementById('edit-password')?.value || '';
+  const btn = document.getElementById('save-profile-btn');
+  const btnText = document.getElementById('save-profile-text');
+
+  if (!name) {
+    showToast(t('toast_err_name_required_title'), t('toast_err_name_required_desc'), 'error');
+    return;
+  }
+
+  if (btn) btn.disabled = true;
+  if (btnText) btnText.innerHTML = '<i data-lucide="loader-2" class="h-3.5 w-3.5 animate-spin inline mr-1"></i> ' + t('saving_data');
+  if (window.lucide) lucide.createIcons();
+
+  user.name = name;
+  if (pw) user.password = pw;
+  saveState();
+
+  let savedToSheets = false;
+  if (SheetsDB.isConfigured()) {
+    const res = await SheetsDB.updateProfile(user.username, { name, password: pw || user.password });
+    if (res && res.success) savedToSheets = true;
+  }
+
+  if (btn) btn.disabled = false;
+  if (btnText) btnText.textContent = t('save_changes');
+  document.getElementById('edit-password').value = '';
+  document.getElementById('profile-saved').classList.remove('hidden');
+
+  if (savedToSheets) {
+    showToast(t('toast_profile_saved_title'), t('toast_profile_saved_sheets'), 'success');
+  } else {
+    showToast(t('toast_profile_saved_title'), t('toast_profile_saved_default'), 'success');
+  }
+  renderProfile();
+}
+
+function uploadAvatar(evt) {
+  const file = evt.target.files[0];
+  const user = currentUserObj();
+  if (!file || !user) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    user.avatar = reader.result;
+    saveState();
+    if (SheetsDB.isConfigured()) {
+      SheetsDB.updateProfile(user.username, { avatar: user.avatar });
+    }
+    renderProfile();
+    renderDashboard();
+    showToast(t('toast_avatar_success_title'), t('toast_avatar_success_desc'), 'success');
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderProfile() {
+  const user = currentUserObj();
+  const nameEl = document.getElementById('profile-name');
+  const roleEl = document.getElementById('profile-role');
+  const roleBadgeEl = document.getElementById('profile-role-badge');
+  const avatarEl = document.getElementById('profile-avatar');
+  const guestBanner = document.getElementById('profile-guest-banner');
+  const adminTile = document.getElementById('profile-admin-tile');
+  const sheetsTile = document.getElementById('profile-sheets-tile');
+  const editProfileBtn = document.getElementById('profile-edit-btn');
+
+  if (nameEl) nameEl.textContent = user ? user.name : t('guest_user');
+  if (avatarEl) avatarEl.innerHTML = initialsAvatar(user);
+
+  const admin = isAdmin();
+  const guest = isGuest();
+
+  if (roleBadgeEl) {
+    if (admin) {
+      roleBadgeEl.className = 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#ec4899] text-white shadow-sm';
+      roleBadgeEl.innerHTML = `<i data-lucide="shield-check" class="h-3 w-3"></i> <span>${t('role_admin')}</span>`;
+    } else if (guest) {
+      roleBadgeEl.className = 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-400 text-[#0e0f1a] shadow-sm';
+      roleBadgeEl.innerHTML = `<i data-lucide="user" class="h-3 w-3"></i> <span>${t('role_guest')}</span>`;
+    } else {
+      roleBadgeEl.className = 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#6a5bdc] text-white shadow-sm';
+      roleBadgeEl.innerHTML = `<i data-lucide="user-check" class="h-3 w-3"></i> <span>${t('role_member')}</span>`;
+    }
+  }
+
+  if (roleEl) {
+    roleEl.textContent = admin ? t('role_admin_sub') :
+                         guest ? t('role_guest_sub') :
+                         t('role_member_sub');
+  }
+
+  if (guestBanner) {
+    guestBanner.classList.toggle('hidden', !guest);
+  }
+
+  if (adminTile) {
+    adminTile.classList.toggle('hidden', !admin);
+  }
+
+  if (sheetsTile) {
+    sheetsTile.classList.toggle('hidden', !admin);
+  }
+
+  if (editProfileBtn) {
+    editProfileBtn.classList.toggle('hidden', guest);
+  }
+
+  if (window.lucide) lucide.createIcons();
+}
+
+function setHistoryTab(tab) {
+  state.ui.historyTab = tab;
+  saveState();
+  renderHistory();
+}
+
+function renderHistory() {
+  document.getElementById('history-tab-nav').classList.toggle('active', state.ui.historyTab === 'nav');
+  document.getElementById('history-tab-search').classList.toggle('active', state.ui.historyTab === 'search');
+  const list = document.getElementById('history-list');
+
+  if (state.ui.historyTab === 'nav') {
+    if (!state.navHistory.length) {
+      list.innerHTML = `
+        <div class="rounded-2xl bg-white dark:bg-[#161729] p-8 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">
+          <i data-lucide="clock" class="h-8 w-8 mx-auto text-[#8f9bb3] mb-2"></i>
+          <p class="font-bold text-sm">${t('no_parking_history')}</p>
+        </div>`;
+      if (window.lucide) lucide.createIcons();
+      return;
+    }
+    list.innerHTML = state.navHistory.map(h => {
+      const b = buildingById(h.buildingId), l = lotById(h.lotId);
+      return `<div class="rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
+        <p class="font-bold text-[#262447] dark:text-[#c4b5fd]">${l ? lName(l) : '-'}</p>
+        <p class="text-sm text-[#5a627a] dark:text-[#9da7c5]">${t('history_to', { dest: b ? bName(b) : '-' })} · ${fmtTime(h.ts)}</p>
+      </div>`;
+    }).join('');
+  } else {
+    if (!state.searchHistory.length) {
+      list.innerHTML = `
+        <div class="rounded-2xl bg-white dark:bg-[#161729] p-8 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">
+          <i data-lucide="search" class="h-8 w-8 mx-auto text-[#8f9bb3] mb-2"></i>
+          <p class="font-bold text-sm">${t('no_search_history')}</p>
+        </div>`;
+      if (window.lucide) lucide.createIcons();
+      return;
+    }
+    list.innerHTML = state.searchHistory.map(h => `
+      <div class="flex items-center justify-between rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
+        <span class="font-medium">${h.q}</span>
+        <span class="text-xs text-[#8f9bb3] dark:text-[#6d7796]">${fmtTime(h.ts)}</span>
+      </div>`).join('');
+  }
+  if (window.lucide) lucide.createIcons();
+}
+
+function renderReview() {
   const stars = document.getElementById('star-input');
-  stars.innerHTML = [1,2,3,4,5].map(n=>`<button type="button" onclick="setStars(${n})" class="star-btn ${n<=state.ui.reviewStars?'active':''} rounded-lg p-1"><i data-lucide="star" class="h-6 w-6 ${n<=state.ui.reviewStars?'text-amber-500 fill-amber-500':'text-[#d5deed] dark:text-[#2a2d4a]'}"></i></button>`).join('');
+  stars.innerHTML = [1, 2, 3, 4, 5].map(n => `<button type="button" onclick="setStars(${n})" class="star-btn ${n <= state.ui.reviewStars ? 'active' : ''} rounded-lg p-1"><i data-lucide="star" class="h-6 w-6 ${n <= state.ui.reviewStars ? 'text-amber-500 fill-amber-500' : 'text-[#d5deed] dark:text-[#2a2d4a]'}"></i></button>`).join('');
+  
   const avgBox = document.getElementById('review-average');
   const countBox = document.getElementById('review-count');
-  if(state.reviews.length){
-    const avg = (state.reviews.reduce((s,r)=>s+r.stars,0)/state.reviews.length).toFixed(1);
+  if (state.reviews.length) {
+    const avg = (state.reviews.reduce((s, r) => s + r.stars, 0) / state.reviews.length).toFixed(1);
     avgBox.textContent = avg;
-    countBox.textContent = t('from_reviews_count', {count: state.reviews.length});
-  } else { avgBox.textContent='-'; countBox.textContent = t('no_reviews'); }
+    countBox.textContent = t('from_reviews_count', { count: state.reviews.length });
+  } else {
+    avgBox.textContent = '-';
+    countBox.textContent = t('no_reviews');
+  }
+
   const list = document.getElementById('review-list');
-  list.innerHTML = state.reviews.map(r=>`<div class="rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:border-[#262845]">
-    <div class="flex items-center gap-1 text-amber-500">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div>
-    <p class="mt-1 text-sm text-[#181b2e] dark:text-[#e0e4f7]">${r.text||''}</p>
-    <p class="mt-1 text-xs text-[#8f9bb3] dark:text-[#6d7796]">${r.name} · ${fmtTime(r.ts)}</p></div>`).join('');
-  if(window.lucide) lucide.createIcons();
+  if (!state.reviews.length) {
+    list.innerHTML = `
+      <div class="rounded-2xl bg-white dark:bg-[#161729] p-6 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">
+        <i data-lucide="star" class="h-6 w-6 mx-auto text-amber-400 mb-1"></i>
+        <p class="font-bold text-sm">${t('no_reviews')}</p>
+      </div>`;
+  } else {
+    list.innerHTML = state.reviews.map(r => `
+      <div class="rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
+        <div class="flex items-center gap-1 text-amber-500">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</div>
+        <p class="mt-1 text-sm text-[#181b2e] dark:text-[#e0e4f7]">${r.text || ''}</p>
+        <p class="mt-1 text-xs text-[#8f9bb3] dark:text-[#6d7796]">${r.name} · ${fmtTime(r.ts)}</p>
+      </div>`).join('');
+  }
+  if (window.lucide) lucide.createIcons();
 }
-function setStars(n){ state.ui.reviewStars = n; saveState(); renderReview(); }
-function submitReview(){
-  const user = currentUserObj();
-  const text = document.getElementById('review-text').value.trim();
-  state.reviews.unshift({stars: state.ui.reviewStars, text, name: user?user.name:t('guest_user'), ts:Date.now()});
-  document.getElementById('review-text').value='';
+
+function setStars(n) {
+  state.ui.reviewStars = n;
   saveState();
+  renderReview();
+}
+
+async function submitReview() {
+  const user = currentUserObj();
+  const text = (document.getElementById('review-text')?.value || '').trim();
+  const btn = document.getElementById('review-submit-btn');
+  const btnText = document.getElementById('review-btn-text');
+
+  if (text.length < 2) {
+    showToast(t('toast_err_review_short_title'), t('toast_err_review_short_desc'), 'error');
+    return;
+  }
+
+  if (btn) btn.disabled = true;
+  if (btnText) btnText.innerHTML = '<i data-lucide="loader-2" class="h-4 w-4 animate-spin inline mr-1"></i> ' + t('saving_data');
+  if (window.lucide) lucide.createIcons();
+
+  const newRev = {
+    stars: state.ui.reviewStars,
+    text,
+    name: user ? user.name : t('guest_user'),
+    username: user ? user.username : 'guest',
+    ts: Date.now()
+  };
+
+  state.reviews.unshift(newRev);
+  document.getElementById('review-text').value = '';
+  saveState();
+
+  let savedToSheets = false;
+  if (SheetsDB.isConfigured()) {
+    const res = await SheetsDB.submitReview(newRev);
+    if (res && res.success) savedToSheets = true;
+  }
+
+  if (btn) btn.disabled = false;
+  if (btnText) btnText.textContent = t('submit_review_btn');
+
+  if (savedToSheets) {
+    showToast(t('toast_review_success_title'), t('toast_review_success_sheets'), 'success');
+  } else {
+    showToast(t('toast_review_success_title'), t('toast_review_success_default'), 'success');
+  }
   renderReview();
   renderAdmin();
 }
 
-function renderNotifications(){
+function renderNotifications() {
   const list = document.getElementById('notifications-list');
-  if(!state.notifications.length){ list.innerHTML = `<p class="rounded-2xl bg-white dark:bg-[#161729] p-6 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">${t('no_notifications')}</p>`; return; }
-  list.innerHTML = state.notifications.map(n=>`<div class="rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]"><p class="font-semibold text-[#262447] dark:text-[#c4b5fd]">${n.text}</p><p class="mt-1 text-xs text-[#8f9bb3] dark:text-[#6d7796]">${fmtTime(n.ts)}</p></div>`).join('');
-  state.notifications.forEach(n=>n.read=true);
+  if (!state.notifications.length) {
+    list.innerHTML = `
+      <div class="rounded-2xl bg-white dark:bg-[#161729] p-8 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">
+        <i data-lucide="bell-off" class="h-8 w-8 mx-auto text-[#8f9bb3] mb-2"></i>
+        <p class="font-bold text-sm">${t('no_notifications')}</p>
+      </div>`;
+    if (window.lucide) lucide.createIcons();
+    return;
+  }
+  list.innerHTML = state.notifications.map(n => `
+    <div class="rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
+      <p class="font-semibold text-[#262447] dark:text-[#c4b5fd]">${n.text}</p>
+      <p class="mt-1 text-xs text-[#8f9bb3] dark:text-[#6d7796]">${fmtTime(n.ts)}</p>
+    </div>`).join('');
+  state.notifications.forEach(n => n.read = true);
   saveState();
+  if (window.lucide) lucide.createIcons();
 }
 
 /* ==========================================================================
-   ADMIN
+   ADMIN MANAGEMENT (Live Google Sheets & Local CRUD)
    ========================================================================== */
-function populateBuildingSelect(){
+function populateBuildingSelect() {
   const sel = document.getElementById('new-lot-building');
-  if(!sel) return;
-  sel.innerHTML = state.buildings.map(b=>`<option value="${b.id}">${bName(b)}</option>`).join('');
+  if (!sel) return;
+  sel.innerHTML = state.buildings.map(b => `<option value="${b.id}">${bName(b)}</option>`).join('');
 }
-function renderAdmin(){
+
+function renderAdmin() {
   document.getElementById('admin-lot-count').textContent = state.lots.length;
   document.getElementById('admin-total').textContent = totalAvailable();
   document.getElementById('admin-building-count').textContent = state.buildings.length;
   populateBuildingSelect();
+
   const list = document.getElementById('admin-lot-list');
-  if(!state.lots.length){ list.innerHTML = `<p class="text-center text-[#5a627a] dark:text-[#9da7c5]">${t('no_lots_in_system')}</p>`; }
-  else {
-    list.innerHTML = state.lots.map(l=>{
+  if (!state.lots.length) {
+    list.innerHTML = `
+      <div class="rounded-2xl bg-white dark:bg-[#161729] p-6 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">
+        <i data-lucide="parking-circle" class="h-6 w-6 mx-auto text-[#8f9bb3] mb-1"></i>
+        <p class="font-bold text-sm">${t('no_lots_in_system')}</p>
+      </div>`;
+  } else {
+    list.innerHTML = state.lots.map(l => {
       const b = buildingById(l.buildingId);
       return `<div class="flex items-center justify-between rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 shadow-sm">
-        <div><p class="font-bold text-[#262447] dark:text-[#c4b5fd]">${lName(l)}</p><p class="text-xs text-[#8f9bb3] dark:text-[#6d7796]">${t('near_prefix', {building: b?bName(b):'-'})} · ${t('from_total', {cap: l.capacity})}</p></div>
+        <div><p class="font-bold text-[#262447] dark:text-[#c4b5fd]">${lName(l)}</p><p class="text-xs text-[#8f9bb3] dark:text-[#6d7796]">${t('near_prefix', { building: b ? bName(b) : '-' })} · ${t('from_total', { cap: l.capacity })}</p></div>
         <div class="flex items-center gap-3">
-          <button type="button" onclick="adjustLot('${l.id}',-1)" class="rounded-lg border border-[#d5deed] dark:border-[#2a2d4a] p-2 hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" aria-label="Decrease available spots"><i data-lucide="minus" class="h-4 w-4"></i></button>
+          <button type="button" onclick="adjustLot('${l.id}',-1)" class="interactive-btn rounded-lg border border-[#d5deed] dark:border-[#2a2d4a] p-2 hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" aria-label="Decrease available spots"><i data-lucide="minus" class="h-4 w-4"></i></button>
           <b class="w-7 text-center font-bold text-[#6a5bdc] dark:text-[#c4b5fd]">${l.available}</b>
-          <button type="button" onclick="adjustLot('${l.id}',1)" class="rounded-lg border border-[#d5deed] dark:border-[#2a2d4a] p-2 hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" aria-label="Increase available spots"><i data-lucide="plus" class="h-4 w-4"></i></button>
-          <button type="button" onclick="deleteLot('${l.id}')" class="rounded-lg border border-[#fecdd3] dark:border-[#4c1d24] p-2 text-[#e11d48] dark:text-[#fb7185] hover:bg-[#fff1f2] dark:hover:bg-[#251619]" aria-label="Delete lot"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
+          <button type="button" onclick="adjustLot('${l.id}',1)" class="interactive-btn rounded-lg border border-[#d5deed] dark:border-[#2a2d4a] p-2 hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" aria-label="Increase available spots"><i data-lucide="plus" class="h-4 w-4"></i></button>
+          <button type="button" onclick="deleteLot('${l.id}')" class="interactive-btn rounded-lg border border-[#fecdd3] dark:border-[#4c1d24] p-2 text-[#e11d48] dark:text-[#fb7185] hover:bg-[#fff1f2] dark:hover:bg-[#251619]" aria-label="Delete lot"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
         </div></div>`;
     }).join('');
   }
+
   const reviewList = document.getElementById('admin-review-list');
-  if(!state.reviews.length){ reviewList.innerHTML = `<p class="text-center text-[#5a627a] dark:text-[#9da7c5]">${t('no_reviews')}</p>`; }
-  else {
-    reviewList.innerHTML = state.reviews.slice(0,5).map(r=>`<div class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 shadow-sm"><div class="text-amber-500">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div><p class="mt-1 text-sm text-[#181b2e] dark:text-[#e0e4f7]">${r.text||''}</p></div>`).join('');
+  if (!state.reviews.length) {
+    reviewList.innerHTML = `<p class="text-center text-[#5a627a] dark:text-[#9da7c5]">${t('no_reviews')}</p>`;
+  } else {
+    reviewList.innerHTML = state.reviews.slice(0, 5).map(r => `
+      <div class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 shadow-sm">
+        <div class="text-amber-500">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</div>
+        <p class="mt-1 text-sm text-[#181b2e] dark:text-[#e0e4f7]">${r.text || ''}</p>
+        <p class="mt-1 text-xs text-[#8f9bb3] dark:text-[#6d7796]">${r.name}</p>
+      </div>`).join('');
   }
-  if(window.lucide) lucide.createIcons();
+  if (window.lucide) lucide.createIcons();
 }
 
-function adjustLot(id,change){
+async function adjustLot(id, change) {
   const lot = lotById(id);
-  if(!lot) return;
-  lot.available = Math.max(0, Math.min(lot.capacity, lot.available+change));
+  if (!lot) return;
+  lot.available = Math.max(0, Math.min(lot.capacity, (parseInt(lot.available, 10) || 0) + change));
   saveState();
   renderAll();
+
+  if (SheetsDB.isConfigured()) {
+    SheetsDB.adjustLot(id, change);
+  }
 }
 
-async function addLot(){
-  const name = document.getElementById('new-lot-name').value.trim();
-  const buildingId = document.getElementById('new-lot-building').value;
-  const capacity = Math.max(1, parseInt(document.getElementById('new-lot-capacity').value,10) || 20);
+async function addLot() {
+  const name = (document.getElementById('new-lot-name')?.value || '').trim();
+  const nameEn = (document.getElementById('new-lot-name-en')?.value || '').trim() || name;
+  const buildingId = document.getElementById('new-lot-building')?.value || '';
+  const capacity = Math.max(1, parseInt(document.getElementById('new-lot-capacity')?.value, 10) || 20);
   const msg = document.getElementById('admin-message');
-  if(!name || !buildingId){ msg.textContent = t('fill_lot_fields'); msg.classList.remove('hidden'); return; }
+  const btn = document.getElementById('btn-add-lot');
+  const btnText = document.getElementById('add-lot-text');
+
+  if (!name || !buildingId) {
+    showToast(t('toast_missing_info_title'), t('fill_lot_fields'), 'error');
+    if (msg) { msg.textContent = t('fill_lot_fields'); msg.classList.remove('hidden'); }
+    return;
+  }
+
+  if (btn) btn.disabled = true;
+  if (btnText) btnText.innerHTML = '<i data-lucide="loader-2" class="h-4 w-4 animate-spin inline mr-1"></i> ' + t('saving_data');
+  if (window.lucide) lucide.createIcons();
+
   const b = buildingById(buildingId);
-  const id = 'lot-'+Date.now();
-  state.lots.push({id, name, nameEn: name, buildingId, capacity, available: capacity, lat: b.lat+(Math.random()*4-2), lng: b.lng+(Math.random()*4-2)});
+  const id = 'lot-' + Date.now();
+  const newLot = {
+    id,
+    name,
+    nameEn,
+    buildingId,
+    capacity,
+    available: capacity,
+    lat: b ? b.lat + (Math.random() * 4 - 2) : 50,
+    lng: b ? b.lng + (Math.random() * 4 - 2) : 50
+  };
+
+  state.lots.push(newLot);
   saveState();
-  document.getElementById('new-lot-name').value='';
-  msg.textContent = t('lot_added_success');
-  msg.classList.remove('hidden');
+
+  let savedToSheets = false;
+  if (SheetsDB.isConfigured()) {
+    const res = await SheetsDB.saveLot(newLot);
+    if (res && res.success) savedToSheets = true;
+  }
+
+  if (btn) btn.disabled = false;
+  if (btnText) btnText.textContent = t('add_lot_btn');
+  document.getElementById('new-lot-name').value = '';
+  document.getElementById('new-lot-name-en').value = '';
+
+  if (savedToSheets) {
+    showToast(t('toast_lot_added_title'), t('toast_lot_added_sheets'), 'success');
+  } else if (SheetsDB.isConfigured()) {
+    showToast(t('toast_lot_added_title') + ' (Local)', t('toast_register_success_local'), 'info');
+  } else {
+    showToast(t('toast_lot_added_title'), t('lot_added_success'), 'success');
+  }
+
+  if (msg) {
+    msg.textContent = t('lot_added_success');
+    msg.classList.remove('hidden');
+  }
+
   renderAll();
 }
 
-function deleteLot(id){
+function deleteLot(id) {
   const lot = lotById(id);
-  if(!lot) return;
-  askConfirm(t('confirm_delete_lot', {name: lName(lot)})).then(ok=>{
-    if(!ok) return;
-    state.lots = state.lots.filter(l=>l.id!==id);
-    state.favorites = state.favorites.filter(f=>f!==id);
+  if (!lot) return;
+  askConfirm(t('confirm_delete_lot', { name: lName(lot) })).then(async ok => {
+    if (!ok) return;
+    state.lots = state.lots.filter(l => l.id !== id);
+    state.favorites = state.favorites.filter(f => f !== id);
     saveState();
+
+    if (SheetsDB.isConfigured()) {
+      SheetsDB.deleteLot(id);
+    }
+
+    showToast(t('toast_lot_deleted_title'), lName(lot), 'info');
     renderAll();
   });
 }
 
-function askConfirm(message){
+function askConfirm(message) {
   document.getElementById('confirm-message').textContent = message;
   const dialog = document.getElementById('confirm-dialog');
   dialog.classList.remove('hidden');
   dialog.classList.add('flex');
-  return new Promise(resolve=>{ confirmResolver = resolve; });
+  return new Promise(resolve => { confirmResolver = resolve; });
 }
-function closeConfirm(result){
+
+function closeConfirm(result) {
   const dialog = document.getElementById('confirm-dialog');
   dialog.classList.add('hidden');
   dialog.classList.remove('flex');
-  if(confirmResolver) confirmResolver(result);
+  if (confirmResolver) confirmResolver(result);
   confirmResolver = null;
 }
 
 /* ==========================================================================
-   BOOTSTRAP
+   INITIAL BOOTSTRAP & BACKGROUND SYNC
    ========================================================================== */
-document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener('DOMContentLoaded', async () => {
   applyTheme();
   updateLanguageUI();
-  if(!state.ui.destinationBuilding && state.buildings.length) state.ui.destinationBuilding = state.buildings[0].id;
+  if (!state.ui.destinationBuilding && state.buildings.length) {
+    state.ui.destinationBuilding = state.buildings[0].id;
+  }
   renderAll();
+
+  // Initial silent background sync with Google Sheets if configured
+  if (SheetsDB.isConfigured()) {
+    const pingRes = await SheetsDB.ping();
+    updateDbStatusUI(pingRes);
+    if (pingRes.success) {
+      await SheetsDB.fetchInitialData();
+      if (state.currentUser) {
+        await SheetsDB.fetchUserData(state.currentUser);
+      }
+      renderAll();
+    }
+  }
 });
 </script>
 </body>
