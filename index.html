@@ -14,15 +14,15 @@
       extend: {
         colors: {
           brand: {
-            50: '#f6f7fe',
-            100: '#eeeffd',
+            50: '#f7f9fd',
+            100: '#eef3fb',
             200: '#D9B1E6',
             300: '#BF87C9',
             400: '#A680C2',
             500: '#96A4DD',
-            600: '#7c6ee6',
+            600: '#8594d4',
             700: '#6a5bdc',
-            800: '#4d3fb0',
+            800: '#403884',
             900: '#262447',
             950: '#0e0f1a'
           },
@@ -40,19 +40,23 @@
   }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..72,100..1000&family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --brand:#6a5bdc;
+  --brand:#96A4DD;
+  --brand-hover:#8292d3;
+  --brand-accent:#A680C2;
   --brand-dark:#262447;
-  --brand-light:#96A4DD;
+  --brand-light:#D9B1E6;
   --pastel-mint:#CAE0DC;
   --pastel-sky:#95BBE6;
   --pastel-periwinkle:#96A4DD;
   --pastel-lavender:#A680C2;
   --pastel-orchid:#BF87C9;
   --pastel-lilac:#D9B1E6;
-  --paper:#f6f8fd;
+  --paper:#f7f9fd;
   --ink:#181b2e;
   --ink-secondary:#5a627a;
   --ink-muted:#8f9bb3;
@@ -63,9 +67,11 @@
   --subtle-bg:#f1f4fb;
 }
 html.dark{
-  --brand:#8c7ef0;
+  --brand:#A680C2;
+  --brand-hover:#b491cf;
+  --brand-accent:#BF87C9;
   --brand-dark:#191830;
-  --brand-light:#96A4DD;
+  --brand-light:#D9B1E6;
   --paper:#0e0f1a;
   --ink:#f1f3fc;
   --ink-secondary:#9da7c5;
@@ -77,38 +83,94 @@ html.dark{
   --subtle-bg:#1c1d33;
 }
 *{box-sizing:border-box}
-body{margin:0;font-family:"Google Sans","Work Sans","Noto Sans Thai",sans-serif;color:var(--ink);background:var(--paper);transition:background-color .25s ease,color .25s ease}
+body{
+  margin:0;
+  font-family:"Google Sans Flex","Google Sans","Noto Sans Thai",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  color:var(--ink);
+  background:var(--paper);
+  transition:background-color .3s cubic-bezier(0.16,1,0.3,1),color .3s cubic-bezier(0.16,1,0.3,1);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
 .app-view{display:none;min-height:100dvh}
-.app-view.active{display:block;animation:appear .3s ease both}
-@keyframes appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.app-view.active{display:block;animation:viewEnter .35s cubic-bezier(0.16,1,0.3,1) both}
+@keyframes viewEnter{from{opacity:0;transform:translateY(10px) scale(0.995)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes modalPopIn{from{opacity:0;transform:translateY(14px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,-20px) scale(0.95)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+
 .grid-map{background-color:var(--grid-bg);background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:26px 26px}
 .route-line{stroke-dasharray:8 9;animation:dash 2s linear infinite}
 @keyframes dash{to{stroke-dashoffset:-34}}
-.nav-item.active{color:#6a5bdc;background:#f0edfc}
-html.dark .nav-item.active{color:#c4b5fd;background:#252347}
-.parking-card{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
-.parking-card:hover{transform:translateY(-3px);box-shadow:0 16px 30px rgba(38,36,71,.08)}
-html.dark .parking-card:hover{box-shadow:0 16px 30px rgba(0,0,0,.5)}
-.pulse-dot{animation:pulse 1.8s infinite}
-@keyframes pulse{50%{opacity:.35;transform:scale(.8)}}
-button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #BF87C9;outline-offset:2px}
+
+.nav-item{
+  color:var(--ink-secondary);
+  transition:all .22s cubic-bezier(0.16,1,0.3,1);
+}
+.nav-item:hover{
+  color:var(--brand-dark);
+  transform:translateY(-1px);
+}
+html.dark .nav-item:hover{
+  color:#c4b5fd;
+}
+.nav-item.active{
+  color:#262447;
+  background:#f0f4fc;
+}
+html.dark .nav-item.active{
+  color:#D9B1E6;
+  background:#222442;
+}
+
+.parking-card, .interactive-card{
+  transition:transform .25s cubic-bezier(0.16,1,0.3,1),box-shadow .25s cubic-bezier(0.16,1,0.3,1),border-color .22s ease;
+}
+.parking-card:hover, .interactive-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 16px 32px -8px rgba(150,164,221,.25);
+}
+html.dark .parking-card:hover, html.dark .interactive-card:hover{
+  box-shadow:0 16px 32px -8px rgba(0,0,0,.6);
+}
+
+.pulse-dot{animation:pulse 1.8s cubic-bezier(0.4,0,0.6,1) infinite}
+@keyframes pulse{50%{opacity:.35;transform:scale(.85)}}
+
+input, select, textarea {
+  transition:border-color .2s cubic-bezier(0.16,1,0.3,1),box-shadow .2s cubic-bezier(0.16,1,0.3,1),transform .2s ease;
+}
+input:focus, select:focus, textarea:focus {
+  outline:none;
+  border-color:#96A4DD !important;
+  box-shadow:0 0 0 3px rgba(150,164,221,.25) !important;
+  transform:translateY(-1px);
+}
+html.dark input:focus, html.dark select:focus, html.dark textarea:focus {
+  border-color:#A680C2 !important;
+  box-shadow:0 0 0 3px rgba(166,128,194,.3) !important;
+}
+
+button:focus-visible{outline:3px solid #BF87C9;outline-offset:2px}
 .star-btn.active i{fill:#f59e0b;color:#f59e0b}
-.chip{border:1px solid #d5deed;border-radius:999px;padding:.4rem 1rem;font-size:.8rem;font-weight:700;color:#57617c;background:#fff;transition:all .15s ease}
+.chip{border:1px solid #d5deed;border-radius:999px;padding:.4rem 1rem;font-size:.8rem;font-weight:700;color:#57617c;background:#fff;transition:all .2s cubic-bezier(0.16,1,0.3,1)}
 html.dark .chip{border-color:#2a2d4a;background:#161729;color:#9da7c5}
-.chip.active{background:var(--brand);color:#fff;border-color:var(--brand)}
-html.dark .chip.active{background:#8c7ef0;color:#0e0f1a;border-color:#8c7ef0}
+.chip:hover{transform:translateY(-1px);border-color:#96A4DD}
+.chip.active{background:linear-gradient(135deg,#96A4DD,#A680C2);color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(150,164,221,.35)}
+html.dark .chip.active{background:linear-gradient(135deg,#A680C2,#BF87C9);color:#0e0f1a;border-color:transparent;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+
 ::placeholder{color:#8f9bb3}
 html.dark ::placeholder{color:#646d8c}
-.settings-pill{display:inline-flex;align-items:center;background:#e9edf8;border-radius:9999px;padding:3px;gap:2px}
+.settings-pill{display:inline-flex;align-items:center;background:#e9edf8;border-radius:9999px;padding:3px;gap:2px;transition:background-color .2s ease}
 html.dark .settings-pill{background:#22243d}
-.settings-pill button{border-radius:9999px;padding:4px 10px;font-size:12px;font-weight:700;transition:all .2s ease;color:#5a627a}
+.settings-pill button{border-radius:9999px;padding:4px 10px;font-size:12px;font-weight:700;transition:all .22s cubic-bezier(0.16,1,0.3,1);color:#5a627a}
 html.dark .settings-pill button{color:#9da7c5}
+.settings-pill button:hover{transform:scale(1.03)}
 .settings-pill button.active{background:#fff;color:#262447;box-shadow:0 2px 6px rgba(0,0,0,.1)}
-html.dark .settings-pill button.active{background:#8c7ef0;color:#0e0f1a;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+html.dark .settings-pill button.active{background:linear-gradient(135deg,#A680C2,#BF87C9);color:#0e0f1a;box-shadow:0 2px 8px rgba(0,0,0,.35)}
 
 /* Modern Transitions & Skeleton Animations */
-@keyframes heroFadeUp { 0%{opacity:0;transform:translate3d(0,24px,0)} 100%{opacity:1;transform:translate3d(0,0,0)} }
-@keyframes heroFadeScale { 0%{opacity:0;transform:translate3d(0,20px,0) scale(0.96)} 100%{opacity:1;transform:translate3d(0,0,0) scale(1)} }
+@keyframes heroFadeUp { 0%{opacity:0;transform:translate3d(0,20px,0)} 100%{opacity:1;transform:translate3d(0,0,0)} }
+@keyframes heroFadeScale { 0%{opacity:0;transform:translate3d(0,18px,0) scale(0.96)} 100%{opacity:1;transform:translate3d(0,0,0) scale(1)} }
 @keyframes subtleFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
 @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
 
@@ -131,54 +193,172 @@ html.dark .skeleton{
 .footer-anim { animation: heroFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.45s both; }
 
 .interactive-btn {
-  transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s cubic-bezier(0.16,1,0.3,1), background-color 0.2s ease;
+  transition: transform 0.22s cubic-bezier(0.16,1,0.3,1), box-shadow 0.22s cubic-bezier(0.16,1,0.3,1), background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
   will-change: transform;
 }
 .interactive-btn:hover { transform: translateY(-2px) scale(1.015); }
-.interactive-btn:active { transform: translateY(0) scale(0.98); }
+.interactive-btn:active { transform: translateY(1px) scale(0.975); }
 
 .stat-card-anim {
   transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s cubic-bezier(0.16,1,0.3,1), border-color 0.2s ease;
   will-change: transform;
 }
-.stat-card-anim:hover { transform: translateY(-3px); box-shadow: 0 12px 24px -6px rgba(106,91,220,0.15); }
-html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45); }
+.stat-card-anim:hover { transform: translateY(-3px); box-shadow: 0 12px 24px -6px rgba(150,164,221,0.22); }
+html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.5); }
 
 .feature-item-hover { transition: transform 0.2s cubic-bezier(0.16,1,0.3,1), background-color 0.2s ease; }
 .feature-item-hover:hover { transform: translateX(4px); }
 .floating-icon { animation: subtleFloat 3.5s ease-in-out infinite; }
 
+.modal-content-anim { animation: modalPopIn 0.28s cubic-bezier(0.16,1,0.3,1) both; }
+
+details summary { transition: color 0.2s ease; }
+details[open] > div { animation: heroFadeUp 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+
+/* ==========================================================================
+   LANDING AMBIENT MOVING GRADIENTS (Cozy, Calm, Decisive, Theme-Adaptive)
+   ========================================================================== */
+#landing {
+  position: relative;
+  overflow-x: hidden;
+}
+.landing-ambient-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.ambient-glow {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+  pointer-events: none;
+}
+/* Light Theme Glows - Cozy, soft daylight pastel aura */
+.glow-1 {
+  top: -6%;
+  left: -5%;
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, rgba(149, 187, 230, 0.45) 0%, rgba(202, 224, 220, 0.25) 45%, rgba(247, 249, 253, 0) 70%);
+  animation: ambientFloat1 22s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate;
+}
+.glow-2 {
+  top: 15%;
+  right: -8%;
+  width: 560px;
+  height: 560px;
+  background: radial-gradient(circle, rgba(217, 177, 230, 0.45) 0%, rgba(191, 135, 201, 0.25) 45%, rgba(247, 249, 253, 0) 70%);
+  animation: ambientFloat2 26s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate;
+}
+.glow-3 {
+  bottom: 8%;
+  left: 15%;
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(202, 224, 220, 0.5) 0%, rgba(150, 164, 221, 0.25) 45%, rgba(247, 249, 253, 0) 70%);
+  animation: ambientFloat3 20s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate;
+}
+.glow-4 {
+  top: 40%;
+  left: 38%;
+  width: 460px;
+  height: 460px;
+  background: radial-gradient(circle, rgba(166, 128, 194, 0.35) 0%, rgba(150, 164, 221, 0.2) 50%, rgba(247, 249, 253, 0) 70%);
+  animation: ambientFloat4 24s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate;
+}
+
+/* Dark Theme Glows - Serene, deep luminous nighttime aura */
+html.dark .ambient-glow {
+  filter: blur(100px);
+}
+html.dark .glow-1 {
+  background: radial-gradient(circle, rgba(150, 164, 221, 0.28) 0%, rgba(64, 56, 132, 0.22) 50%, rgba(14, 15, 26, 0) 70%);
+}
+html.dark .glow-2 {
+  background: radial-gradient(circle, rgba(191, 135, 201, 0.25) 0%, rgba(166, 128, 194, 0.18) 50%, rgba(14, 15, 26, 0) 70%);
+}
+html.dark .glow-3 {
+  background: radial-gradient(circle, rgba(202, 224, 220, 0.2) 0%, rgba(149, 187, 230, 0.16) 50%, rgba(14, 15, 26, 0) 70%);
+}
+html.dark .glow-4 {
+  background: radial-gradient(circle, rgba(217, 177, 230, 0.22) 0%, rgba(38, 36, 71, 0.3) 50%, rgba(14, 15, 26, 0) 70%);
+}
+
+@keyframes ambientFloat1 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(70px, 50px, 0) scale(1.12); }
+  100% { transform: translate3d(-50px, 80px, 0) scale(0.94); }
+}
+@keyframes ambientFloat2 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-80px, -60px, 0) scale(1.1); }
+  100% { transform: translate3d(40px, 50px, 0) scale(0.92); }
+}
+@keyframes ambientFloat3 {
+  0% { transform: translate3d(0, 0, 0) scale(0.95); }
+  50% { transform: translate3d(60px, -40px, 0) scale(1.15); }
+  100% { transform: translate3d(-40px, -60px, 0) scale(1); }
+}
+@keyframes ambientFloat4 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-60px, 70px, 0) scale(1.12); }
+  100% { transform: translate3d(50px, -50px, 0) scale(0.9); }
+}
+
+.hero-highlight-gradient {
+  background: linear-gradient(135deg, #262447 0%, #2f2757 35%, #3e2e6d 70%, #2a234e 100%);
+  background-size: 200% 200%;
+  animation: heroGradientShift 14s ease infinite alternate;
+}
+html.dark .hero-highlight-gradient {
+  background: linear-gradient(135deg, #191830 0%, #251d42 35%, #312353 70%, #1c1735 100%);
+  background-size: 200% 200%;
+  animation: heroGradientShift 14s ease infinite alternate;
+}
+@keyframes heroGradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .hero-anim-1, .hero-anim-2, .hero-anim-3, .hero-anim-4, .hero-card-anim, .footer-anim, .floating-icon, .skeleton {
+  .hero-anim-1, .hero-anim-2, .hero-anim-3, .hero-anim-4, .hero-card-anim, .footer-anim, .floating-icon, .skeleton, .app-view.active, .modal-content-anim, .ambient-glow, .hero-highlight-gradient {
     animation: none !important;
     transform: none !important;
   }
 }
 </style>
 </head>
-<body class="w-full bg-[#f6f8fd] dark:bg-[#0e0f1a] text-[#181b2e] dark:text-[#f1f3fc]">
+<body class="w-full bg-[#f7f9fd] dark:bg-[#0e0f1a] text-[#181b2e] dark:text-[#f1f3fc]">
 
 <!-- GLOBAL NOTIFICATION TOAST / ERROR BANNER -->
-<div id="toast-banner" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden max-w-md w-[92%] rounded-2xl p-4 shadow-2xl transition-all duration-300 transform border">
+<div id="toast-banner" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden max-w-md w-[92%] rounded-2xl p-4 shadow-2xl transition-all duration-300 transform border backdrop-blur-md">
   <div class="flex items-start gap-3">
-    <div id="toast-icon-wrap" class="mt-0.5 rounded-full p-1 text-white"></div>
+    <div id="toast-icon-wrap" class="mt-0.5 rounded-full p-1 text-white shadow-sm"></div>
     <div class="flex-1">
       <h4 id="toast-title" class="font-bold text-sm">แจ้งเตือน</h4>
       <p id="toast-message" class="text-xs mt-0.5 leading-relaxed"></p>
     </div>
-    <button type="button" onclick="hideToast()" class="rounded-lg p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"><i data-lucide="x" class="h-4 w-4"></i></button>
+    <button type="button" onclick="hideToast()" class="rounded-lg p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition"><i data-lucide="x" class="h-4 w-4"></i></button>
   </div>
 </div>
 
 <!-- GOOGLE SHEETS & QUICK SETTINGS MODAL -->
-<div id="quick-controls-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-  <div class="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
+<div id="quick-controls-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4 transition-opacity duration-300">
+  <div class="modal-content-anim w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
     <div class="flex items-center justify-between pb-4 border-b border-[#edf1f8] dark:border-[#262845]">
       <div class="flex items-center gap-2">
-        <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-[#6a5bdc] text-white"><i data-lucide="sliders" class="h-4 w-4"></i></span>
+        <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] text-white shadow-sm"><i data-lucide="sliders" class="h-4 w-4"></i></span>
         <h3 class="font-bold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="quick_settings_title">การตั้งค่าระบบ & Google Sheets</h3>
       </div>
-      <button type="button" onclick="toggleQuickSettings(false)" class="rounded-full p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0edfc] dark:hover:bg-[#252347]"><i data-lucide="x" class="h-5 w-5"></i></button>
+      <button type="button" onclick="toggleQuickSettings(false)" class="rounded-full p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition"><i data-lucide="x" class="h-5 w-5"></i></button>
     </div>
     
     <div class="mt-5 space-y-6">
@@ -186,37 +366,37 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
       <div id="modal-sheets-db-section" class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-[#f8fafd] dark:bg-[#1c1d33] p-4 space-y-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <i data-lucide="table" class="h-4 w-4 text-[#6a5bdc] dark:text-[#c4b5fd]"></i>
+            <i data-lucide="table" class="h-4 w-4 text-[#96A4DD] dark:text-[#BF87C9]"></i>
             <span class="text-xs font-bold uppercase tracking-wider text-[#262447] dark:text-[#c4b5fd]" data-i18n="sheets_db_title">Google Sheets Database</span>
           </div>
-          <span id="db-status-badge" class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300">
-            <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
+          <span id="db-status-badge" class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-[#CAE0DC]/40 dark:bg-[#CAE0DC]/20 text-[#1e4d45] dark:text-[#CAE0DC] border border-[#CAE0DC]/60">
+            <span class="h-1.5 w-1.5 rounded-full bg-[#CAE0DC]"></span>
             <span id="db-status-text">โหมดออฟไลน์ / สำรองข้อมูลในเครื่อง</span>
           </span>
         </div>
         
         <div>
           <label class="block text-[11px] font-semibold text-[#5a627a] dark:text-[#9da7c5] mb-1" data-i18n="sheets_url_label">Google Apps Script Web App URL</label>
-          <input id="sheets-url-input" type="url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-3 py-2 text-xs font-mono focus:border-[#6a5bdc]">
+          <input id="sheets-url-input" type="url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-3 py-2 text-xs font-mono">
         </div>
         
         <div class="grid grid-cols-2 gap-2">
-          <button type="button" onclick="testAndSaveSheetsUrl()" id="btn-test-db" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl bg-[#6a5bdc] py-2 text-xs font-bold text-white shadow-sm hover:bg-[#5949d0]">
+          <button type="button" onclick="testAndSaveSheetsUrl()" id="btn-test-db" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-2 text-xs font-bold text-white shadow-sm hover:opacity-95">
             <i data-lucide="check-circle" class="h-3.5 w-3.5"></i>
             <span data-i18n="test_and_save_btn">บันทึก & ทดสอบ</span>
           </button>
-          <button type="button" onclick="syncWithSheets(true)" id="btn-sync-db" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-3 py-2 text-xs font-bold hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]">
+          <button type="button" onclick="syncWithSheets(true)" id="btn-sync-db" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-3 py-2 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]">
             <i data-lucide="refresh-cw" class="h-3.5 w-3.5" id="sync-icon"></i>
             <span data-i18n="sync_now_btn">ซิงค์ข้อมูล</span>
           </button>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
-          <button type="button" onclick="testWriteToSheets()" id="btn-test-write" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl border border-[#6a5bdc] bg-[#f0edfc] dark:bg-[#252347] py-2 text-xs font-bold text-[#6a5bdc] dark:text-[#c4b5fd] hover:bg-[#e4ddfa] transition">
+          <button type="button" onclick="testWriteToSheets()" id="btn-test-write" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl border border-[#96A4DD] bg-[#f0f4fc] dark:bg-[#222442] py-2 text-xs font-bold text-[#4c5aa6] dark:text-[#D9B1E6] hover:bg-[#e4ebf9]">
             <i data-lucide="pencil-line" class="h-3.5 w-3.5"></i>
             <span data-i18n="test_write_btn">ทดสอบเขียนลง Sheet</span>
           </button>
-          <button type="button" onclick="initSheetsStructure()" id="btn-init-sheets" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] py-2 text-xs font-bold hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038] transition">
+          <button type="button" onclick="initSheetsStructure()" id="btn-init-sheets" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] py-2 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]">
             <i data-lucide="layers" class="h-3.5 w-3.5"></i>
             <span data-i18n="init_sheets_btn">สร้างตาราง 8 ชีต</span>
           </button>
@@ -225,9 +405,9 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
         <p id="db-latency-info" class="text-[11px] text-[#5a627a] dark:text-[#9da7c5]"></p>
 
         <!-- SETUP INSTRUCTION ACCORDION -->
-        <details class="text-[11px] text-[#5a627a] dark:text-[#9da7c5] pt-1">
-          <summary class="cursor-pointer font-bold text-[#6a5bdc] dark:text-[#c4b5fd] hover:underline" data-i18n="how_to_setup_sheets">📖 วิธีเชื่อมต่อ Google Sheets ด้วยตนเอง</summary>
-          <div class="mt-2 space-y-2 pl-2 border-l-2 border-[#6a5bdc] dark:border-[#8c7ef0]" data-i18n-html="how_to_setup_sheets_body">
+        <details class="text-[11px] text-[#5a627a] dark:text-[#9da7c5] pt-1 group">
+          <summary class="cursor-pointer font-bold text-[#A680C2] dark:text-[#D9B1E6] hover:underline flex items-center gap-1" data-i18n="how_to_setup_sheets">📖 วิธีเชื่อมต่อ Google Sheets ด้วยตนเอง</summary>
+          <div class="mt-2 space-y-2 pl-3 border-l-2 border-[#A680C2] dark:border-[#D9B1E6]" data-i18n-html="how_to_setup_sheets_body">
           </div>
         </details>
       </div>
@@ -236,10 +416,10 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
       <div>
         <label class="block text-xs font-bold uppercase tracking-wider text-[#5a627a] dark:text-[#9da7c5] mb-2" data-i18n="language_label">ภาษา / Language</label>
         <div class="grid grid-cols-2 gap-2">
-          <button type="button" onclick="setLanguage('th')" id="modal-lang-th" class="flex items-center justify-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-sm font-bold transition hover:border-[#6a5bdc]">
+          <button type="button" onclick="setLanguage('th')" id="modal-lang-th" class="interactive-btn flex items-center justify-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-sm font-bold">
             <span>ภาษาไทย</span>
           </button>
-          <button type="button" onclick="setLanguage('en')" id="modal-lang-en" class="flex items-center justify-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-sm font-bold transition hover:border-[#6a5bdc]">
+          <button type="button" onclick="setLanguage('en')" id="modal-lang-en" class="interactive-btn flex items-center justify-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-sm font-bold">
             <span>English</span>
           </button>
         </div>
@@ -249,32 +429,40 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
       <div>
         <label class="block text-xs font-bold uppercase tracking-wider text-[#5a627a] dark:text-[#9da7c5] mb-2" data-i18n="theme_label">ธีมการแสดงผล / Appearance</label>
         <div class="grid grid-cols-3 gap-2">
-          <button type="button" onclick="setTheme('light')" id="modal-theme-light" class="flex flex-col items-center justify-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-xs font-bold transition hover:border-[#6a5bdc]">
+          <button type="button" onclick="setTheme('light')" id="modal-theme-light" class="interactive-btn flex flex-col items-center justify-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-xs font-bold">
             <i data-lucide="sun" class="h-5 w-5 text-amber-500"></i>
             <span data-i18n="theme_light">สว่าง</span>
           </button>
-          <button type="button" onclick="setTheme('dark')" id="modal-theme-dark" class="flex flex-col items-center justify-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-xs font-bold transition hover:border-[#6a5bdc]">
+          <button type="button" onclick="setTheme('dark')" id="modal-theme-dark" class="interactive-btn flex flex-col items-center justify-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-xs font-bold">
             <i data-lucide="moon" class="h-5 w-5 text-[#96A4DD]"></i>
             <span data-i18n="theme_dark">มืด</span>
           </button>
-          <button type="button" onclick="setTheme('system')" id="modal-theme-system" class="flex flex-col items-center justify-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-xs font-bold transition hover:border-[#6a5bdc]">
-            <i data-lucide="laptop" class="h-5 w-5 text-[#6a5bdc] dark:text-[#c4b5fd]"></i>
+          <button type="button" onclick="setTheme('system')" id="modal-theme-system" class="interactive-btn flex flex-col items-center justify-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-xs font-bold">
+            <i data-lucide="laptop" class="h-5 w-5 text-[#A680C2] dark:text-[#D9B1E6]"></i>
             <span data-i18n="theme_system">ตามอุปกรณ์</span>
           </button>
         </div>
       </div>
     </div>
     
-    <button type="button" onclick="toggleQuickSettings(false)" class="interactive-btn mt-6 w-full rounded-xl bg-[#6a5bdc] py-3 text-sm font-bold text-white shadow-md hover:bg-[#5949d0] transition" data-i18n="done_btn">เสร็จสิ้น</button>
+    <button type="button" onclick="toggleQuickSettings(false)" class="interactive-btn mt-6 w-full rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3 text-sm font-bold text-white shadow-md hover:opacity-95" data-i18n="done_btn">เสร็จสิ้น</button>
   </div>
 </div>
 
 <!-- LANDING -->
-<section id="landing" class="app-view active">
-  <header class="mx-auto flex max-w-6xl items-center justify-between px-5 py-6 md:px-10 hero-anim-1">
+<section id="landing" class="app-view active relative overflow-hidden">
+  <!-- Dynamic Moving Ambient Gradient Background (Comfortable, Cozy, Calm, Decisive) -->
+  <div class="landing-ambient-canvas" aria-hidden="true">
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    <div class="ambient-glow glow-3"></div>
+    <div class="ambient-glow glow-4"></div>
+  </div>
+
+  <header class="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-5 py-6 md:px-10 hero-anim-1">
     <button type="button" onclick="showView('landing')" class="flex items-center gap-3 text-left group">
-      <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#262447] dark:bg-[#6a5bdc] text-white shadow-md shadow-indigo-900/10 floating-icon"><i data-lucide="car-front" class="h-5 w-5"></i></span>
-      <span class="font-extrabold text-lg tracking-tight text-[#262447] dark:text-[#c4b5fd] group-hover:text-[#6a5bdc] transition">Parking-A-Lot</span>
+      <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#262447] to-[#403884] dark:from-[#96A4DD] dark:to-[#A680C2] text-white dark:text-[#0e0f1a] shadow-md shadow-indigo-950/10 floating-icon"><i data-lucide="car-front" class="h-5 w-5"></i></span>
+      <span class="font-extrabold text-lg tracking-tight text-[#262447] dark:text-[#c4b5fd] group-hover:text-[#96A4DD] transition">Parking-A-Lot</span>
     </button>
     <div class="flex items-center gap-3">
       <!-- Language Pill -->
@@ -284,64 +472,64 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
       </div>
 
       <!-- Theme Quick Toggle -->
-      <button type="button" onclick="cycleTheme()" id="landing-theme-toggle" aria-label="Toggle Theme" class="flex h-9 w-9 items-center justify-center rounded-full bg-[#e9edf8] dark:bg-[#22243d] text-[#262447] dark:text-[#c4b5fd] hover:opacity-80 transition">
+      <button type="button" onclick="cycleTheme()" id="landing-theme-toggle" aria-label="Toggle Theme" class="flex h-9 w-9 items-center justify-center rounded-full bg-[#e9edf8] dark:bg-[#22243d] text-[#262447] dark:text-[#c4b5fd] hover:opacity-80 transition interactive-btn">
         <i data-lucide="sun" class="h-4 w-4" id="landing-theme-icon"></i>
       </button>
 
       <div class="hidden gap-2 md:flex">
         <button type="button" onclick="loginAsGuest()" class="rounded-full bg-[#e9edf8] dark:bg-[#22243d] px-4 py-2 text-sm font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#d8e1f5] dark:hover:bg-[#2e3153] transition interactive-btn" data-i18n="guest_nav_btn">ผู้เยี่ยมชม</button>
-        <button type="button" onclick="showView(state.currentUser?'user-dashboard':'auth-login')" class="rounded-full px-4 py-2 text-sm font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f0edfc] dark:hover:bg-[#252347] transition interactive-btn" data-i18n="login_nav">เข้าใช้งาน</button>
-        <button type="button" id="landing-admin-nav-btn" onclick="showView('admin-dashboard')" class="rounded-full border border-[#262447] dark:border-[#c4b5fd] px-4 py-2 text-sm font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f0edfc] dark:hover:bg-[#252347] transition interactive-btn" data-i18n="admin_nav">สำหรับผู้ดูแล</button>
+        <button type="button" onclick="showView(state.currentUser?'user-dashboard':'auth-login')" class="rounded-full px-4 py-2 text-sm font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition interactive-btn" data-i18n="login_nav">เข้าใช้งาน</button>
+        <button type="button" id="landing-admin-nav-btn" onclick="showView('admin-dashboard')" class="rounded-full border border-[#262447] dark:border-[#c4b5fd] px-4 py-2 text-sm font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition interactive-btn" data-i18n="admin_nav">สำหรับผู้ดูแล</button>
       </div>
     </div>
   </header>
 
-  <main class="mx-auto grid max-w-6xl gap-10 px-5 pb-12 pt-4 md:grid-cols-2 md:px-10">
+  <main class="relative z-10 mx-auto grid max-w-6xl gap-10 px-5 pb-12 pt-4 md:grid-cols-2 md:px-10">
     <div>
-      <div class="hero-anim-1 mb-5 inline-flex items-center gap-2 rounded-full bg-[#f0edfc] dark:bg-[#252347] px-4 py-2 text-xs font-bold text-[#6a5bdc] dark:text-[#D9B1E6] shadow-sm">
-        <span class="h-2 w-2 rounded-full bg-[#6a5bdc] dark:bg-[#D9B1E6] pulse-dot"></span>
+      <div class="hero-anim-1 mb-5 inline-flex items-center gap-2 rounded-full bg-white/80 dark:bg-[#222442]/80 backdrop-blur-md px-4 py-2 text-xs font-bold text-[#4c5aa6] dark:text-[#D9B1E6] shadow-sm border border-[#96A4DD]/30">
+        <span class="h-2 w-2 rounded-full bg-[#96A4DD] dark:bg-[#D9B1E6] pulse-dot"></span>
         <span data-i18n="beta_badge">เว็บแอพพลิเคชันนี้อยู่ในระหว่างการทดสอบเบต้า ไม่ใช่ผลิตภัณฑ์ที่ใช้งานจริงแต่อย่างใด</span>
       </div>
       <h1 class="hero-anim-2 max-w-xl text-4xl font-extrabold leading-[1.15] tracking-tight text-[#262447] dark:text-[#c4b5fd] md:text-5xl" data-i18n="hero_title">ค้นหาที่จอดรถในช่วงเวลาเร่งด่วน</h1>
       <p class="hero-anim-3 mt-6 max-w-lg text-lg leading-8 text-[#5a627a] dark:text-[#9da7c5]" data-i18n="hero_subtitle">ค้นหาลานจอดรถอย่างรวดเร็วทันใจ ด้วยระบบแนะนำลานจอดรถที่ใกล้ที่สุดพร้อมเส้นทางการเดินทางในทันที</p>
       
       <div class="hero-anim-3 mt-8 flex flex-wrap gap-3">
-        <button type="button" onclick="showView(state.currentUser?'user-dashboard':'auth-login')" class="interactive-btn inline-flex items-center gap-2 rounded-xl bg-[#6a5bdc] px-6 py-4 font-bold text-white shadow-lg shadow-indigo-500/25 hover:bg-[#5949d0] transition"><i data-lucide="navigation" class="h-5 w-5"></i><span data-i18n="start_finding">เริ่มหาที่จอด</span></button>
-        <button type="button" onclick="loginAsGuest()" class="interactive-btn inline-flex items-center gap-2 rounded-xl border border-[#6a5bdc] bg-[#f0edfc] dark:bg-[#252347] px-5 py-4 font-bold text-[#6a5bdc] dark:text-[#c4b5fd] hover:bg-[#e4ddfa] transition"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="guest_btn">ใช้งานในฐานะผู้เยี่ยมชม</span></button>
-        <button type="button" id="landing-manage-lots-btn" onclick="showView('admin-dashboard')" class="interactive-btn inline-flex items-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-6 py-4 font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038] transition"><i data-lucide="layout-dashboard" class="h-5 w-5"></i><span data-i18n="manage_lots">จัดการลานจอด</span></button>
+        <button type="button" onclick="showView(state.currentUser?'user-dashboard':'auth-login')" class="interactive-btn inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] px-6 py-4 font-bold text-white shadow-lg shadow-[#96A4DD]/30 hover:opacity-95"><i data-lucide="navigation" class="h-5 w-5"></i><span data-i18n="start_finding">เริ่มหาที่จอด</span></button>
+        <button type="button" onclick="loginAsGuest()" class="interactive-btn inline-flex items-center gap-2 rounded-xl border border-[#96A4DD] bg-white/80 dark:bg-[#222442]/80 backdrop-blur-sm px-5 py-4 font-bold text-[#262447] dark:text-[#D9B1E6] hover:bg-[#e4ebf9]"><i data-lucide="user" class="h-5 w-5 text-[#96A4DD]"></i><span data-i18n="guest_btn">ใช้งานในฐานะผู้เยี่ยมชม</span></button>
+        <button type="button" id="landing-manage-lots-btn" onclick="showView('admin-dashboard')" class="interactive-btn inline-flex items-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white/80 dark:bg-[#161729]/80 backdrop-blur-sm px-6 py-4 font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038] hover:border-[#96A4DD]"><i data-lucide="layout-dashboard" class="h-5 w-5 text-[#A680C2]"></i><span data-i18n="manage_lots">จัดการลานจอด</span></button>
       </div>
 
-      <div class="hero-anim-4 mt-10 grid grid-cols-3 gap-4 rounded-2xl bg-white dark:bg-[#161729] p-5 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
-        <div class="stat-card-anim rounded-xl p-2 text-center md:text-left"><p id="landing-space" class="text-3xl font-extrabold text-[#6a5bdc] dark:text-[#c4b5fd]">0</p><p class="mt-1 text-xs md:text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="spaces_available_now">ช่องว่างตอนนี้</p></div>
+      <div class="hero-anim-4 mt-10 grid grid-cols-3 gap-4 rounded-2xl bg-white/90 dark:bg-[#161729]/90 backdrop-blur-sm p-5 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
+        <div class="stat-card-anim rounded-xl p-2 text-center md:text-left"><p id="landing-space" class="text-3xl font-extrabold text-[#96A4DD] dark:text-[#c4b5fd]">0</p><p class="mt-1 text-xs md:text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="spaces_available_now">ช่องว่างตอนนี้</p></div>
         <div class="stat-card-anim rounded-xl p-2 text-center md:text-left"><p id="landing-lots" class="text-3xl font-extrabold text-[#262447] dark:text-[#e0e7ff]">0</p><p class="mt-1 text-xs md:text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="total_lots">ลานจอดทั้งหมด</p></div>
         <div class="stat-card-anim rounded-xl p-2 text-center md:text-left"><p id="landing-buildings" class="text-3xl font-extrabold text-[#262447] dark:text-[#e0e7ff]">0</p><p class="mt-1 text-xs md:text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="supported_buildings">อาคารที่รองรับ</p></div>
       </div>
     </div>
 
     <div class="flex flex-col gap-5">
-      <div class="hero-card-anim rounded-3xl bg-gradient-to-br from-[#262447] to-[#362e60] dark:from-[#191830] dark:to-[#232042] border border-transparent dark:border-[#393466] p-7 text-white shadow-xl">
+      <div class="hero-card-anim hero-highlight-gradient rounded-3xl border border-[#BF87C9]/25 p-7 text-white shadow-xl">
         <p class="text-xs font-bold uppercase tracking-wider text-[#D9B1E6]" data-i18n="app_highlights">จุดเด่นของแอป</p>
         <h2 class="mt-1 text-2xl font-extrabold text-white" data-i18n="highlight_title">แนะนำลานจอดรถที่ใกล้ที่สุด</h2>
         <ul class="mt-6 space-y-3.5 text-sm text-[#e0e4f7] dark:text-[#cbd2ea]">
           <li class="feature-item-hover flex items-start gap-3 rounded-xl p-1.5 transition"><i data-lucide="search" class="mt-0.5 h-4 w-4 shrink-0 text-[#95BBE6]"></i><span data-i18n="feat_1">ค้นหาอาคารเรียน ลานจอดรถ และอาคารสำนักงาน</span></li>
           <li class="feature-item-hover flex items-start gap-3 rounded-xl p-1.5 transition"><i data-lucide="route" class="mt-0.5 h-4 w-4 shrink-0 text-[#96A4DD]"></i><span data-i18n="feat_2">นำทางไปยังทุกอาคารในมหาวิทยาลัย พร้อมเลือกเส้นทางที่ปลอดภัยที่สุด</span></li>
           <li class="feature-item-hover flex items-start gap-3 rounded-xl p-1.5 transition"><i data-lucide="bell" class="mt-0.5 h-4 w-4 shrink-0 text-[#BF87C9]"></i><span data-i18n="feat_3">แจ้งเตือนอัตโนมัติเมื่อจอดรถสำเร็จ</span></li>
-          <li class="feature-item-hover flex items-start gap-3 rounded-xl p-1.5 transition"><i data-lucide="star" class="mt-0.5 h-4 w-4 shrink-0 text-[#f59e0b]"></i><span data-i18n="feat_4">ให้คะแนนและรีวิวการใช้งาน</span></li>
+          <li class="feature-item-hover flex items-start gap-3 rounded-xl p-1.5 transition"><i data-lucide="star" class="mt-0.5 h-4 w-4 shrink-0 text-[#D9B1E6]"></i><span data-i18n="feat_4">ให้คะแนนและรีวิวการใช้งาน</span></li>
         </ul>
       </div>
 
       <!-- CHANGELOG BANNER -->
-      <a href="https://docs.google.com/document/d/1QQ2nvePn2MsxNwh_2KmTXQbrHRarNDiYpR3ptZoC5ls/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="hero-card-anim flex items-center justify-between rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm hover:border-[#6a5bdc] transition group interactive-btn">
+      <a href="https://docs.google.com/document/d/1QQ2nvePn2MsxNwh_2KmTXQbrHRarNDiYpR3ptZoC5ls/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="hero-card-anim flex items-center justify-between rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white/90 dark:bg-[#161729]/90 backdrop-blur-sm p-5 shadow-sm hover:border-[#96A4DD] transition group interactive-btn">
         <div class="flex items-center gap-3.5">
-          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#f0edfc] dark:bg-[#252347] text-[#6a5bdc] dark:text-[#c4b5fd]">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#f0f4fc] dark:bg-[#222442] text-[#96A4DD] dark:text-[#D9B1E6]">
             <i data-lucide="file-text" class="h-5 w-5"></i>
           </div>
           <div>
-            <p class="font-bold text-sm text-[#262447] dark:text-[#c4b5fd] group-hover:text-[#6a5bdc] transition" data-i18n="changelog_title">บันทึกการเปลี่ยนแปลง (Changelog)</p>
+            <p class="font-bold text-sm text-[#262447] dark:text-[#c4b5fd] group-hover:text-[#96A4DD] transition" data-i18n="changelog_title">บันทึกการเปลี่ยนแปลง (Changelog)</p>
             <p class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="changelog_sub">ประวัติการพัฒนาและรายการอัปเดตเวอร์ชัน</p>
           </div>
         </div>
-        <div class="flex items-center gap-1.5 text-xs font-bold text-[#6a5bdc] dark:text-[#c4b5fd]">
+        <div class="flex items-center gap-1.5 text-xs font-bold text-[#96A4DD] dark:text-[#c4b5fd]">
           <span class="hidden sm:inline" data-i18n="view_doc">เปิดเอกสาร</span>
           <i data-lucide="external-link" class="h-4 w-4"></i>
         </div>
@@ -350,14 +538,14 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
   </main>
 
   <!-- COPYRIGHT FOOTER -->
-  <footer class="footer-anim mx-auto mt-6 max-w-6xl border-t border-[#e2e8f4] dark:border-[#262845] px-5 py-8 md:px-10">
+  <footer class="relative z-10 footer-anim mx-auto mt-6 max-w-6xl border-t border-[#e2e8f4] dark:border-[#262845] px-5 py-8 md:px-10">
     <div class="flex flex-col items-center justify-between gap-4 text-center text-xs text-[#5a627a] dark:text-[#9da7c5] md:flex-row md:text-left">
       <div class="flex items-center gap-2">
-        <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-[#262447] dark:bg-[#6a5bdc] text-white text-[10px] font-bold"><i data-lucide="car-front" class="h-3.5 w-3.5"></i></span>
+        <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-[#262447] to-[#403884] dark:from-[#96A4DD] dark:to-[#A680C2] text-white dark:text-[#0e0f1a] text-[10px] font-bold"><i data-lucide="car-front" class="h-3.5 w-3.5"></i></span>
         <span class="font-extrabold text-[#262447] dark:text-[#c4b5fd]">Parking-A-Lot</span>
         <span class="text-[#8f9bb3] dark:text-[#6d7796]">• Version 0.9.5 BETA</span>
       </div>
-      <a href="https://docs.google.com/document/d/1QQ2nvePn2MsxNwh_2KmTXQbrHRarNDiYpR3ptZoC5ls/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 font-semibold text-[#6a5bdc] dark:text-[#c4b5fd] hover:underline">
+      <a href="https://docs.google.com/document/d/1QQ2nvePn2MsxNwh_2KmTXQbrHRarNDiYpR3ptZoC5ls/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 font-semibold text-[#96A4DD] dark:text-[#c4b5fd] hover:underline">
         <i data-lucide="file-text" class="h-3.5 w-3.5"></i>
         <span data-i18n="changelog_link_text">ดูบันทึกการเปลี่ยนแปลง (Changelog)</span>
         <i data-lucide="external-link" class="h-3 w-3"></i>
@@ -368,26 +556,26 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
 </section>
 
 <!-- LOGIN -->
-<section id="auth-login" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
+<section id="auth-login" class="app-view bg-[#f7f9fd] dark:bg-[#0e0f1a]">
   <div class="mx-auto max-w-md px-5 py-10">
     <div class="flex items-center justify-between mb-6">
-      <button type="button" onclick="showView('landing')" class="inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd]"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back_to_home">กลับหน้าแรก</span></button>
-      <button type="button" onclick="toggleQuickSettings(true)" class="rounded-full p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0edfc] dark:hover:bg-[#252347]"><i data-lucide="settings" class="h-5 w-5"></i></button>
+      <button type="button" onclick="showView('landing')" class="inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd] interactive-btn"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back_to_home">กลับหน้าแรก</span></button>
+      <button type="button" onclick="toggleQuickSettings(true)" class="rounded-full p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition interactive-btn"><i data-lucide="settings" class="h-5 w-5"></i></button>
     </div>
     <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="login_title">เข้าสู่ระบบ</h1>
     <p class="mt-2 text-[#5a627a] dark:text-[#9da7c5]" data-i18n="login_subtitle">เข้าใช้งานบัญชีของคุณ (ระบบจะจำบัญชีไว้ตลอด ไม่ต้องสมัครใหม่)</p>
     <div class="mt-6 space-y-4">
       <div>
         <label class="mb-1 block text-sm font-bold" data-i18n="username">ชื่อผู้ใช้</label>
-        <input id="login-username" type="text" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 shadow-sm focus:border-[#6a5bdc]">
+        <input id="login-username" type="text" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 shadow-sm">
       </div>
       <div>
         <label class="mb-1 block text-sm font-bold" data-i18n="password">รหัสผ่าน</label>
-        <input id="login-password" type="password" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 shadow-sm focus:border-[#6a5bdc]">
+        <input id="login-password" type="password" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 shadow-sm">
       </div>
-      <p id="login-error" class="hidden text-sm font-semibold text-[#e11d48] dark:text-[#fb7185]"></p>
+      <p id="login-error" class="hidden text-sm font-semibold text-[#BF87C9] dark:text-[#D9B1E6]"></p>
       
-      <button type="button" id="login-submit-btn" onclick="login()" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl bg-[#6a5bdc] py-3.5 font-bold text-white hover:bg-[#5949d0] transition shadow-md shadow-indigo-500/20">
+      <button type="button" id="login-submit-btn" onclick="login()" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3.5 font-bold text-white hover:opacity-95 shadow-md shadow-[#96A4DD]/25">
         <i data-lucide="log-in" class="h-4 w-4" id="login-btn-icon"></i>
         <span data-i18n="login_btn" id="login-btn-text">เข้าสู่ระบบ</span>
       </button>
@@ -398,18 +586,18 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
         <div class="flex-grow border-t border-[#d5deed] dark:border-[#2a2d4a]"></div>
       </div>
 
-      <button type="button" id="login-guest-btn" onclick="loginAsGuest()" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] py-3 font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038] transition">
-        <i data-lucide="user" class="h-4 w-4"></i>
+      <button type="button" id="login-guest-btn" onclick="loginAsGuest()" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] py-3 font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038] hover:border-[#96A4DD]">
+        <i data-lucide="user" class="h-4 w-4 text-[#95BBE6]"></i>
         <span data-i18n="guest_btn">ใช้งานในฐานะผู้เยี่ยมชม</span>
       </button>
 
       <p class="text-center text-sm text-[#5a627a] dark:text-[#9da7c5]">
         <span data-i18n="no_account">ยังไม่มีบัญชี?</span> 
-        <button type="button" onclick="showView('auth-register')" class="font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" data-i18n="register_link">สมัครสมาชิก</button>
+        <button type="button" onclick="showView('auth-register')" class="font-bold text-[#96A4DD] dark:text-[#D9B1E6] hover:underline" data-i18n="register_link">สมัครสมาชิก</button>
       </p>
 
-      <div class="mt-6 rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-[#f0edfc]/50 dark:bg-[#252347]/40 p-4 text-xs text-[#5a627a] dark:text-[#9da7c5]">
-        <span class="font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" data-i18n="quick_test_hint">💡 สำหรับทดสอบด่วน:</span> <span data-i18n-html="quick_test_desc">คุณสามารถใช้ <b>Ardeshir</b> (รหัสผ่าน <b>hassanzxdeh</b>) หรือ <b>Project Alpine</b> (รหัสผ่าน <b>orchid</b>) หรือใช้งานแบบผู้เยี่ยมชม</span>
+      <div class="mt-6 rounded-2xl border border-[#CAE0DC]/70 dark:border-[#CAE0DC]/30 bg-[#f0f8f7] dark:bg-[#132221] p-4 text-xs text-[#5a627a] dark:text-[#9da7c5]">
+        <span class="font-bold text-[#2d6f65] dark:text-[#CAE0DC]" data-i18n="quick_test_hint">💡 สำหรับทดสอบด่วน:</span> <span data-i18n-html="quick_test_desc">คุณสามารถใช้ <b>Ardeshir</b> (รหัสผ่าน <b>hassanzxdeh</b>) หรือ <b>Project Alpine</b> (รหัสผ่าน <b>orchid</b>) หรือใช้งานแบบผู้เยี่ยมชม</span>
       </div>
     </div>
     <p class="mt-10 text-center text-xs text-[#8f9bb3] dark:text-[#6d7796]">Developed by ให้รถในวงเวียนไปก่อน</p>
@@ -417,9 +605,9 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
 </section>
 
 <!-- REGISTER (S5) -->
-<section id="auth-register" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
+<section id="auth-register" class="app-view bg-[#f7f9fd] dark:bg-[#0e0f1a]">
   <div class="mx-auto max-w-md px-5 py-10">
-    <button type="button" onclick="showView('auth-login')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd]"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
+    <button type="button" onclick="showView('auth-login')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd] interactive-btn"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
     <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="register_title">สมัครสมาชิก</h1>
     <p class="mt-2 text-[#5a627a] dark:text-[#9da7c5]" data-i18n="register_subtitle">สร้างบัญชีเพื่อบันทึกรายการโปรดและประวัติการใช้งานอย่างถาวร</p>
     <div class="mt-6 space-y-4">
@@ -435,9 +623,9 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
         <label class="mb-1 block text-sm font-bold" data-i18n="password">รหัสผ่าน</label>
         <input id="reg-password" type="password" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 shadow-sm">
       </div>
-      <p id="reg-error" class="hidden text-sm font-semibold text-[#e11d48] dark:text-[#fb7185]"></p>
+      <p id="reg-error" class="hidden text-sm font-semibold text-[#BF87C9] dark:text-[#D9B1E6]"></p>
       
-      <button type="button" id="reg-submit-btn" onclick="register()" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl bg-[#6a5bdc] py-3.5 font-bold text-white hover:bg-[#5949d0] transition shadow-md shadow-indigo-500/20">
+      <button type="button" id="reg-submit-btn" onclick="register()" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3.5 font-bold text-white hover:opacity-95 shadow-md shadow-[#96A4DD]/25">
         <i data-lucide="user-plus" class="h-4 w-4" id="reg-btn-icon"></i>
         <span data-i18n="register_btn" id="reg-btn-text">สมัครสมาชิก</span>
       </button>
@@ -447,28 +635,28 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
 </section>
 
 <!-- USER DASHBOARD (S1) -->
-<section id="user-dashboard" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
-  <header class="sticky top-0 z-10 bg-[#f6f8fd]/95 dark:bg-[#0e0f1a]/95 px-5 py-4 backdrop-blur border-b border-[#e2e8f4] dark:border-[#262845]">
+<section id="user-dashboard" class="app-view bg-[#f7f9fd] dark:bg-[#0e0f1a]">
+  <header class="sticky top-0 z-10 bg-[#f7f9fd]/95 dark:bg-[#0e0f1a]/95 px-5 py-4 backdrop-blur border-b border-[#e2e8f4] dark:border-[#262845]">
     <div class="mx-auto flex max-w-6xl items-center justify-between">
-      <button type="button" onclick="showView('landing')" class="flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd]">
-        <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#262447] dark:bg-[#6a5bdc] text-white"><i data-lucide="car-front" class="h-4 w-4"></i></span>
+      <button type="button" onclick="showView('landing')" class="flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd] interactive-btn">
+        <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-[#262447] to-[#403884] dark:from-[#96A4DD] dark:to-[#A680C2] text-white dark:text-[#0e0f1a]"><i data-lucide="car-front" class="h-4 w-4"></i></span>
         <span>Parking-A-Lot</span>
       </button>
       <div class="flex items-center gap-2">
-        <button type="button" onclick="toggleQuickSettings(true)" aria-label="Quick Settings" class="rounded-lg p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0edfc] dark:hover:bg-[#252347]"><i data-lucide="settings" class="h-5 w-5"></i></button>
-        <button type="button" onclick="showView('user-notifications')" aria-label="Notifications" class="relative rounded-lg p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0edfc] dark:hover:bg-[#252347]"><i data-lucide="bell" class="h-5 w-5"></i><span id="notif-dot" class="pulse-dot absolute right-2 top-2 hidden h-2 w-2 rounded-full bg-[#ec4899]"></span></button>
-        <button type="button" onclick="showView('user-profile')" class="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-[#f0edfc] dark:bg-[#252347] font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" id="header-avatar">?</button>
+        <button type="button" onclick="toggleQuickSettings(true)" aria-label="Quick Settings" class="rounded-lg p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition interactive-btn"><i data-lucide="settings" class="h-5 w-5"></i></button>
+        <button type="button" onclick="showView('user-notifications')" aria-label="Notifications" class="relative rounded-lg p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition interactive-btn"><i data-lucide="bell" class="h-5 w-5"></i><span id="notif-dot" class="pulse-dot absolute right-2 top-2 hidden h-2 w-2 rounded-full bg-[#BF87C9]"></span></button>
+        <button type="button" onclick="showView('user-profile')" class="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-[#f0f4fc] dark:bg-[#222442] font-bold text-[#4c5aa6] dark:text-[#D9B1E6] shadow-sm interactive-btn" id="header-avatar">?</button>
       </div>
     </div>
   </header>
   <main class="mx-auto max-w-6xl px-5 pb-28 pt-4">
     <div class="flex items-center justify-between">
       <div>
-        <p class="text-sm font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" id="dashboard-greeting">สวัสดี</p>
+        <p class="text-sm font-bold text-[#96A4DD] dark:text-[#D9B1E6]" id="dashboard-greeting">สวัสดี</p>
         <h1 class="mt-1 text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="dashboard_headline">ที่จอดรถวันนี้เป็นอย่างไรบ้าง</h1>
       </div>
-      <button type="button" onclick="syncWithSheets(false)" class="interactive-btn flex items-center gap-1 text-xs font-bold text-[#6a5bdc] dark:text-[#c4b5fd] bg-white dark:bg-[#161729] border border-[#e2e8f4] dark:border-[#262845] rounded-xl px-3 py-2 shadow-sm">
-        <i data-lucide="rotate-cw" class="h-3.5 w-3.5"></i>
+      <button type="button" onclick="syncWithSheets(false)" class="interactive-btn flex items-center gap-1 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] bg-white dark:bg-[#161729] border border-[#e2e8f4] dark:border-[#262845] rounded-xl px-3 py-2 shadow-sm hover:border-[#96A4DD]">
+        <i data-lucide="rotate-cw" class="h-3.5 w-3.5 text-[#96A4DD]"></i>
         <span data-i18n="refresh_btn">รีเฟรช</span>
       </button>
     </div>
@@ -483,47 +671,47 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
     </div>
 
     <div class="mt-6 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
-      <p class="text-sm font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" data-i18n="recommended_for_you">แนะนำสำหรับคุณ</p>
+      <p class="text-sm font-bold text-[#96A4DD] dark:text-[#D9B1E6]" data-i18n="recommended_for_you">แนะนำสำหรับคุณ</p>
       <h2 class="mt-1 font-bold" data-i18n="nearest_lot_now">ลานจอดรถที่ใกล้ที่สุดตอนนี้</h2>
       <div id="recommend-box" class="mt-4 rounded-2xl bg-[#f1f4fb] dark:bg-[#1c1d33] p-4 border border-[#e2e8f4] dark:border-[#262845]"></div>
-      <button type="button" onclick="showView('user-search')" class="interactive-btn mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#6a5bdc] py-3.5 font-bold text-white hover:bg-[#5949d0] transition shadow-md shadow-indigo-500/20"><i data-lucide="navigation" class="h-4 w-4"></i><span data-i18n="select_destination">เลือกอาคารปลายทาง</span></button>
+      <button type="button" onclick="showView('user-search')" class="interactive-btn mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3.5 font-bold text-white hover:opacity-95 shadow-md shadow-[#96A4DD]/25"><i data-lucide="navigation" class="h-4 w-4"></i><span data-i18n="select_destination">เลือกอาคารปลายทาง</span></button>
     </div>
 
     <p class="mt-8 text-center text-xs text-[#8f9bb3] dark:text-[#6d7796]">Developed by ให้รถในวงเวียนไปก่อน</p>
   </main>
-  <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] py-2 backdrop-blur">
-    <button type="button" onclick="showView('user-dashboard')" class="nav-item active flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="house" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
-    <button type="button" onclick="showView('user-search')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
-    <button type="button" onclick="showView('user-favorites')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
-    <button type="button" onclick="showView('user-profile')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
+  <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white/95 dark:bg-[#161729]/95 py-2 backdrop-blur-md">
+    <button type="button" onclick="showView('user-dashboard')" class="nav-item active flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="home" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
+    <button type="button" onclick="showView('user-search')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
+    <button type="button" onclick="showView('user-favorites')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
+    <button type="button" onclick="showView('user-profile')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
   </nav>
 </section>
 
 <!-- SEARCH (S2) -->
-<section id="user-search" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
+<section id="user-search" class="app-view bg-[#f7f9fd] dark:bg-[#0e0f1a]">
   <div class="mx-auto max-w-3xl px-5 pb-28 pt-6">
-    <button type="button" onclick="showView('user-dashboard')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd]"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back_home">กลับหน้าหลัก</span></button>
+    <button type="button" onclick="showView('user-dashboard')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd] interactive-btn"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back_home">กลับหน้าหลัก</span></button>
     <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="search_title">ค้นหาอาคาร / ลานจอดรถ</h1>
     <p class="mt-2 text-[#5a627a] dark:text-[#9da7c5]" data-i18n="search_sub">พิมพ์ชื่ออาคารหรือลานจอดรถ แล้วเลือกหมวดหมู่ที่ต้องการ</p>
     <div class="relative mt-5"><i data-lucide="search" class="absolute left-4 top-4 h-5 w-5 text-[#8f9bb3]"></i>
-      <input id="search-input" type="search" oninput="renderSearchResults()" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] py-4 pl-12 pr-4 shadow-sm focus:border-[#6a5bdc]">
+      <input id="search-input" type="search" oninput="renderSearchResults()" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] py-4 pl-12 pr-4 shadow-sm">
     </div>
     <div class="mt-4 flex flex-wrap gap-2" id="search-chips"></div>
     <div id="search-results" class="mt-6 space-y-3"></div>
   </div>
-  <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] py-2 backdrop-blur">
-    <button type="button" onclick="showView('user-dashboard')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="house" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
-    <button type="button" onclick="showView('user-search')" class="nav-item active flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
-    <button type="button" onclick="showView('user-favorites')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
-    <button type="button" onclick="showView('user-profile')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
+  <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white/95 dark:bg-[#161729]/95 py-2 backdrop-blur-md">
+    <button type="button" onclick="showView('user-dashboard')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="home" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
+    <button type="button" onclick="showView('user-search')" class="nav-item active flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
+    <button type="button" onclick="showView('user-favorites')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
+    <button type="button" onclick="showView('user-profile')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
   </nav>
 </section>
 
 <!-- MAP / NAVIGATION (S3) -->
-<section id="user-map" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
+<section id="user-map" class="app-view bg-[#f7f9fd] dark:bg-[#0e0f1a]">
   <div class="mx-auto max-w-3xl px-5 pb-16 pt-6">
-    <button type="button" onclick="showView('user-search')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd]"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
-    <div class="rounded-3xl bg-gradient-to-br from-[#262447] to-[#362e60] dark:from-[#191830] dark:to-[#232042] border border-transparent dark:border-[#393466] p-6 text-white shadow-lg">
+    <button type="button" onclick="showView('user-search')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd] interactive-btn"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
+    <div class="rounded-3xl bg-gradient-to-br from-[#262447] via-[#2f2757] to-[#3a2c66] dark:from-[#191830] dark:to-[#271f45] border border-[#BF87C9]/20 p-6 text-white shadow-lg">
       <p class="text-sm font-semibold text-[#D9B1E6]" data-i18n="destination_label">ปลายทาง</p>
       <h1 id="route-title" class="mt-1 text-xl font-extrabold">-</h1>
       <p id="route-description" class="mt-2 text-sm text-[#e0e4f7]">ระบบแนะนำลานจอดรถที่ใกล้ที่สุดให้แล้ว</p>
@@ -536,51 +724,51 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
     <div class="mt-4 grid grid-cols-3 divide-x divide-[#e2e8f4] dark:divide-[#262845] rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] text-center shadow-sm">
       <div class="p-4"><b id="route-time" class="block text-xl text-[#262447] dark:text-[#c4b5fd]">-</b><span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="walk_minutes">นาที่ที่ใช้เดินทาง</span></div>
       <div class="p-4"><b id="route-distance" class="block text-xl text-[#262447] dark:text-[#c4b5fd]">-</b><span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="meters_unit">เมตร</span></div>
-      <div class="p-4"><i data-lucide="car-front" class="mx-auto h-5 w-5 text-[#6a5bdc] dark:text-[#c4b5fd]"></i><span id="route-lot-name" class="mt-1 block text-xs text-[#5a627a] dark:text-[#9da7c5]">-</span></div>
+      <div class="p-4"><i data-lucide="car-front" class="mx-auto h-5 w-5 text-[#96A4DD] dark:text-[#D9B1E6]"></i><span id="route-lot-name" class="mt-1 block text-xs text-[#5a627a] dark:text-[#9da7c5]">-</span></div>
     </div>
     
-    <button type="button" id="finish-route-btn" onclick="finishRoute()" class="interactive-btn mt-5 w-full flex items-center justify-center gap-2 rounded-xl bg-[#6a5bdc] py-4 font-bold text-white shadow-lg shadow-indigo-500/20 hover:bg-[#5949d0] transition">
+    <button type="button" id="finish-route-btn" onclick="finishRoute()" class="interactive-btn mt-5 w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-4 font-bold text-white shadow-lg shadow-[#96A4DD]/30 hover:opacity-95">
       <i data-lucide="check" class="h-5 w-5" id="finish-btn-icon"></i>
       <span data-i18n="finish_nav" id="finish-btn-text">ถึงลานจอดรถแล้ว / จบการนำทาง</span>
     </button>
     
-    <p id="route-finished" class="mt-4 hidden rounded-xl bg-[#f0edfc] dark:bg-[#252347] p-4 text-center font-semibold text-[#6a5bdc] dark:text-[#D9B1E6] border border-[#d5deed] dark:border-[#262845]" aria-live="polite" data-i18n="finish_success">บันทึกการจอดรถแล้ว — ขอบคุณที่ใช้บริการครับ/ค่ะ</p>
+    <p id="route-finished" class="mt-4 hidden rounded-xl bg-[#f0f4fc] dark:bg-[#222442] p-4 text-center font-semibold text-[#262447] dark:text-[#D9B1E6] border border-[#96A4DD]/40" aria-live="polite" data-i18n="finish_success">บันทึกการจอดรถแล้ว — ขอบคุณที่ใช้บริการครับ/ค่ะ</p>
   </div>
 </section>
 
 <!-- FAVORITES (S4) -->
-<section id="user-favorites" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
+<section id="user-favorites" class="app-view bg-[#f7f9fd] dark:bg-[#0e0f1a]">
   <div class="mx-auto max-w-3xl px-5 pb-28 pt-6">
-    <button type="button" onclick="showView('user-dashboard')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd]"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
+    <button type="button" onclick="showView('user-dashboard')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd] interactive-btn"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
     <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="favorites_title">รายการโปรด</h1>
     <p class="mt-2 text-[#5a627a] dark:text-[#9da7c5]" data-i18n="favorites_sub">ลานจอดรถที่คุณบันทึกไว้</p>
     <div id="favorites-list" class="mt-6 space-y-3"></div>
   </div>
-  <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] py-2 backdrop-blur">
-    <button type="button" onclick="showView('user-dashboard')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="house" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
-    <button type="button" onclick="showView('user-search')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
-    <button type="button" onclick="showView('user-favorites')" class="nav-item active flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
-    <button type="button" onclick="showView('user-profile')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
+  <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white/95 dark:bg-[#161729]/95 py-2 backdrop-blur-md">
+    <button type="button" onclick="showView('user-dashboard')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="home" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
+    <button type="button" onclick="showView('user-search')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
+    <button type="button" onclick="showView('user-favorites')" class="nav-item active flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
+    <button type="button" onclick="showView('user-profile')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
   </nav>
 </section>
 
 <!-- PROFILE (S6) -->
-<section id="user-profile" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
-  <div class="bg-gradient-to-br from-[#262447] to-[#362e60] dark:from-[#191830] dark:to-[#232042] px-5 pb-10 pt-8 text-white">
+<section id="user-profile" class="app-view bg-[#f7f9fd] dark:bg-[#0e0f1a]">
+  <div class="bg-gradient-to-br from-[#262447] via-[#312959] to-[#3e2e6d] dark:from-[#191830] dark:to-[#281f47] px-5 pb-10 pt-8 text-white shadow-md">
     <div class="mx-auto max-w-3xl">
       <div class="flex items-center justify-between mb-6">
-        <button type="button" onclick="showView('user-dashboard')" class="inline-flex items-center gap-2 font-bold text-white"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
-        <button type="button" onclick="toggleQuickSettings(true)" class="rounded-full p-2 text-[#D9B1E6] hover:bg-[#3f3770] transition"><i data-lucide="settings" class="h-5 w-5"></i></button>
+        <button type="button" onclick="showView('user-dashboard')" class="inline-flex items-center gap-2 font-bold text-white interactive-btn"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
+        <button type="button" onclick="toggleQuickSettings(true)" class="rounded-full p-2 text-[#D9B1E6] hover:bg-[#3f3770] transition interactive-btn"><i data-lucide="settings" class="h-5 w-5"></i></button>
       </div>
       <div class="flex items-center gap-4">
-        <label class="relative h-16 w-16 cursor-pointer overflow-hidden rounded-full bg-[#f0edfc] dark:bg-[#252347] text-2xl font-bold text-[#6a5bdc] dark:text-[#c4b5fd] shadow-md ring-2 ring-[#96A4DD]" title="อัปโหลดรูปโปรไฟล์">
+        <label class="relative h-16 w-16 cursor-pointer overflow-hidden rounded-full bg-[#f0f4fc] dark:bg-[#222442] text-2xl font-bold text-[#4c5aa6] dark:text-[#D9B1E6] shadow-md ring-2 ring-[#96A4DD] interactive-btn" title="อัปโหลดรูปโปรไฟล์">
           <span id="profile-avatar" class="flex h-full w-full items-center justify-center">?</span>
           <input type="file" accept="image/*" class="hidden" onchange="uploadAvatar(event)">
         </label>
         <div>
           <div class="flex items-center gap-2 flex-wrap">
             <h1 id="profile-name" class="text-xl font-extrabold text-white">-</h1>
-            <span id="profile-role-badge" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#6a5bdc] text-white shadow-sm">
+            <span id="profile-role-badge" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-gradient-to-r from-[#96A4DD] to-[#A680C2] text-white shadow-sm">
               <i data-lucide="user-check" class="h-3 w-3"></i>
               <span data-i18n="role_member">สมาชิกทั่วไป</span>
             </span>
@@ -593,27 +781,27 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
   <div class="mx-auto max-w-3xl space-y-4 px-5 py-6 pb-28">
 
     <!-- GUEST PROMPT BANNER (Visible only to guests) -->
-    <div id="profile-guest-banner" class="hidden rounded-3xl border border-amber-300 dark:border-amber-700/60 bg-gradient-to-br from-amber-50 to-amber-100/60 dark:from-amber-950/40 dark:to-amber-900/20 p-5 shadow-sm space-y-3">
+    <div id="profile-guest-banner" class="hidden rounded-3xl border border-[#95BBE6]/50 dark:border-[#95BBE6]/30 bg-gradient-to-br from-[#f0f6fd] to-[#e8f1fb] dark:from-[#151e2e] dark:to-[#1a2538] p-5 shadow-sm space-y-3">
       <div class="flex items-start gap-3">
-        <div class="rounded-xl bg-amber-500/20 p-2 text-amber-600 dark:text-amber-400">
+        <div class="rounded-xl bg-[#95BBE6]/30 p-2 text-[#346597] dark:text-[#95BBE6]">
           <i data-lucide="info" class="h-5 w-5"></i>
         </div>
         <div class="flex-1">
-          <h3 class="font-bold text-sm text-[#262447] dark:text-[#fef3c7]" data-i18n="guest_banner_title">คุณกำลังใช้งานในฐานะผู้เยี่ยมชม (Guest)</h3>
-          <p class="mt-1 text-xs text-[#5a627a] dark:text-[#fde68a]/80 leading-relaxed" data-i18n="guest_banner_desc">ประวัติและรายการโปรดจะถูกบันทึกชั่วคราวในอุปกรณ์นี้ สมัครสมาชิกเพื่อบันทึกข้อมูลอย่างถาวรและเข้าถึงได้จากทุกอุปกรณ์</p>
+          <h3 class="font-bold text-sm text-[#1b2533] dark:text-[#e2effd]" data-i18n="guest_banner_title">คุณกำลังใช้งานในฐานะผู้เยี่ยมชม (Guest)</h3>
+          <p class="mt-1 text-xs text-[#5a627a] dark:text-[#9da7c5] leading-relaxed" data-i18n="guest_banner_desc">ประวัติและรายการโปรดจะถูกบันทึกชั่วคราวในอุปกรณ์นี้ สมัครสมาชิกเพื่อบันทึกข้อมูลอย่างถาวรและเข้าถึงได้จากทุกอุปกรณ์</p>
         </div>
       </div>
-      <button type="button" onclick="showView('auth-register')" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl bg-[#6a5bdc] py-3 text-xs font-bold text-white shadow hover:bg-[#5949d0] transition">
+      <button type="button" onclick="showView('auth-register')" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#95BBE6] to-[#96A4DD] py-3 text-xs font-bold text-[#0f172a] shadow hover:opacity-95">
         <i data-lucide="user-plus" class="h-4 w-4"></i>
         <span data-i18n="guest_register_btn">สมัครสมาชิกเพื่อบันทึกถาวร</span>
       </button>
     </div>
 
     <!-- ADMIN PORTAL SHORTCUT TILE (Visible only to admins) -->
-    <button type="button" id="profile-admin-tile" onclick="showView('admin-dashboard')" class="hidden flex w-full items-center justify-between rounded-2xl bg-gradient-to-r from-[#262447] to-[#433878] dark:from-[#1e1a38] dark:to-[#33285c] p-5 text-left text-white shadow-md hover:opacity-95 transition group">
+    <button type="button" id="profile-admin-tile" onclick="showView('admin-dashboard')" class="hidden flex w-full items-center justify-between rounded-2xl bg-gradient-to-r from-[#262447] via-[#352c5c] to-[#453670] dark:from-[#1a1733] dark:to-[#312252] p-5 text-left text-white shadow-md hover:opacity-95 transition group interactive-btn">
       <span class="flex items-center gap-3">
-        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ec4899] text-white shadow-sm">
-          <i data-lucide="shield-alert" class="h-5 w-5"></i>
+        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-[#A680C2] to-[#BF87C9] text-white shadow-sm">
+          <i data-lucide="shield-check" class="h-5 w-5"></i>
         </span>
         <div>
           <span class="font-bold text-sm block text-white" data-i18n="admin_portal_btn">ไปยังระบบจัดการลานจอด (Admin Portal)</span>
@@ -624,21 +812,21 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
     </button>
 
     <!-- GOOGLE SHEETS CONNECTOR TILE (Gated to Admin only) -->
-    <button type="button" id="profile-sheets-tile" onclick="toggleQuickSettings(true)" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#6a5bdc] transition group">
+    <button type="button" id="profile-sheets-tile" onclick="toggleQuickSettings(true)" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#96A4DD] transition group interactive-btn">
       <span class="flex items-center gap-3">
-        <i data-lucide="database" class="text-[#6a5bdc] dark:text-[#c4b5fd]"></i>
+        <i data-lucide="database" class="text-[#96A4DD] dark:text-[#D9B1E6]"></i>
         <div>
           <span class="font-semibold block" data-i18n="sheets_settings_btn">การตั้งค่าฐานข้อมูล Google Sheets</span>
           <span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" id="profile-db-status">เชื่อมต่อแล้ว (Live)</span>
         </div>
       </span>
-      <i data-lucide="chevron-right" class="text-[#8f9bb3] group-hover:text-[#6a5bdc] transition"></i>
+      <i data-lucide="chevron-right" class="text-[#8f9bb3] group-hover:text-[#96A4DD] transition"></i>
     </button>
 
     <!-- SETTINGS CARD -->
     <div class="rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm space-y-4">
       <div class="flex items-center gap-2 pb-2 border-b border-[#edf1f8] dark:border-[#262845]">
-        <i data-lucide="sliders-horizontal" class="h-5 w-5 text-[#6a5bdc] dark:text-[#c4b5fd]"></i>
+        <i data-lucide="sliders-horizontal" class="h-5 w-5 text-[#96A4DD] dark:text-[#D9B1E6]"></i>
         <h2 class="font-extrabold text-base text-[#262447] dark:text-[#c4b5fd]" data-i18n="settings_section">การตั้งค่าระบบ</h2>
       </div>
       
@@ -646,10 +834,10 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
       <div>
         <label class="block text-xs font-bold uppercase tracking-wider text-[#5a627a] dark:text-[#9da7c5] mb-2" data-i18n="language_label">ภาษา / Language</label>
         <div class="grid grid-cols-2 gap-2">
-          <button type="button" onclick="setLanguage('th')" id="profile-lang-th" class="flex items-center justify-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-sm font-bold transition hover:border-[#6a5bdc]">
+          <button type="button" onclick="setLanguage('th')" id="profile-lang-th" class="interactive-btn flex items-center justify-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-sm font-bold">
             <span>ภาษาไทย (TH)</span>
           </button>
-          <button type="button" onclick="setLanguage('en')" id="profile-lang-en" class="flex items-center justify-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-sm font-bold transition hover:border-[#6a5bdc]">
+          <button type="button" onclick="setLanguage('en')" id="profile-lang-en" class="interactive-btn flex items-center justify-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-sm font-bold">
             <span>English (EN)</span>
           </button>
         </div>
@@ -659,25 +847,25 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
       <div>
         <label class="block text-xs font-bold uppercase tracking-wider text-[#5a627a] dark:text-[#9da7c5] mb-2" data-i18n="theme_label">ธีมการแสดงผล / Appearance</label>
         <div class="grid grid-cols-3 gap-2">
-          <button type="button" onclick="setTheme('light')" id="profile-theme-light" class="flex flex-col items-center justify-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-xs font-bold transition hover:border-[#6a5bdc]">
+          <button type="button" onclick="setTheme('light')" id="profile-theme-light" class="interactive-btn flex flex-col items-center justify-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-xs font-bold">
             <i data-lucide="sun" class="h-5 w-5 text-amber-500"></i>
             <span data-i18n="theme_light">สว่าง</span>
           </button>
-          <button type="button" onclick="setTheme('dark')" id="profile-theme-dark" class="flex flex-col items-center justify-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-xs font-bold transition hover:border-[#6a5bdc]">
+          <button type="button" onclick="setTheme('dark')" id="profile-theme-dark" class="interactive-btn flex flex-col items-center justify-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-xs font-bold">
             <i data-lucide="moon" class="h-5 w-5 text-[#96A4DD]"></i>
             <span data-i18n="theme_dark">มืด</span>
           </button>
-          <button type="button" onclick="setTheme('system')" id="profile-theme-system" class="flex flex-col items-center justify-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-xs font-bold transition hover:border-[#6a5bdc]">
-            <i data-lucide="laptop" class="h-5 w-5 text-[#6a5bdc] dark:text-[#c4b5fd]"></i>
+          <button type="button" onclick="setTheme('system')" id="profile-theme-system" class="interactive-btn flex flex-col items-center justify-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-3 text-xs font-bold">
+            <i data-lucide="laptop" class="h-5 w-5 text-[#A680C2] dark:text-[#D9B1E6]"></i>
             <span data-i18n="theme_system">ตามอุปกรณ์</span>
           </button>
         </div>
       </div>
     </div>
 
-    <button type="button" id="profile-edit-btn" onclick="toggleProfileEdit()" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#6a5bdc] transition">
+    <button type="button" id="profile-edit-btn" onclick="toggleProfileEdit()" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#96A4DD] transition interactive-btn">
       <span class="flex items-center gap-3">
-        <i data-lucide="user-pen" class="text-[#6a5bdc] dark:text-[#c4b5fd]"></i>
+        <i data-lucide="user-pen" class="text-[#96A4DD] dark:text-[#D9B1E6]"></i>
         <span class="font-semibold" data-i18n="edit_profile_btn">แก้ไขข้อมูลส่วนตัว / เปลี่ยนรหัสผ่าน</span>
       </span>
       <i data-lucide="chevron-right" class="text-[#8f9bb3]"></i>
@@ -693,57 +881,57 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
         <input id="edit-password" type="password" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 shadow-sm">
       </div>
       
-      <button type="button" id="save-profile-btn" onclick="saveProfile()" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl bg-[#6a5bdc] py-3 font-bold text-white hover:bg-[#5949d0] transition shadow-md">
+      <button type="button" id="save-profile-btn" onclick="saveProfile()" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3 font-bold text-white hover:opacity-95 shadow-md">
         <i data-lucide="save" class="h-4 w-4" id="save-profile-icon"></i>
         <span data-i18n="save_changes" id="save-profile-text">บันทึกการเปลี่ยนแปลง</span>
       </button>
-      <p id="profile-saved" class="hidden text-center text-sm font-semibold text-[#6a5bdc] dark:text-[#c4b5fd]" data-i18n="saved_profile_msg">บันทึกข้อมูลแล้ว</p>
+      <p id="profile-saved" class="hidden text-center text-sm font-semibold text-[#4c5aa6] dark:text-[#D9B1E6]" data-i18n="saved_profile_msg">บันทึกข้อมูลแล้ว</p>
     </div>
 
     <!-- CHANGELOG LINK IN PROFILE -->
-    <a href="https://docs.google.com/document/d/1QQ2nvePn2MsxNwh_2KmTXQbrHRarNDiYpR3ptZoC5ls/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#6a5bdc] transition group">
+    <a href="https://docs.google.com/document/d/1QQ2nvePn2MsxNwh_2KmTXQbrHRarNDiYpR3ptZoC5ls/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#96A4DD] transition group interactive-btn">
       <span class="flex items-center gap-3">
-        <i data-lucide="file-text" class="text-[#6a5bdc] dark:text-[#c4b5fd]"></i>
+        <i data-lucide="file-text" class="text-[#96A4DD] dark:text-[#D9B1E6]"></i>
         <div>
           <span class="font-semibold block" data-i18n="changelog_link_text">ดูบันทึกการเปลี่ยนแปลง (Changelog)</span>
           <span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="changelog_sub">ประวัติการพัฒนาและรายการอัปเดตเวอร์ชัน</span>
         </div>
       </span>
-      <i data-lucide="external-link" class="text-[#8f9bb3] group-hover:text-[#6a5bdc] transition"></i>
+      <i data-lucide="external-link" class="text-[#8f9bb3] group-hover:text-[#96A4DD] transition"></i>
     </a>
 
-    <button type="button" onclick="showView('user-history')" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#6a5bdc] transition">
-      <span class="flex items-center gap-3"><i data-lucide="clock-3" class="text-[#6a5bdc] dark:text-[#c4b5fd]"></i><span class="font-semibold" data-i18n="history_btn">ประวัติการใช้งานและการค้นหา</span></span><i data-lucide="chevron-right" class="text-[#8f9bb3]"></i>
+    <button type="button" onclick="showView('user-history')" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#96A4DD] transition interactive-btn">
+      <span class="flex items-center gap-3"><i data-lucide="clock-3" class="text-[#96A4DD] dark:text-[#D9B1E6]"></i><span class="font-semibold" data-i18n="history_btn">ประวัติการใช้งานและการค้นหา</span></span><i data-lucide="chevron-right" class="text-[#8f9bb3]"></i>
     </button>
-    <button type="button" onclick="showView('user-review')" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#6a5bdc] transition">
+    <button type="button" onclick="showView('user-review')" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#96A4DD] transition interactive-btn">
       <span class="flex items-center gap-3"><i data-lucide="star" class="text-[#f59e0b]"></i><span class="font-semibold" data-i18n="review_btn">ให้คะแนนและรีวิว</span></span><i data-lucide="chevron-right" class="text-[#8f9bb3]"></i>
     </button>
-    <button type="button" onclick="showView('user-notifications')" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#6a5bdc] transition">
-      <span class="flex items-center gap-3"><i data-lucide="bell" class="text-[#6a5bdc] dark:text-[#c4b5fd]"></i><span class="font-semibold" data-i18n="notif_btn">การแจ้งเตือน</span></span><i data-lucide="chevron-right" class="text-[#8f9bb3]"></i>
+    <button type="button" onclick="showView('user-notifications')" class="flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 text-left shadow-sm hover:border-[#96A4DD] transition interactive-btn">
+      <span class="flex items-center gap-3"><i data-lucide="bell" class="text-[#96A4DD] dark:text-[#D9B1E6]"></i><span class="font-semibold" data-i18n="notif_btn">การแจ้งเตือน</span></span><i data-lucide="chevron-right" class="text-[#8f9bb3]"></i>
     </button>
 
-    <div class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-[#f0edfc]/50 dark:bg-[#252347]/40 p-4 text-sm text-[#5a627a] dark:text-[#9da7c5]">
+    <div class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-[#f0f4fc]/60 dark:bg-[#222442]/40 p-4 text-sm text-[#5a627a] dark:text-[#9da7c5]">
       <b data-i18n="pwa_notice_title">เกี่ยวกับแถบสถานะด้านบน:</b> <span data-i18n="pwa_notice_desc">เว็บที่เปิดผ่านเบราว์เซอร์ทั่วไปจะลบแถบเวลา/สัญญาณของโทรศัพท์ไม่ได้ เพราะเป็นส่วนหนึ่งของระบบปฏิบัติการ หากต้องการหน้าจอเต็ม ให้เพิ่มหน้านี้ไปยังหน้าจอหลัก (Add to Home Screen) เพื่อเปิดแบบแอปเต็มจอ</span>
     </div>
 
-    <button type="button" onclick="logout()" class="interactive-btn flex w-full items-center justify-center gap-2 rounded-2xl border border-[#fecdd3] dark:border-[#4c1d24] bg-white dark:bg-[#1a1215] p-4 font-bold text-[#e11d48] dark:text-[#fb7185] hover:bg-[#fff1f2] dark:hover:bg-[#251619] transition">
+    <button type="button" onclick="logout()" class="interactive-btn flex w-full items-center justify-center gap-2 rounded-2xl border border-[#BF87C9]/40 dark:border-[#BF87C9]/30 bg-white dark:bg-[#1a1524] p-4 font-bold text-[#8e4f9c] dark:text-[#D9B1E6] hover:bg-[#faf5fc] dark:hover:bg-[#251b30]">
       <i data-lucide="log-out" class="h-4 w-4"></i><span data-i18n="logout_btn">ออกจากระบบ</span>
     </button>
 
     <p class="pt-4 text-center text-xs text-[#8f9bb3] dark:text-[#6d7796]">Developed by ให้รถในวงเวียนไปก่อน</p>
   </div>
-  <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] py-2 backdrop-blur">
-    <button type="button" onclick="showView('user-dashboard')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="house" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
-    <button type="button" onclick="showView('user-search')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
-    <button type="button" onclick="showView('user-favorites')" class="nav-item flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
-    <button type="button" onclick="showView('user-profile')" class="nav-item active flex flex-col items-center rounded-lg px-4 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
+  <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white/95 dark:bg-[#161729]/95 py-2 backdrop-blur-md">
+    <button type="button" onclick="showView('user-dashboard')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="home" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
+    <button type="button" onclick="showView('user-search')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
+    <button type="button" onclick="showView('user-favorites')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
+    <button type="button" onclick="showView('user-profile')" class="nav-item active flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
   </nav>
 </section>
 
 <!-- HISTORY (S7) -->
-<section id="user-history" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
+<section id="user-history" class="app-view bg-[#f7f9fd] dark:bg-[#0e0f1a]">
   <div class="mx-auto max-w-3xl px-5 pb-16 pt-6">
-    <button type="button" onclick="showView('user-profile')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd]"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
+    <button type="button" onclick="showView('user-profile')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd] interactive-btn"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
     <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="history_title">ประวัติการใช้งาน</h1>
     <div class="mt-4 flex gap-2">
       <button type="button" onclick="setHistoryTab('nav')" id="history-tab-nav" class="chip active flex-1" data-i18n="tab_parking">ประวัติการจอดรถ</button>
@@ -754,13 +942,13 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
 </section>
 
 <!-- REVIEW (S8) -->
-<section id="user-review" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
+<section id="user-review" class="app-view bg-[#f7f9fd] dark:bg-[#0e0f1a]">
   <div class="mx-auto max-w-3xl px-5 pb-16 pt-6">
-    <button type="button" onclick="showView('user-profile')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd]"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
+    <button type="button" onclick="showView('user-profile')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd] interactive-btn"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
     <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="review_title">ให้คะแนนและรีวิว</h1>
     <div class="mt-4 rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 text-center shadow-sm">
       <p class="text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="avg_rating_label">คะแนนเฉลี่ยจากผู้ใช้งาน</p>
-      <p id="review-average" class="mt-1 text-4xl font-extrabold text-[#6a5bdc] dark:text-[#c4b5fd]">-</p>
+      <p id="review-average" class="mt-1 text-4xl font-extrabold text-[#96A4DD] dark:text-[#c4b5fd]">-</p>
       <p id="review-count" class="text-sm text-[#5a627a] dark:text-[#9da7c5]">ยังไม่มีรีวิว</p>
     </div>
     <div class="mt-5 rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
@@ -768,7 +956,7 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
       <div id="star-input" class="mt-3 flex gap-2"></div>
       <textarea id="review-text" rows="3" class="mt-3 w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3"></textarea>
       
-      <button type="button" id="review-submit-btn" onclick="submitReview()" class="interactive-btn mt-3 w-full flex items-center justify-center gap-2 rounded-xl bg-[#6a5bdc] py-3 font-bold text-white hover:bg-[#5949d0] transition shadow-md">
+      <button type="button" id="review-submit-btn" onclick="submitReview()" class="interactive-btn mt-3 w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3 font-bold text-white hover:opacity-95 shadow-md">
         <i data-lucide="send" class="h-4 w-4" id="review-btn-icon"></i>
         <span data-i18n="submit_review_btn" id="review-btn-text">ส่งรีวิว</span>
       </button>
@@ -778,9 +966,9 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
 </section>
 
 <!-- NOTIFICATIONS -->
-<section id="user-notifications" class="app-view bg-[#f6f8fd] dark:bg-[#0e0f1a]">
+<section id="user-notifications" class="app-view bg-[#f7f9fd] dark:bg-[#0e0f1a]">
   <div class="mx-auto max-w-3xl px-5 pb-16 pt-6">
-    <button type="button" onclick="showView('user-dashboard')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd]"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
+    <button type="button" onclick="showView('user-dashboard')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd] interactive-btn"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
     <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="notif_title">การแจ้งเตือน</h1>
     <div id="notifications-list" class="mt-6 space-y-3"></div>
   </div>
@@ -788,29 +976,29 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
 
 <!-- ADMIN (S9) -->
 <section id="admin-dashboard" class="app-view bg-[#f4f6fc] dark:bg-[#0e0f1a]">
-  <header class="bg-gradient-to-r from-[#262447] to-[#362e60] dark:from-[#191830] dark:to-[#232042] border-b border-transparent dark:border-[#262845] px-5 py-6 text-white">
+  <header class="bg-gradient-to-r from-[#262447] via-[#2f2757] to-[#3a2c66] dark:from-[#191830] dark:to-[#271f45] border-b border-transparent dark:border-[#262845] px-5 py-6 text-white">
     <div class="mx-auto flex max-w-4xl items-center justify-between">
       <div>
         <p class="text-sm text-[#D9B1E6]" data-i18n="admin_tag">สำหรับผู้ดูแลระบบ</p>
         <h1 class="text-2xl font-extrabold tracking-tight" data-i18n="admin_heading">จัดการลานจอดรถ</h1>
       </div>
       <div class="flex items-center gap-3">
-        <button type="button" onclick="toggleQuickSettings(true)" class="rounded-xl border border-[#96A4DD] p-2 hover:bg-[#3f3770] transition"><i data-lucide="settings" class="h-5 w-5"></i></button>
-        <button type="button" onclick="showView('landing')" class="rounded-xl border border-[#96A4DD] px-4 py-2 text-sm font-bold hover:bg-[#3f3770] transition" data-i18n="exit_admin">ออกจากหน้านี้</button>
+        <button type="button" onclick="toggleQuickSettings(true)" class="rounded-xl border border-[#96A4DD] p-2 hover:bg-[#3f3770] transition interactive-btn"><i data-lucide="settings" class="h-5 w-5"></i></button>
+        <button type="button" onclick="showView('landing')" class="rounded-xl border border-[#96A4DD] px-4 py-2 text-sm font-bold hover:bg-[#3f3770] transition interactive-btn" data-i18n="exit_admin">ออกจากหน้านี้</button>
       </div>
     </div>
   </header>
   <main class="mx-auto max-w-4xl px-5 py-8">
     <div class="grid grid-cols-2 gap-4 md:grid-cols-3">
-      <div class="rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 shadow-sm">
+      <div class="rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 shadow-sm stat-card-anim">
         <p class="text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="admin_stat_lots">ลานจอดรถทั้งหมด</p>
         <p id="admin-lot-count" class="mt-2 text-3xl font-extrabold text-[#262447] dark:text-[#c4b5fd]">0</p>
       </div>
-      <div class="rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 shadow-sm">
+      <div class="rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 shadow-sm stat-card-anim">
         <p class="text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="admin_stat_spaces">ช่องว่างรวม</p>
-        <p id="admin-total" class="mt-2 text-4xl font-extrabold text-[#6a5bdc] dark:text-[#c4b5fd]">0</p>
+        <p id="admin-total" class="mt-2 text-4xl font-extrabold text-[#96A4DD] dark:text-[#c4b5fd]">0</p>
       </div>
-      <div class="rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 shadow-sm">
+      <div class="rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 shadow-sm stat-card-anim">
         <p class="text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="admin_stat_bldgs">อาคารที่รองรับ</p>
         <p id="admin-building-count" class="mt-2 text-3xl font-extrabold text-[#262447] dark:text-[#c4b5fd]">0</p>
       </div>
@@ -819,7 +1007,7 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
     <div class="mt-8 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-sm font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" data-i18n="add_lot_heading">เพิ่มลานจอดรถใหม่</p>
+          <p class="text-sm font-bold text-[#96A4DD] dark:text-[#D9B1E6]" data-i18n="add_lot_heading">เพิ่มลานจอดรถใหม่</p>
           <h2 class="mt-1 font-extrabold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="add_lot_sub">ลานจอดรถจะปรากฏในระบบค้นหาทันที</h2>
         </div>
       </div>
@@ -842,21 +1030,21 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
         </div>
       </div>
       
-      <button type="button" id="btn-add-lot" onclick="addLot()" class="interactive-btn mt-4 inline-flex items-center gap-2 rounded-xl bg-[#6a5bdc] px-5 py-3 font-bold text-white shadow hover:bg-[#5949d0] transition">
+      <button type="button" id="btn-add-lot" onclick="addLot()" class="interactive-btn mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] px-5 py-3 font-bold text-white shadow hover:opacity-95">
         <i data-lucide="plus" class="h-4 w-4" id="add-lot-icon"></i>
         <span data-i18n="add_lot_btn" id="add-lot-text">เพิ่มลานจอดรถ</span>
       </button>
-      <p id="admin-message" class="mt-3 hidden rounded-xl bg-[#f0edfc] dark:bg-[#252347] p-3 text-sm font-semibold text-[#6a5bdc] dark:text-[#c4b5fd] border border-[#d5deed] dark:border-[#262845]"></p>
+      <p id="admin-message" class="mt-3 hidden rounded-xl bg-[#f0f4fc] dark:bg-[#222442] p-3 text-sm font-semibold text-[#262447] dark:text-[#D9B1E6] border border-[#96A4DD]/40"></p>
     </div>
 
     <div class="mt-8 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
-      <p class="text-sm font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" data-i18n="lot_list_title">รายการลานจอดรถ</p>
+      <p class="text-sm font-bold text-[#96A4DD] dark:text-[#D9B1E6]" data-i18n="lot_list_title">รายการลานจอดรถ</p>
       <h2 class="mt-1 font-extrabold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="lot_list_sub">ปรับจำนวนช่องว่าง หรือ ลบลานจอดรถ</h2>
       <div id="admin-lot-list" class="mt-4 space-y-3"></div>
     </div>
 
     <div class="mt-8 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
-      <p class="text-sm font-bold text-[#6a5bdc] dark:text-[#c4b5fd]" data-i18n="recent_reviews">ล่าสุด</p>
+      <p class="text-sm font-bold text-[#96A4DD] dark:text-[#D9B1E6]" data-i18n="recent_reviews">ล่าสุด</p>
       <h2 class="mt-1 font-extrabold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="user_reviews_heading">รีวิวจากผู้ใช้งาน</h2>
       <div id="admin-review-list" class="mt-4 space-y-3"></div>
     </div>
@@ -866,12 +1054,12 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
 </section>
 
 <!-- CONFIRM DIALOG -->
-<div id="confirm-dialog" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm p-5">
-  <div class="w-full max-w-sm rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
+<div id="confirm-dialog" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm p-5 transition-opacity duration-300">
+  <div class="modal-content-anim w-full max-w-sm rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
     <p id="confirm-message" class="font-semibold text-lg">ยืนยันการลบหรือไม่</p>
     <div class="mt-5 flex gap-3">
-      <button type="button" onclick="closeConfirm(false)" class="flex-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] py-3 font-bold hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" data-i18n="cancel_btn">ยกเลิก</button>
-      <button type="button" onclick="closeConfirm(true)" class="flex-1 rounded-xl bg-[#e11d48] py-3 font-bold text-white hover:bg-[#be123c]" data-i18n="delete_btn">ลบ</button>
+      <button type="button" onclick="closeConfirm(false)" class="interactive-btn flex-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] py-3 font-bold hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" data-i18n="cancel_btn">ยกเลิก</button>
+      <button type="button" onclick="closeConfirm(true)" class="interactive-btn flex-1 rounded-xl bg-gradient-to-r from-[#BF87C9] to-[#A680C2] py-3 font-bold text-white hover:opacity-90 shadow-sm" data-i18n="delete_btn">ลบ</button>
     </div>
   </div>
 </div>
@@ -1042,7 +1230,7 @@ const i18n = {
     sync_now_btn: "ซิงค์ข้อมูล",
     refresh_btn: "รีเฟรช",
     how_to_setup_sheets: "📖 วิธีเชื่อมต่อ Google Sheets ด้วยตนเอง",
-    how_to_setup_sheets_body: `<p>1. เปิด Google Sheet ที่สร้างไว้ (หรือสร้างใหม่ที่ <a href="https://sheets.new" target="_blank" class="text-[#6a5bdc] underline font-bold">sheets.new</a>)</p>
+    how_to_setup_sheets_body: `<p>1. เปิด Google Sheet ที่สร้างไว้ (หรือสร้างใหม่ที่ <a href="https://sheets.new" target="_blank" class="text-[#96A4DD] underline font-bold">sheets.new</a>)</p>
 <p>2. ไปที่เมนู <b>ส่วนขยาย (Extensions)</b> &gt; <b>Apps Script</b></p>
 <p>3. ลบโค้ดเดิมทั้งหมดในไฟล์ Code.gs แล้วคัดลอกโค้ดจากไฟล์ <code>google_apps_script.js</code> มาวาง</p>
 <p>4. กดปุ่มบันทึก (Ctrl+S / Cmd+S)</p>
@@ -1271,7 +1459,7 @@ const i18n = {
     sync_now_btn: "Sync Data",
     refresh_btn: "Refresh",
     how_to_setup_sheets: "📖 How to connect Google Sheets yourself",
-    how_to_setup_sheets_body: `<p>1. Open your Google Spreadsheet (or create one at <a href="https://sheets.new" target="_blank" class="text-[#6a5bdc] underline font-bold">sheets.new</a>)</p>
+    how_to_setup_sheets_body: `<p>1. Open your Google Spreadsheet (or create one at <a href="https://sheets.new" target="_blank" class="text-[#96A4DD] underline font-bold">sheets.new</a>)</p>
 <p>2. Go to <b>Extensions</b> &gt; <b>Apps Script</b></p>
 <p>3. Replace all code in Code.gs with the code from <code>google_apps_script.js</code></p>
 <p>4. Save the project (Ctrl+S / Cmd+S)</p>
@@ -1382,19 +1570,19 @@ function showToast(title, message, type = 'info') {
   tTitle.textContent = title;
   tMsg.textContent = message;
 
-  toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-md w-[92%] rounded-2xl p-4 shadow-2xl transition-all duration-300 transform border ';
+  toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-md w-[92%] rounded-2xl p-4 shadow-2xl backdrop-blur-md transition-all duration-300 transform border ';
   
   if (type === 'success') {
-    toast.classList.add('bg-white', 'dark:bg-[#161729]', 'border-emerald-500', 'text-emerald-950', 'dark:text-emerald-100');
-    tIconWrap.className = 'mt-0.5 rounded-full p-1 bg-emerald-500 text-white';
+    toast.classList.add('bg-white/95', 'dark:bg-[#161729]/95', 'border-[#CAE0DC]', 'text-[#181b2e]', 'dark:text-[#f1f3fc]');
+    tIconWrap.className = 'mt-0.5 rounded-full p-1.5 bg-gradient-to-tr from-[#95BBE6] to-[#96A4DD] text-white shadow-sm';
     tIconWrap.innerHTML = '<i data-lucide="check" class="h-4 w-4"></i>';
   } else if (type === 'error') {
-    toast.classList.add('bg-white', 'dark:bg-[#161729]', 'border-rose-500', 'text-rose-950', 'dark:text-rose-100');
-    tIconWrap.className = 'mt-0.5 rounded-full p-1 bg-rose-500 text-white';
+    toast.classList.add('bg-white/95', 'dark:bg-[#161729]/95', 'border-[#D9B1E6]', 'text-[#181b2e]', 'dark:text-[#f1f3fc]');
+    tIconWrap.className = 'mt-0.5 rounded-full p-1.5 bg-gradient-to-tr from-[#BF87C9] to-[#A680C2] text-white shadow-sm';
     tIconWrap.innerHTML = '<i data-lucide="alert-triangle" class="h-4 w-4"></i>';
   } else {
-    toast.classList.add('bg-white', 'dark:bg-[#161729]', 'border-[#6a5bdc]', 'text-[#181b2e]', 'dark:text-[#f1f3fc]');
-    tIconWrap.className = 'mt-0.5 rounded-full p-1 bg-[#6a5bdc] text-white';
+    toast.classList.add('bg-white/95', 'dark:bg-[#161729]/95', 'border-[#96A4DD]', 'text-[#181b2e]', 'dark:text-[#f1f3fc]');
+    tIconWrap.className = 'mt-0.5 rounded-full p-1.5 bg-gradient-to-tr from-[#96A4DD] to-[#A680C2] text-white shadow-sm';
     tIconWrap.innerHTML = '<i data-lucide="info" class="h-4 w-4"></i>';
   }
 
@@ -2002,10 +2190,10 @@ function updateThemeUI() {
     ['light', 'dark', 'system'].forEach(m => {
       const btn = document.getElementById(`${prefix}-theme-${m}`);
       if (btn) {
-        btn.classList.toggle('border-[#6a5bdc]', theme === m);
-        btn.classList.toggle('bg-[#f0edfc]', theme === m);
-        btn.classList.toggle('dark:bg-[#252347]', theme === m);
-        btn.classList.toggle('dark:border-[#8c7ef0]', theme === m);
+        btn.classList.toggle('border-[#96A4DD]', theme === m);
+        btn.classList.toggle('bg-[#CAE0DC]/25', theme === m);
+        btn.classList.toggle('dark:bg-[#96A4DD]/20', theme === m);
+        btn.classList.toggle('dark:border-[#A680C2]', theme === m);
       }
     });
   });
@@ -2044,10 +2232,10 @@ function updateLanguageUI() {
     ['th', 'en'].forEach(l => {
       const btn = document.getElementById(`${prefix}-lang-${l}`);
       if (btn) {
-        btn.classList.toggle('border-[#6a5bdc]', lang === l);
-        btn.classList.toggle('bg-[#f0edfc]', lang === l);
-        btn.classList.toggle('dark:bg-[#252347]', lang === l);
-        btn.classList.toggle('dark:border-[#8c7ef0]', lang === l);
+        btn.classList.toggle('border-[#96A4DD]', lang === l);
+        btn.classList.toggle('bg-[#CAE0DC]/25', lang === l);
+        btn.classList.toggle('dark:bg-[#96A4DD]/20', lang === l);
+        btn.classList.toggle('dark:border-[#A680C2]', lang === l);
       }
     });
   });
@@ -2087,11 +2275,19 @@ function showView(id) {
     }
   }
 
-  document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
-  const target = document.getElementById(id);
-  if (target) target.classList.add('active');
-  renderAll();
-  window.scrollTo(0, 0);
+  const doSwitch = () => {
+    document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
+    const target = document.getElementById(id);
+    if (target) target.classList.add('active');
+    renderAll();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
+  if (document.startViewTransition) {
+    document.startViewTransition(() => doSwitch());
+  } else {
+    doSwitch();
+  }
 }
 
 function bName(b) {
@@ -2332,7 +2528,20 @@ function renderLanding() {
 }
 
 function initialsAvatar(user) {
-  return user && user.avatar ? `<img src="${user.avatar}" class="h-full w-full object-cover">` : (user ? user.name.charAt(0).toUpperCase() : '?');
+  if (!user) return '<span class="flex h-full w-full items-center justify-center font-bold text-sm text-[#262447] dark:text-[#CAE0DC] bg-[#CAE0DC]/40 dark:bg-[#252347]">?</span>';
+  if (user.avatar) return `<img src="${user.avatar}" alt="${user.name}" class="h-full w-full object-cover rounded-full">`;
+  
+  const gradients = [
+    'from-[#95BBE6] to-[#96A4DD]',
+    'from-[#96A4DD] to-[#A680C2]',
+    'from-[#A680C2] to-[#BF87C9]',
+    'from-[#BF87C9] to-[#D9B1E6]',
+    'from-[#CAE0DC] to-[#95BBE6]'
+  ];
+  const idx = Math.abs((user.username || user.name || 'a').split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)) % gradients.length;
+  const grad = gradients[idx];
+  const initial = (user.name || user.username || '?').trim().charAt(0).toUpperCase();
+  return `<span class="flex h-full w-full items-center justify-center font-extrabold text-sm text-white bg-gradient-to-tr ${grad} shadow-inner rounded-full">${initial}</span>`;
 }
 
 function renderDashboard() {
@@ -2352,7 +2561,7 @@ function renderDashboard() {
     statsBox.innerHTML = state.lots.map(l => `
       <div class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 text-center shadow-sm stat-card-anim">
         <p class="text-xs text-[#5a627a] dark:text-[#9da7c5] truncate font-medium">${lName(l)}</p>
-        <p class="mt-2 text-2xl font-extrabold text-[#6a5bdc] dark:text-[#c4b5fd]">${l.available}</p>
+        <p class="mt-2 text-2xl font-extrabold text-[#96A4DD] dark:text-[#c4b5fd]">${l.available}</p>
         <p class="text-[10px] text-[#8f9bb3] dark:text-[#6d7796]">${t('from_total', { cap: l.capacity })}</p>
       </div>`).join('');
   }
@@ -2430,19 +2639,19 @@ function renderSearchResults() {
   results.innerHTML = items.map(it => {
     if (it.type === 'building') {
       const b = it.data;
-      return `<button type="button" onclick="goToBuilding('${b.id}')" class="parking-card flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] p-4 text-left shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845] hover:ring-[#6a5bdc]">
-        <span class="flex items-center gap-3"><span class="rounded-xl bg-[#f0edfc] dark:bg-[#252347] p-3 text-[#6a5bdc] dark:text-[#c4b5fd]"><i data-lucide="map-pin" class="h-5 w-5"></i></span>
+      return `<button type="button" onclick="goToBuilding('${b.id}')" class="parking-card flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] p-4 text-left shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845] hover:ring-[#96A4DD]">
+        <span class="flex items-center gap-3"><span class="rounded-xl bg-[#CAE0DC]/30 dark:bg-[#252347] p-3 text-[#96A4DD] dark:text-[#D9B1E6]"><i data-lucide="map-pin" class="h-5 w-5"></i></span>
         <span><b class="text-[#262447] dark:text-[#c4b5fd]">${bName(b)}</b><small class="mt-1 block text-[#5a627a] dark:text-[#9da7c5]">${categoryLabel(b.category)}</small></span></span>
-        <i data-lucide="chevron-right" class="text-[#6a5bdc] dark:text-[#c4b5fd]"></i></button>`;
+        <i data-lucide="chevron-right" class="text-[#96A4DD] dark:text-[#c4b5fd]"></i></button>`;
     } else {
       const l = it.data;
       const b = buildingById(l.buildingId);
       return `<div class="parking-card flex w-full items-center justify-between rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
-        <span class="flex items-center gap-3"><span class="rounded-xl bg-[#eef1fc] dark:bg-[#252347] p-3 text-[#6a5bdc] dark:text-[#c4b5fd]"><i data-lucide="parking-circle" class="h-5 w-5"></i></span>
+        <span class="flex items-center gap-3"><span class="rounded-xl bg-[#95BBE6]/20 dark:bg-[#252347] p-3 text-[#96A4DD] dark:text-[#D9B1E6]"><i data-lucide="parking-circle" class="h-5 w-5"></i></span>
         <span><b class="text-[#262447] dark:text-[#c4b5fd]">${lName(l)}</b><small class="mt-1 block text-[#5a627a] dark:text-[#9da7c5]">${t('near_prefix', { building: bName(b) })} · ${t('slots_left_prefix', { avail: l.available, cap: l.capacity })}</small></span></span>
         <span class="flex items-center gap-1">
-          <button type="button" onclick="toggleFavorite('${l.id}')" aria-label="Favorite" class="rounded-lg p-2 hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]"><i data-lucide="heart" class="h-5 w-5 ${state.favorites.includes(l.id) ? 'text-[#ec4899] fill-[#ec4899]' : 'text-[#9da7c5] dark:text-[#6d7796]'}"></i></button>
-          <button type="button" onclick="goToBuilding('${l.buildingId}')" class="rounded-lg p-2 text-[#6a5bdc] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]"><i data-lucide="navigation" class="h-5 w-5"></i></button>
+          <button type="button" onclick="toggleFavorite('${l.id}')" aria-label="Favorite" class="interactive-btn rounded-lg p-2 hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]"><i data-lucide="heart" class="h-5 w-5 ${state.favorites.includes(l.id) ? 'text-[#BF87C9] fill-[#BF87C9]' : 'text-[#9da7c5] dark:text-[#6d7796]'}"></i></button>
+          <button type="button" onclick="goToBuilding('${l.buildingId}')" class="interactive-btn rounded-lg p-2 text-[#96A4DD] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]"><i data-lucide="navigation" class="h-5 w-5"></i></button>
         </span></div>`;
     }
   }).join('');
@@ -2524,7 +2733,7 @@ function drawMap(svgId, route) {
   const isDark = getEffectiveTheme() === 'dark';
   const bldgDotFill = isDark ? '#D9B1E6' : '#262447';
   const bldgTextFill = isDark ? '#9da7c5' : '#5a627a';
-  const lotDotFill = isDark ? '#96A4DD' : '#6a5bdc';
+  const lotDotFill = isDark ? '#95BBE6' : '#96A4DD';
   const routeLineStroke = isDark ? '#D9B1E6' : '#BF87C9';
 
   let markers = '';
@@ -2575,7 +2784,7 @@ function renderFavorites() {
       <div class="rounded-2xl bg-white dark:bg-[#161729] p-8 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">
         <i data-lucide="heart" class="h-8 w-8 mx-auto text-[#8f9bb3] mb-2"></i>
         <p class="font-bold text-sm">${t('no_favorites')}</p>
-        <button type="button" onclick="showView('user-search')" class="interactive-btn mt-3 inline-flex items-center gap-1.5 rounded-xl bg-[#6a5bdc] px-4 py-2 text-xs font-bold text-white">
+        <button type="button" onclick="showView('user-search')" class="interactive-btn mt-3 inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] px-4 py-2 text-xs font-bold text-white shadow">
           <i data-lucide="search" class="h-3.5 w-3.5"></i>
           <span>${t('start_finding')}</span>
         </button>
@@ -2587,12 +2796,12 @@ function renderFavorites() {
     const l = lotById(id);
     if (!l) return '';
     const b = buildingById(l.buildingId);
-    return `<div class="flex items-center justify-between rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
-      <span class="flex items-center gap-3"><span class="rounded-xl bg-[#f0edfc] dark:bg-[#252347] p-3 text-[#6a5bdc] dark:text-[#c4b5fd]"><i data-lucide="heart" class="h-5 w-5 fill-[#ec4899] text-[#ec4899]"></i></span>
+    return `<div class="parking-card flex items-center justify-between rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
+      <span class="flex items-center gap-3"><span class="rounded-xl bg-[#CAE0DC]/30 dark:bg-[#252347] p-3 text-[#96A4DD] dark:text-[#D9B1E6]"><i data-lucide="heart" class="h-5 w-5 fill-[#BF87C9] text-[#BF87C9]"></i></span>
       <span><b class="text-[#262447] dark:text-[#c4b5fd]">${lName(l)}</b><small class="mt-1 block text-[#5a627a] dark:text-[#9da7c5]">${t('near_prefix', { building: bName(b) })} · ${t('slots_left_prefix', { avail: l.available, cap: l.capacity })}</small></span></span>
       <div class="flex items-center gap-1">
-        <button type="button" onclick="toggleFavorite('${l.id}')" class="rounded-lg p-2 text-rose-500 hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" title="นำออก"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
-        <button type="button" onclick="goToBuilding('${l.buildingId}')" class="rounded-lg p-2 text-[#6a5bdc] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]"><i data-lucide="navigation" class="h-5 w-5"></i></button>
+        <button type="button" onclick="toggleFavorite('${l.id}')" class="interactive-btn rounded-lg p-2 text-[#BF87C9] hover:bg-[#fff1f2] dark:hover:bg-[#251619]" title="นำออก"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
+        <button type="button" onclick="goToBuilding('${l.buildingId}')" class="interactive-btn rounded-lg p-2 text-[#96A4DD] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]"><i data-lucide="navigation" class="h-5 w-5"></i></button>
       </div></div>`;
   }).join('');
   if (window.lucide) lucide.createIcons();
@@ -2682,14 +2891,14 @@ function renderProfile() {
 
   if (roleBadgeEl) {
     if (admin) {
-      roleBadgeEl.className = 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#ec4899] text-white shadow-sm';
-      roleBadgeEl.innerHTML = `<i data-lucide="shield-check" class="h-3 w-3"></i> <span>${t('role_admin')}</span>`;
+      roleBadgeEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-[#A680C2] to-[#BF87C9] text-white shadow-sm';
+      roleBadgeEl.innerHTML = `<i data-lucide="shield-check" class="h-3.5 w-3.5"></i> <span>${t('role_admin')}</span>`;
     } else if (guest) {
-      roleBadgeEl.className = 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-400 text-[#0e0f1a] shadow-sm';
-      roleBadgeEl.innerHTML = `<i data-lucide="user" class="h-3 w-3"></i> <span>${t('role_guest')}</span>`;
+      roleBadgeEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-[#95BBE6] to-[#96A4DD] text-[#0e0f1a] dark:text-white shadow-sm';
+      roleBadgeEl.innerHTML = `<i data-lucide="user" class="h-3.5 w-3.5"></i> <span>${t('role_guest')}</span>`;
     } else {
-      roleBadgeEl.className = 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#6a5bdc] text-white shadow-sm';
-      roleBadgeEl.innerHTML = `<i data-lucide="user-check" class="h-3 w-3"></i> <span>${t('role_member')}</span>`;
+      roleBadgeEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-[#96A4DD] to-[#A680C2] text-white shadow-sm';
+      roleBadgeEl.innerHTML = `<i data-lucide="user-check" class="h-3.5 w-3.5"></i> <span>${t('role_member')}</span>`;
     }
   }
 
@@ -2895,13 +3104,13 @@ function renderAdmin() {
   } else {
     list.innerHTML = state.lots.map(l => {
       const b = buildingById(l.buildingId);
-      return `<div class="flex items-center justify-between rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 shadow-sm">
+      return `<div class="parking-card flex items-center justify-between rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 shadow-sm">
         <div><p class="font-bold text-[#262447] dark:text-[#c4b5fd]">${lName(l)}</p><p class="text-xs text-[#8f9bb3] dark:text-[#6d7796]">${t('near_prefix', { building: b ? bName(b) : '-' })} · ${t('from_total', { cap: l.capacity })}</p></div>
         <div class="flex items-center gap-3">
           <button type="button" onclick="adjustLot('${l.id}',-1)" class="interactive-btn rounded-lg border border-[#d5deed] dark:border-[#2a2d4a] p-2 hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" aria-label="Decrease available spots"><i data-lucide="minus" class="h-4 w-4"></i></button>
-          <b class="w-7 text-center font-bold text-[#6a5bdc] dark:text-[#c4b5fd]">${l.available}</b>
+          <b class="w-7 text-center font-bold text-[#96A4DD] dark:text-[#D9B1E6]">${l.available}</b>
           <button type="button" onclick="adjustLot('${l.id}',1)" class="interactive-btn rounded-lg border border-[#d5deed] dark:border-[#2a2d4a] p-2 hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" aria-label="Increase available spots"><i data-lucide="plus" class="h-4 w-4"></i></button>
-          <button type="button" onclick="deleteLot('${l.id}')" class="interactive-btn rounded-lg border border-[#fecdd3] dark:border-[#4c1d24] p-2 text-[#e11d48] dark:text-[#fb7185] hover:bg-[#fff1f2] dark:hover:bg-[#251619]" aria-label="Delete lot"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
+          <button type="button" onclick="deleteLot('${l.id}')" class="interactive-btn rounded-lg border border-[#D9B1E6]/60 dark:border-[#BF87C9]/40 p-2 text-[#BF87C9] dark:text-[#D9B1E6] hover:bg-[#D9B1E6]/20 dark:hover:bg-[#BF87C9]/20" aria-label="Delete lot"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
         </div></div>`;
     }).join('');
   }
