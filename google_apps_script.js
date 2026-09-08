@@ -398,6 +398,27 @@ function handleAction(action, body) {
       return jsonResponse({ success: true, message: 'Parking logged in Google Sheets', data: parkingData });
     }
 
+    case 'recordCheckOut': {
+      const username = (body.username || 'guest').toLowerCase();
+      const building_id = body.building_id || body.buildingId || '';
+      const lot_id = body.lot_id || body.lotId || '';
+
+      // Increment lot availability in sheet (+1 freed spot)
+      if (lot_id) {
+        const lots = getRows(SHEETS.LOTS);
+        const idx = lots.findIndex(l => String(l.id) === String(lot_id));
+        if (idx >= 0) {
+          const lot = lots[idx];
+          const cap = parseInt(lot.capacity, 10) || 20;
+          lot.available = Math.min(cap, (parseInt(lot.available, 10) || 0) + 1);
+          lot.updated_at = new Date().toISOString();
+          updateRow(SHEETS.LOTS, idx + 2, lot);
+        }
+      }
+
+      return jsonResponse({ success: true, message: 'Check-out logged in Google Sheets; space released' });
+    }
+
     case 'recordSearch': {
       const username = (body.username || 'guest').toLowerCase();
       const query = (body.query || '').trim();

@@ -133,6 +133,12 @@ html.dark .parking-card:hover, html.dark .interactive-card:hover{
   box-shadow:0 16px 32px -8px rgba(0,0,0,.6);
 }
 
+.avatar-circle, #header-avatar, #profile-avatar, label:has(#profile-avatar) {
+  aspect-ratio: 1 / 1 !important;
+  flex-shrink: 0 !important;
+  border-radius: 9999px !important;
+}
+
 .pulse-dot{animation:pulse 1.8s cubic-bezier(0.4,0,0.6,1) infinite}
 @keyframes pulse{50%{opacity:.35;transform:scale(.85)}}
 
@@ -645,7 +651,7 @@ html.dark .hero-highlight-gradient {
       <div class="flex items-center gap-2">
         <button type="button" onclick="toggleQuickSettings(true)" aria-label="Quick Settings" class="rounded-lg p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition interactive-btn"><i data-lucide="settings" class="h-5 w-5"></i></button>
         <button type="button" onclick="showView('user-notifications')" aria-label="Notifications" class="relative rounded-lg p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition interactive-btn"><i data-lucide="bell" class="h-5 w-5"></i><span id="notif-dot" class="pulse-dot absolute right-2 top-2 hidden h-2 w-2 rounded-full bg-[#BF87C9]"></span></button>
-        <button type="button" onclick="showView('user-profile')" class="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-[#f0f4fc] dark:bg-[#222442] font-bold text-[#4c5aa6] dark:text-[#D9B1E6] shadow-sm interactive-btn" id="header-avatar">?</button>
+        <button type="button" onclick="showView('user-profile')" aria-label="Profile" class="avatar-circle flex h-9 w-9 shrink-0 aspect-square items-center justify-center overflow-hidden rounded-full bg-[#f0f4fc] dark:bg-[#222442] font-bold text-[#4c5aa6] dark:text-[#D9B1E6] shadow-sm interactive-btn" id="header-avatar">?</button>
       </div>
     </div>
   </header>
@@ -659,6 +665,38 @@ html.dark .hero-highlight-gradient {
         <i data-lucide="rotate-cw" class="h-3.5 w-3.5 text-[#96A4DD]"></i>
         <span data-i18n="refresh_btn">รีเฟรช</span>
       </button>
+    </div>
+
+    <!-- ACTIVE PARKING STATUS BANNER (Dynamic) -->
+    <div id="dashboard-active-parking" class="mt-6 hidden rounded-3xl border border-[#96A4DD]/50 dark:border-[#A680C2]/40 bg-gradient-to-r from-[#CAE0DC]/30 via-[#95BBE6]/20 to-[#D9B1E6]/25 dark:from-[#252347] dark:via-[#1f1d38] dark:to-[#2e2447] p-5 shadow-sm">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div class="flex items-start gap-3.5">
+          <div class="flex h-11 w-11 shrink-0 aspect-square items-center justify-center rounded-2xl bg-gradient-to-br from-[#96A4DD] to-[#A680C2] text-white shadow-md">
+            <i data-lucide="car-front" class="h-6 w-6"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-500 text-white shadow-sm">
+                <span class="h-1.5 w-1.5 rounded-full bg-white pulse-dot"></span>
+                <span data-i18n="active_parking_badge">กำลังจอดรถอยู่</span>
+              </span>
+              <span id="active-parking-time" class="text-xs font-semibold text-[#5a627a] dark:text-[#9da7c5]"></span>
+            </div>
+            <h3 id="active-parking-lot-name" class="mt-1 text-lg font-extrabold text-[#262447] dark:text-white"></h3>
+            <p id="active-parking-bldg-name" class="text-xs text-[#5a627a] dark:text-[#D9B1E6]"></p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2.5 flex-wrap">
+          <button type="button" onclick="showActiveParkingMap()" class="interactive-btn inline-flex items-center gap-1.5 rounded-xl border border-[#96A4DD] bg-white/80 dark:bg-[#161729]/80 px-4 py-2.5 text-xs font-bold text-[#262447] dark:text-[#D9B1E6] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]">
+            <i data-lucide="map-pin" class="h-4 w-4 text-[#96A4DD]"></i>
+            <span data-i18n="view_route_btn">ดูตำแหน่งบนแผนที่</span>
+          </button>
+          <button type="button" onclick="checkOutParking()" class="interactive-btn inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#BF87C9] to-[#A680C2] px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-[#BF87C9]/30 hover:opacity-95">
+            <i data-lucide="log-out" class="h-4 w-4"></i>
+            <span data-i18n="checkout_btn">ออกจากที่จอดรถ (Check Out)</span>
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- DASHBOARD STATS WITH SKELETON LOADING -->
@@ -761,8 +799,8 @@ html.dark .hero-highlight-gradient {
         <button type="button" onclick="toggleQuickSettings(true)" class="rounded-full p-2 text-[#D9B1E6] hover:bg-[#3f3770] transition interactive-btn"><i data-lucide="settings" class="h-5 w-5"></i></button>
       </div>
       <div class="flex items-center gap-4">
-        <label class="relative h-16 w-16 cursor-pointer overflow-hidden rounded-full bg-[#f0f4fc] dark:bg-[#222442] text-2xl font-bold text-[#4c5aa6] dark:text-[#D9B1E6] shadow-md ring-2 ring-[#96A4DD] interactive-btn" title="อัปโหลดรูปโปรไฟล์">
-          <span id="profile-avatar" class="flex h-full w-full items-center justify-center">?</span>
+        <label class="avatar-circle relative h-16 w-16 shrink-0 aspect-square cursor-pointer overflow-hidden rounded-full bg-[#f0f4fc] dark:bg-[#222442] text-2xl font-bold text-[#4c5aa6] dark:text-[#D9B1E6] shadow-md ring-2 ring-[#96A4DD] interactive-btn" title="อัปโหลดรูปโปรไฟล์">
+          <span id="profile-avatar" class="avatar-circle flex h-full w-full aspect-square shrink-0 items-center justify-center rounded-full overflow-hidden">?</span>
           <input type="file" accept="image/*" class="hidden" onchange="uploadAvatar(event)">
         </label>
         <div>
@@ -1296,7 +1334,15 @@ const i18n = {
     toast_err_name_required_title: "กรุณากรอกชื่อ",
     toast_err_name_required_desc: "ชื่อ-นามสกุลไม่สามารถเว้นว่างได้",
     toast_err_review_short_title: "ข้อความสั้นเกินไป",
-    toast_err_review_short_desc: "กรุณาพิมพ์อย่างน้อย 3 ตัวอักษร"
+    toast_err_review_short_desc: "กรุณาพิมพ์อย่างน้อย 3 ตัวอักษร",
+    active_parking_badge: "กำลังจอดรถอยู่",
+    active_parking_title: "สถานะการจอดรถของคุณ",
+    parked_duration: "จอดมาแล้ว {time}",
+    checkout_btn: "ออกจากที่จอดรถ (Check Out)",
+    confirm_checkout: 'ยืนยันการออกจากที่จอดรถ "{lot}" หรือไม่? ระบบจะคืนช่องว่าง +1 ให้กับลานจอดนี้',
+    toast_checkout_success_title: "ออกจากที่จอดรถแล้ว",
+    toast_checkout_success_desc: "คืนช่องว่างให้กับ {lot} เรียบร้อยแล้ว ขอบคุณที่ใช้บริการ",
+    view_route_btn: "ดูตำแหน่งบนแผนที่"
   },
   en: {
     quick_settings_title: "System Settings",
@@ -1525,7 +1571,15 @@ const i18n = {
     toast_err_name_required_title: "Name Required",
     toast_err_name_required_desc: "Full name cannot be left blank",
     toast_err_review_short_title: "Review Too Short",
-    toast_err_review_short_desc: "Please write at least 3 characters"
+    toast_err_review_short_desc: "Please write at least 3 characters",
+    active_parking_badge: "Currently Parked",
+    active_parking_title: "Your Active Parking",
+    parked_duration: "Parked for {time}",
+    checkout_btn: "Check Out of Parking",
+    confirm_checkout: 'Confirm check out from "{lot}"? This will release +1 parking space back to the lot.',
+    toast_checkout_success_title: "Checked Out Successfully",
+    toast_checkout_success_desc: "1 spot released at {lot}. Thank you for using our service!",
+    view_route_btn: "View on Map"
   }
 };
 
@@ -1700,6 +1754,7 @@ function defaultState() {
     ],
     users: getStoredUsers(),
     currentUser: null,
+    activeParking: null,
     favorites: [],
     searchHistory: [],
     navHistory: [],
@@ -1727,6 +1782,7 @@ function loadState() {
       s = {
         ...s,
         ...parsed,
+        activeParking: parsed.activeParking || null,
         settings: { ...s.settings, ...(parsed.settings || {}), sheetsApiUrl: localStorage.getItem(SHEETS_CONFIG_KEY) || (parsed.settings?.sheetsApiUrl || '') },
         ui: { ...s.ui, ...(parsed.ui || {}), isLoading: false, isSyncing: false }
       };
@@ -1996,6 +2052,15 @@ const SheetsDB = {
   async recordParking(buildingId, lotId, username) {
     return await this.request('POST', { action: 'recordParking' }, {
       action: 'recordParking',
+      building_id: buildingId,
+      lot_id: lotId,
+      username
+    });
+  },
+
+  async recordCheckOut(buildingId, lotId, username) {
+    return await this.request('POST', { action: 'recordCheckOut' }, {
+      action: 'recordCheckOut',
       building_id: buildingId,
       lot_id: lotId,
       username
@@ -2528,8 +2593,8 @@ function renderLanding() {
 }
 
 function initialsAvatar(user) {
-  if (!user) return '<span class="flex h-full w-full items-center justify-center font-bold text-sm text-[#262447] dark:text-[#CAE0DC] bg-[#CAE0DC]/40 dark:bg-[#252347]">?</span>';
-  if (user.avatar) return `<img src="${user.avatar}" alt="${user.name}" class="h-full w-full object-cover rounded-full">`;
+  if (!user) return '<span class="avatar-circle flex h-full w-full aspect-square shrink-0 items-center justify-center font-bold text-sm text-[#262447] dark:text-[#CAE0DC] bg-[#CAE0DC]/40 dark:bg-[#252347] rounded-full">?</span>';
+  if (user.avatar) return `<img src="${user.avatar}" alt="${user.name}" class="avatar-circle h-full w-full aspect-square shrink-0 object-cover rounded-full">`;
   
   const gradients = [
     'from-[#95BBE6] to-[#96A4DD]',
@@ -2541,7 +2606,34 @@ function initialsAvatar(user) {
   const idx = Math.abs((user.username || user.name || 'a').split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)) % gradients.length;
   const grad = gradients[idx];
   const initial = (user.name || user.username || '?').trim().charAt(0).toUpperCase();
-  return `<span class="flex h-full w-full items-center justify-center font-extrabold text-sm text-white bg-gradient-to-tr ${grad} shadow-inner rounded-full">${initial}</span>`;
+  return `<span class="avatar-circle flex h-full w-full aspect-square shrink-0 items-center justify-center font-extrabold text-sm text-white bg-gradient-to-tr ${grad} shadow-inner rounded-full">${initial}</span>`;
+}
+
+function formatDuration(startTime) {
+  if (!startTime) return '0 นาที';
+  const isEn = state.settings?.lang === 'en';
+  const diffMs = Math.max(0, Date.now() - startTime);
+  const totalMinutes = Math.floor(diffMs / 60000);
+  if (totalMinutes < 1) {
+    return isEn ? '< 1 min' : 'น้อยกว่า 1 นาที';
+  }
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  if (hours > 0) {
+    if (isEn) {
+      return `${hours} hr${hours > 1 ? 's' : ''} ${minutes} min${minutes > 1 ? 's' : ''}`;
+    }
+    return `${hours} ชั่วโมง ${minutes} นาที`;
+  }
+  return isEn ? `${minutes} min${minutes > 1 ? 's' : ''}` : `${minutes} นาที`;
+}
+
+function updateActiveParkingTimer() {
+  if (!state.activeParking) return;
+  const timeEl = document.getElementById('active-parking-time');
+  if (timeEl) {
+    timeEl.textContent = t('parked_duration', { time: formatDuration(state.activeParking.startTime) });
+  }
 }
 
 function renderDashboard() {
@@ -2549,6 +2641,24 @@ function renderDashboard() {
   document.getElementById('dashboard-greeting').textContent = user ? t('greeting_user', { name: user.name }) : t('greeting_guest');
   document.getElementById('header-avatar').innerHTML = initialsAvatar(user);
   document.getElementById('notif-dot').classList.toggle('hidden', !state.notifications.some(n => !n.read));
+
+  // Active Parking Status Banner
+  const activeParkingCard = document.getElementById('dashboard-active-parking');
+  if (activeParkingCard) {
+    if (state.activeParking && lotById(state.activeParking.lotId)) {
+      const pLot = lotById(state.activeParking.lotId);
+      const pBldg = buildingById(state.activeParking.buildingId);
+      activeParkingCard.classList.remove('hidden');
+      const lotNameEl = document.getElementById('active-parking-lot-name');
+      const bldgNameEl = document.getElementById('active-parking-bldg-name');
+      const timeEl = document.getElementById('active-parking-time');
+      if (lotNameEl) lotNameEl.textContent = lName(pLot);
+      if (bldgNameEl) bldgNameEl.textContent = pBldg ? t('near_prefix', { building: bName(pBldg) }) : '';
+      if (timeEl) timeEl.textContent = t('parked_duration', { time: formatDuration(state.activeParking.startTime) });
+    } else {
+      activeParkingCard.classList.add('hidden');
+    }
+  }
 
   const statsBox = document.getElementById('dashboard-lot-stats');
   if (!state.lots.length) {
@@ -2712,10 +2822,17 @@ async function finishRoute() {
   const msg = t('nav_finish_notif', { lot: lotTitle });
   pushNotification(msg);
 
+  // Set active parking session
+  state.activeParking = {
+    buildingId: building ? building.id : null,
+    lotId: best ? best.lot.id : null,
+    startTime: Date.now()
+  };
+
   state.navHistory.unshift({ buildingId: building ? building.id : null, lotId: best ? best.lot.id : null, ts: Date.now() });
   saveState();
 
-  if (building && best) {
+  if (building && best && SheetsDB.isConfigured()) {
     SheetsDB.recordParking(building.id, best.lot.id, state.currentUser || 'guest');
   }
 
@@ -2725,6 +2842,47 @@ async function finishRoute() {
 
   showToast(t('toast_parked_success_title'), msg, 'success');
   renderAll();
+}
+
+async function checkOutParking() {
+  if (!state.activeParking) return;
+  const lot = lotById(state.activeParking.lotId);
+  const lotTitle = lot ? lName(lot) : '';
+  
+  const confirmed = await askConfirm(t('confirm_checkout', { lot: lotTitle }));
+  if (!confirmed) return;
+
+  const currentActive = { ...state.activeParking };
+
+  // Increase lot available (+1)
+  if (lot) {
+    lot.available = Math.min(lot.capacity, (parseInt(lot.available, 10) || 0) + 1);
+  }
+
+  state.activeParking = null;
+  saveState();
+
+  // Sync with Google Sheets
+  if (SheetsDB.isConfigured() && currentActive.lotId) {
+    SheetsDB.recordCheckOut(currentActive.buildingId || '', currentActive.lotId, state.currentUser || 'guest');
+    SheetsDB.adjustLot(currentActive.lotId, 1);
+  }
+
+  const successMsg = t('toast_checkout_success_desc', { lot: lotTitle });
+  pushNotification(successMsg);
+  showToast(t('toast_checkout_success_title'), successMsg, 'success');
+  renderAll();
+}
+
+function showActiveParkingMap() {
+  if (state.activeParking && state.activeParking.buildingId) {
+    state.ui.destinationBuilding = state.activeParking.buildingId;
+    state.ui.routeType = 'fast';
+    saveState();
+    showView('user-map');
+  } else {
+    showView('user-dashboard');
+  }
 }
 
 function drawMap(svgId, route) {
@@ -3247,6 +3405,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     state.ui.destinationBuilding = state.buildings[0].id;
   }
   renderAll();
+
+  // Periodic timer update for active parking duration
+  setInterval(updateActiveParkingTimer, 30000);
 
   // Initial silent background sync with Google Sheets if configured
   if (SheetsDB.isConfigured()) {
