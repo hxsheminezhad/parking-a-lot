@@ -443,28 +443,6 @@ html.dark .hero-highlight-gradient {
     </div>
     
     <div class="mt-5 space-y-6">
-      <!-- REAL-TIME SERVER HOST & NETWORK SYNC -->
-      <div id="modal-server-host-section" class="rounded-2xl border border-[#96A4DD]/40 dark:border-[#262845] bg-[#f8fafd] dark:bg-[#1c1d33] p-4 space-y-3">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <i data-lucide="radio" class="h-4 w-4 text-[#96A4DD] dark:text-[#BF87C9]"></i>
-            <span class="text-xs font-bold uppercase tracking-wider text-[#262447] dark:text-[#c4b5fd]" data-i18n="server_host_title">เซิร์ฟเวอร์เรียลไทม์ (Server Host)</span>
-          </div>
-          <span id="server-status-badge" class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-[#CAE0DC]/40 dark:bg-[#CAE0DC]/20 text-[#1e4d45] dark:text-[#CAE0DC] border border-[#CAE0DC]/60">
-            <span id="server-status-dot" class="h-1.5 w-1.5 rounded-full bg-[#96A4DD] pulse-dot"></span>
-            <span id="server-status-text" data-i18n="server_checking">กำลังตรวจสอบ...</span>
-          </span>
-        </div>
-
-        <div id="server-lan-info" class="rounded-xl bg-white dark:bg-[#161729] p-3 border border-[#e2e8f4] dark:border-[#2a2d4a] text-xs space-y-1.5">
-          <div class="flex items-center justify-between text-[#5a627a] dark:text-[#9da7c5]">
-            <span class="font-semibold" data-i18n="server_lan_url">ที่อยู่สำหรับเชื่อมต่อบนมือถือ (Wi-Fi):</span>
-            <span id="server-client-count" class="font-bold text-[#96A4DD] dark:text-[#D9B1E6]">1 เครื่อง</span>
-          </div>
-          <p id="server-lan-address" class="font-mono font-bold text-[#262447] dark:text-[#c4b5fd] select-all break-all"></p>
-        </div>
-      </div>
-
       <!-- GOOGLE SHEETS DATABASE CONNECTOR -->
       <div id="modal-sheets-db-section" class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-[#f8fafd] dark:bg-[#1c1d33] p-4 space-y-3">
         <div class="flex items-center justify-between">
@@ -1299,18 +1277,18 @@ const i18n = {
     admin_nav: "สำหรับผู้ดูแล",
     guest_btn: "ใช้งานในฐานะผู้เยี่ยมชม",
     guest_or_divider: "หรือ",
-    role_admin: "ผู้ดูแลระบบ",
-    role_member: "สมาชิกทั่วไป",
-    role_guest: "ผู้เยี่ยมชม",
-    role_admin_sub: "ผู้ดูแลระบบ",
-    role_guest_sub: "บัญชีผู้เยี่ยมชมชั่วคราว",
+    role_admin: "ผู้ดูแลระบบ (Admin)",
+    role_member: "สมาชิกทั่วไป (Member)",
+    role_guest: "ผู้เยี่ยมชม (Guest)",
+    role_admin_sub: "ผู้ดูแลระบบ (System Administrator)",
+    role_guest_sub: "บัญชีผู้เยี่ยมชมชั่วคราว (Guest Account)",
     role_member_sub: "นักศึกษา / บุคลากร มหาวิทยาลัยขอนแก่น",
     guest_banner_title: "คุณกำลังใช้งานในฐานะผู้เยี่ยมชม (Guest)",
     guest_banner_desc: "ประวัติและรายการโปรดจะถูกบันทึกชั่วคราวในอุปกรณ์นี้ สมัครสมาชิกเพื่อบันทึกข้อมูลอย่างถาวรและเข้าถึงได้จากทุกอุปกรณ์",
     guest_register_btn: "สมัครสมาชิกเพื่อบันทึกถาวร",
-    admin_portal_btn: "ไปยังระบบจัดการลานจอด",
+    admin_portal_btn: "ไปยังระบบจัดการลานจอด (Admin Portal)",
     admin_access_denied_title: "ไม่อนุญาตให้เข้าถึง",
-    admin_access_denied_desc: "เฉพาะผู้ดูแลระบบเท่านั้นที่สามารถเข้าถึงส่วนนี้ได้",
+    admin_access_denied_desc: "เฉพาะผู้ดูแลระบบ (Admin) เท่านั้นที่สามารถเข้าถึงส่วนนี้ได้",
     toast_guest_welcome_title: "ยินดีต้อนรับ ผู้เยี่ยมชม",
     toast_guest_welcome_desc: "คุณสามารถค้นหาและนำทางไปยังลานจอดรถได้ทันที",
     admin_only_badge: "เฉพาะผู้ดูแลระบบ",
@@ -1530,14 +1508,7 @@ const i18n = {
     toast_bldg_deleted: "ลบอาคารแล้ว",
     toast_lot_updated: "บันทึกการแก้ไขลานจอดรถเรียบร้อยแล้ว",
     lot_spaces_available: "ช่องว่างปัจจุบัน (ช่อง)",
-    fill_bldg_fields: "กรุณากรอกชื่ออาคารให้ครบถ้วน",
-    server_host_title: "เซิร์ฟเวอร์เรียลไทม์ (Server Host)",
-    server_checking: "กำลังตรวจสอบการเชื่อมต่อ...",
-    server_status_online: "เซิร์ฟเวอร์ออนไลน์ (Real-Time Sync)",
-    server_status_offline: "โหมดสแตนด์อโลน (Local Storage)",
-    server_lan_url: "ที่อยู่สำหรับเชื่อมต่อบนมือถือ (Wi-Fi):",
-    connected_devices_count: "{count} เครื่อง",
-    server_sync_toast: "ข้อมูลได้รับการอัปเดตแบบเรียลไทม์จากอุปกรณ์อื่นแล้ว"
+    fill_bldg_fields: "กรุณากรอกชื่ออาคารให้ครบถ้วน"
   },
   en: {
     quick_settings_title: "System Settings",
@@ -1551,139 +1522,139 @@ const i18n = {
     guest_nav_btn: "Guest",
     admin_nav: "Admin Portal",
     guest_btn: "Continue as Guest",
-    guest_or_divider: "OR",
+    guest_or_divider: "or",
     role_admin: "Administrator",
-    role_member: "Member (Student / Staff)",
-    role_guest: "Guest User",
+    role_member: "Member",
+    role_guest: "Guest",
     role_admin_sub: "System Administrator",
     role_guest_sub: "Temporary Guest Account",
-    role_member_sub: "Khon Kaen University Student / Staff",
-    guest_banner_title: "You are browsing as a Guest",
-    guest_banner_desc: "Your favorites and history are stored temporarily on this device. Sign up to sync your data across all devices.",
-    guest_register_btn: "Create Account to Save Permanently",
-    admin_portal_btn: "Go to Admin Portal",
+    role_member_sub: "Student / Faculty, Khon Kaen University",
+    guest_banner_title: "You're using Parking-A-Lot as Guest",
+    guest_banner_desc: "History and favorites will be temporarily saved on this device. Create an account to permanently sync your data across all devices.",
+    guest_register_btn: "Create Account to Sync Permanently",
+    admin_portal_btn: "Manage Parking Lots (Admin Portal)",
     admin_access_denied_title: "Access Denied",
-    admin_access_denied_desc: "This section is restricted to Administrators only.",
-    toast_guest_welcome_title: "Welcome, Guest!",
-    toast_guest_welcome_desc: "You can search and navigate to parking lots immediately.",
-    admin_only_badge: "Admins Only",
-    sheets_admin_only_hint: "Google Sheets database settings are restricted to Administrators only.",
-    beta_badge: "This web application is currently in BETA testing. Not applicable to a final product.",
-    hero_title: "Find parking spots instantly even within rush hours",
-    hero_subtitle: "Locate the nearest available parking space with instant dynamic navigation across campus.",
-    start_finding: "Start Finding",
+    admin_access_denied_desc: "Only administrators can access this section.",
+    toast_guest_welcome_title: "Welcome, Guest User",
+    toast_guest_welcome_desc: "You can find and navigate to parking lots immediately.",
+    admin_only_badge: "Admin Only",
+    sheets_admin_only_hint: "Google Sheets database settings are restricted to administrators only.",
+    beta_badge: "This web-application is currently in BETA test. Not indicative of a final product.",
+    hero_title: "Find parking spots right within busy hours.",
+    hero_subtitle: "Search for parking lots and get the nearest parking spots with fastest routes instantly.",
+    start_finding: "Find Parking",
     manage_lots: "Manage Lots",
     spaces_available_now: "Available Spots",
     total_lots: "Total Lots",
     supported_buildings: "Supported Buildings",
-    app_highlights: "Key Features",
-    highlight_title: "Smart Nearest Parking Recommendation",
-    feat_1: "Search lecture complexes, parking areas, and university offices",
-    feat_2: "Navigate across campus with safest path routing algorithms",
-    feat_3: "Automated notification upon successful parking",
-    feat_4: "Rate and review parking experiences",
+    app_highlights: "App Highlights",
+    highlight_title: "Smart Nearest Parking",
+    feat_1: "Search classrooms, parking lots, and administration buildings",
+    feat_2: "Navigate across campus with fastest or safest paths",
+    feat_3: "Instant notifications upon parking completion",
+    feat_4: "Rate and review your parking experience",
     back_to_home: "Back to Home",
     back: "Back",
-    back_home: "Back to Home",
+    back_home: "Back to Dashboard",
     login_title: "Sign In",
-    login_subtitle: "Access your account (saved permanently on this device)",
+    login_subtitle: "Access your Parking-A-Lot account (Accounts are saved permanently)",
     username: "Username",
     password: "Password",
     login_btn: "Sign In",
     no_account: "Don't have an account?",
-    register_link: "Sign Up",
-    register_title: "Sign Up",
-    register_subtitle: "Create an account to save your parking history and favorites permanently",
+    register_link: "Create Account",
+    register_title: "Create Account",
+    register_subtitle: "Create an account to permanently save favorites and activity history",
     fullname: "Full Name",
-    register_btn: "Create Account",
+    register_btn: "Register Account",
     err_invalid_login: "Invalid username or password",
     err_fill_all: "Please fill in all fields",
     err_user_exists: "This username is already taken",
-    greeting_guest: "Hello, Guest",
+    greeting_guest: "Welcome, Guest User",
     greeting_user: "Hello, {name}",
     dashboard_headline: "How is your parking today?",
     from_total: "out of {cap} spots",
-    overview_map_title: "Campus Parking Overview Map",
-    overview_map_sub: "Real-time lot availability relative to campus buildings",
+    overview_map_title: "Campus Parking Map",
+    overview_map_sub: "Parking lots relative to campus buildings",
     recommended_for_you: "Recommended For You",
-    nearest_lot_now: "Nearest Available Lot Right Now",
+    nearest_lot_now: "Nearest Available Lot",
     select_destination: "Select Destination Building",
-    no_lots_in_system: "No parking lots available in the system yet",
+    no_lots_in_system: "No parking lots available in system",
     near_prefix: "Near {building}",
-    slots_left_prefix: "{avail}/{cap} spots left",
+    slots_left_prefix: "{avail}/{cap} spots remaining",
     nav_home: "Home",
     nav_search: "Search",
     nav_favorites: "Favorites",
     nav_profile: "Profile",
-    search_title: "Search Buildings & Parking Lots",
-    search_sub: "Type a building name and filter by category",
-    search_placeholder: "Search building or parking lot name",
+    search_title: "Search Buildings & Lots",
+    search_sub: "Type a building or lot name, then filter by category",
+    search_placeholder: "Search building or parking lot name...",
     cat_all: "All",
     cat_classroom: "Classrooms",
     cat_parking: "Parking Lots",
     cat_office: "Offices",
-    no_search_results: "No results found. Try a different search query.",
+    no_search_results: "No results found. Try another search query.",
     destination_label: "Destination",
-    route_rec_desc: "Recommended {lot} as your closest parking lot",
-    route_rec_default: "Closest parking lot automatically recommended",
-    route_fast: "Shortest Route",
+    route_rec_desc: "Recommended {lot} as the closest available parking lot",
+    route_rec_default: "Nearest lot recommended by system",
+    route_fast: "Fastest Route",
     route_safe: "Safest Route",
-    walk_minutes: "Estimated Travel Time",
+    walk_minutes: "min",
     meters_unit: "meters",
     finish_nav: "Arrived at Lot / Finish Route",
-    finish_success: "Parking logged successfully — thank you for using our service!",
+    finish_success: "Parking recorded. Thank you for using our service!",
     nav_finish_notif: "Thank you! Successfully parked at {lot}",
-    favorites_title: "Favorites",
-    favorites_sub: "Your bookmarked parking lots",
-    no_favorites: "No favorites saved yet",
-    role_kku: "Khon Kaen University Student / Staff",
+    favorites_title: "Favorite Lots",
+    favorites_sub: "Your saved parking spots",
+    no_favorites: "No favorite parking lots saved yet",
+    role_kku: "Student / Faculty, Khon Kaen University",
     guest_user: "Guest User",
     settings_section: "System Settings",
     edit_profile_btn: "Edit Profile / Change Password",
-    new_password_label: "New Password (leave empty to keep current password)",
+    new_password_label: "New Password (leave blank to keep current)",
     save_changes: "Save Changes",
-    saved_profile_msg: "Profile changes saved",
-    history_btn: "Parking & Search History",
-    review_btn: "Rate & Review",
+    saved_profile_msg: "Profile changes saved successfully",
+    history_btn: "Activity History & Searches",
+    review_btn: "Ratings & Reviews",
     notif_btn: "Notifications",
-    pwa_notice_title: "Notice regarding browser status bar:",
-    pwa_notice_desc: "Standard mobile browsers cannot hide system status bars. For a full-screen native app experience, select 'Add to Home Screen' in your browser menu.",
+    pwa_notice_title: "About top status bar:",
+    pwa_notice_desc: "Web browsers cannot hide the native OS status bar. To experience full screen mode, select 'Add to Home Screen' in your browser options.",
     logout_btn: "Sign Out",
-    history_title: "History",
+    history_title: "Activity History",
     tab_parking: "Parking History",
     tab_search: "Search History",
-    no_parking_history: "No parking history yet",
-    no_search_history: "No search history yet",
+    no_parking_history: "No parking history recorded yet",
+    no_search_history: "No search history recorded yet",
     history_to: "To {dest}",
-    review_title: "Rate & Review",
-    avg_rating_label: "Average User Rating",
-    no_reviews: "No reviews yet. Be the first to leave a review!",
+    review_title: "Ratings & Reviews",
+    avg_rating_label: "Average Service Rating",
+    no_reviews: "No reviews yet. Be the first to share your thoughts!",
     from_reviews_count: "from {count} reviews",
-    rate_prompt: "Rate your experience",
-    review_placeholder: "Share your parking experience (at least 3 characters)",
+    rate_prompt: "Rate Your Experience",
+    review_placeholder: "Share your parking experience (at least 3 characters)...",
     submit_review_btn: "Submit Review",
     notif_title: "Notifications",
     no_notifications: "No notifications yet",
-    admin_tag: "For Administrators",
-    admin_heading: "Parking Lot Management",
-    exit_admin: "Exit Admin Mode",
+    admin_tag: "Administrator Portal",
+    admin_heading: "Manage Parking Lots",
+    exit_admin: "Exit Admin Portal",
     admin_stat_lots: "Total Lots",
-    admin_stat_spaces: "Total Available Spaces",
+    admin_stat_spaces: "Total Available",
     admin_stat_bldgs: "Supported Buildings",
     add_lot_heading: "Add New Parking Lot",
-    add_lot_sub: "Parking lots are saved to Google Sheets and active immediately",
-    lot_name_label: "Lot Name (Thai)",
-    lot_name_en_label: "Lot Name (English)",
+    add_lot_sub: "Saves to Google Sheets and appears in search instantly",
+    lot_name_label: "Parking Lot Name (Thai)",
+    lot_name_en_label: "Parking Lot Name (English)",
     near_bldg_label: "Nearby Building",
-    capacity_label: "Capacity (Spots)",
+    capacity_label: "Capacity (spots)",
     add_lot_btn: "Add Parking Lot",
-    lot_added_success: "Parking lot added and saved — searchable immediately",
-    lot_list_title: "Parking Lot List",
-    lot_list_sub: "Adjust available spots or delete parking lots",
+    lot_added_success: "Parking lot added and saved to system — available for searching",
+    lot_list_title: "Parking Lots List",
+    lot_list_sub: "Adjust available spots or remove lots",
     recent_reviews: "Recent",
     user_reviews_heading: "User Reviews",
-    fill_lot_fields: "Please provide lot name and select a nearby building",
-    confirm_delete_lot: 'Confirm deleting lot "{name}"?',
+    fill_lot_fields: "Please enter parking lot name and choose a nearest building",
+    confirm_delete_lot: 'Confirm deleting "{name}"?',
     cancel_btn: "Cancel",
     delete_btn: "Delete",
     changelog_title: "Changelog & Updates",
@@ -1783,14 +1754,7 @@ const i18n = {
     toast_bldg_deleted: "Building deleted",
     toast_lot_updated: "Parking lot updated successfully",
     lot_spaces_available: "Available Spots (spots)",
-    fill_bldg_fields: "Please enter building name",
-    server_host_title: "Real-Time Server Host",
-    server_checking: "Checking connection...",
-    server_status_online: "Server Online (Real-Time Sync)",
-    server_status_offline: "Standalone Mode (Local Storage)",
-    server_lan_url: "Connect on Mobile (Wi-Fi):",
-    connected_devices_count: "{count} device(s)",
-    server_sync_toast: "Data synchronized in real time from another device"
+    fill_bldg_fields: "Please enter building name"
   }
 };
 
@@ -2027,397 +1991,6 @@ function saveState() {
 }
 
 let state = loadState();
-
-/* ==========================================================================
-   CENTRAL REAL-TIME SERVER HOST CLIENT (ServerAPI)
-   ========================================================================== */
-const ServerAPI = {
-  isServerAvailable: false,
-  eventSource: null,
-  activeClients: 1,
-  serverConfig: null,
-  localIps: [],
-
-  checkAvailability() {
-    return window.location.protocol.startsWith('http');
-  },
-
-  async init() {
-    if (!this.checkAvailability()) {
-      this.isServerAvailable = false;
-      updateServerStatusUI();
-      return;
-    }
-
-    try {
-      const res = await fetch('/api/data', { cache: 'no-cache' });
-      if (res.ok) {
-        const json = await res.json();
-        if (json.success && json.data) {
-          this.isServerAvailable = true;
-          this.applyData(json.data);
-          this.connectSSE();
-          this.fetchHealth();
-        }
-      }
-    } catch (err) {
-      console.warn('[ServerAPI] Could not connect to backend server, using local mode:', err.message);
-      this.isServerAvailable = false;
-    }
-    updateServerStatusUI();
-  },
-
-  applyData(data) {
-    if (Array.isArray(data.buildings) && data.buildings.length) {
-      state.buildings = data.buildings.map(b => ({
-        id: b.id,
-        name: b.name,
-        nameEn: b.nameEn || b.name,
-        category: b.category || 'classroom',
-        lat: parseFloat(b.lat) || 50,
-        lng: parseFloat(b.lng) || 50
-      }));
-    }
-    if (Array.isArray(data.lots) && data.lots.length) {
-      state.lots = data.lots.map(l => ({
-        id: l.id,
-        name: l.name,
-        nameEn: l.nameEn || l.name,
-        buildingId: l.buildingId,
-        capacity: parseInt(l.capacity, 10) || 20,
-        available: parseInt(l.available, 10) || 0,
-        lat: parseFloat(l.lat) || 50,
-        lng: parseFloat(l.lng) || 50
-      }));
-    }
-    if (Array.isArray(data.reviews)) {
-      state.reviews = data.reviews.map(r => ({
-        id: r.id || 'rev_' + Date.now(),
-        stars: parseInt(r.stars, 10) || 5,
-        text: r.text || '',
-        name: r.name || 'ผู้ใช้งาน',
-        ts: parseInt(r.timestamp, 10) || Date.now()
-      }));
-    }
-    if (data.config) {
-      this.serverConfig = data.config;
-      if (data.config.googleSheetsUrl && !state.settings?.sheetsApiUrl) {
-        if (!state.settings) state.settings = {};
-        state.settings.sheetsApiUrl = data.config.googleSheetsUrl;
-      }
-    }
-    if (typeof data.activeClients === 'number') {
-      this.activeClients = data.activeClients;
-    }
-    saveState();
-    renderAll();
-    updateServerStatusUI();
-  },
-
-  connectSSE() {
-    if (this.eventSource) {
-      try { this.eventSource.close(); } catch(e) {}
-    }
-    if (!window.EventSource) return;
-
-    try {
-      this.eventSource = new EventSource('/api/events');
-
-      this.eventSource.addEventListener('initial_state', (e) => {
-        try {
-          const data = JSON.parse(e.data);
-          this.applyData(data);
-        } catch (ex) {}
-      });
-
-      this.eventSource.addEventListener('lot_updated', (e) => {
-        try {
-          const { lot } = JSON.parse(e.data);
-          if (!lot) return;
-          const idx = state.lots.findIndex(l => l.id === lot.id);
-          if (idx >= 0) {
-            state.lots[idx] = {
-              id: lot.id,
-              name: lot.name,
-              nameEn: lot.nameEn || lot.name,
-              buildingId: lot.buildingId,
-              capacity: parseInt(lot.capacity, 10) || 20,
-              available: parseInt(lot.available, 10) || 0,
-              lat: parseFloat(lot.lat) || 50,
-              lng: parseFloat(lot.lng) || 50
-            };
-          } else {
-            state.lots.push(lot);
-          }
-          saveState();
-          renderAll();
-          showSyncPulse();
-        } catch (ex) {}
-      });
-
-      this.eventSource.addEventListener('lot_added', (e) => {
-        try {
-          const { lot } = JSON.parse(e.data);
-          if (!lot) return;
-          if (!state.lots.some(l => l.id === lot.id)) {
-            state.lots.push(lot);
-            saveState();
-            renderAll();
-            showSyncPulse();
-          }
-        } catch (ex) {}
-      });
-
-      this.eventSource.addEventListener('lot_deleted', (e) => {
-        try {
-          const { id } = JSON.parse(e.data);
-          if (!id) return;
-          state.lots = state.lots.filter(l => l.id !== id);
-          saveState();
-          renderAll();
-          showSyncPulse();
-        } catch (ex) {}
-      });
-
-      this.eventSource.addEventListener('building_added', (e) => {
-        try {
-          const { building } = JSON.parse(e.data);
-          if (!building) return;
-          if (!state.buildings.some(b => b.id === building.id)) {
-            state.buildings.push(building);
-            saveState();
-            renderAll();
-            showSyncPulse();
-          }
-        } catch (ex) {}
-      });
-
-      this.eventSource.addEventListener('building_updated', (e) => {
-        try {
-          const { building } = JSON.parse(e.data);
-          if (!building) return;
-          const idx = state.buildings.findIndex(b => b.id === building.id);
-          if (idx >= 0) {
-            state.buildings[idx] = building;
-            saveState();
-            renderAll();
-            showSyncPulse();
-          }
-        } catch (ex) {}
-      });
-
-      this.eventSource.addEventListener('building_deleted', (e) => {
-        try {
-          const { id } = JSON.parse(e.data);
-          if (!id) return;
-          state.buildings = state.buildings.filter(b => b.id !== id);
-          saveState();
-          renderAll();
-          showSyncPulse();
-        } catch (ex) {}
-      });
-
-      this.eventSource.addEventListener('review_added', (e) => {
-        try {
-          const { review } = JSON.parse(e.data);
-          if (!review) return;
-          state.reviews.unshift({
-            id: review.id || 'rev_' + Date.now(),
-            stars: review.stars,
-            text: review.text,
-            name: review.name,
-            ts: review.timestamp || Date.now()
-          });
-          saveState();
-          renderAll();
-        } catch (ex) {}
-      });
-
-      this.eventSource.addEventListener('full_sync', (e) => {
-        try {
-          const data = JSON.parse(e.data);
-          this.applyData(data);
-        } catch (ex) {}
-      });
-
-      this.eventSource.onerror = () => {
-        console.warn('[ServerAPI] SSE connection interrupted, will retry automatically...');
-      };
-    } catch (err) {
-      console.warn('[ServerAPI] SSE init error:', err.message);
-    }
-  },
-
-  async fetchHealth() {
-    try {
-      const res = await fetch('/api/health');
-      if (res.ok) {
-        const json = await res.json();
-        if (json.localIps) this.localIps = json.localIps;
-        if (typeof json.activeConnections === 'number') this.activeClients = json.activeConnections;
-        updateServerStatusUI();
-      }
-    } catch (e) {}
-  },
-
-  async adjustLot(id, change) {
-    if (!this.isServerAvailable) return false;
-    try {
-      const res = await fetch('/api/lots/adjust', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, change })
-      });
-      return res.ok;
-    } catch (e) { return false; }
-  },
-
-  async saveLot(lot) {
-    if (!this.isServerAvailable) return false;
-    try {
-      const res = await fetch('/api/lots/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lot })
-      });
-      return res.ok;
-    } catch (e) { return false; }
-  },
-
-  async deleteLot(id) {
-    if (!this.isServerAvailable) return false;
-    try {
-      const res = await fetch('/api/lots/delete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id })
-      });
-      return res.ok;
-    } catch (e) { return false; }
-  },
-
-  async saveBuilding(building) {
-    if (!this.isServerAvailable) return false;
-    try {
-      const res = await fetch('/api/buildings/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ building })
-      });
-      return res.ok;
-    } catch (e) { return false; }
-  },
-
-  async deleteBuilding(id) {
-    if (!this.isServerAvailable) return false;
-    try {
-      const res = await fetch('/api/buildings/delete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id })
-      });
-      return res.ok;
-    } catch (e) { return false; }
-  },
-
-  async recordParking(username, buildingId, lotId) {
-    if (!this.isServerAvailable) return false;
-    try {
-      const res = await fetch('/api/parking/park', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, buildingId, lotId })
-      });
-      return res.ok;
-    } catch (e) { return false; }
-  },
-
-  async recordCheckOut(username, lotId, buildingId) {
-    if (!this.isServerAvailable) return false;
-    try {
-      const res = await fetch('/api/parking/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, lotId, buildingId })
-      });
-      return res.ok;
-    } catch (e) { return false; }
-  },
-
-  async submitReview(review) {
-    if (!this.isServerAvailable) return false;
-    try {
-      const res = await fetch('/api/reviews', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(review)
-      });
-      return res.ok;
-    } catch (e) { return false; }
-  },
-
-  async saveConfig(googleSheetsUrl) {
-    if (!this.isServerAvailable) return false;
-    try {
-      const res = await fetch('/api/config', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ googleSheetsUrl })
-      });
-      return res.ok;
-    } catch (e) { return false; }
-  }
-};
-
-function showSyncPulse() {
-  const dot = document.getElementById('server-status-dot');
-  if (dot) {
-    dot.classList.remove('pulse-dot');
-    void dot.offsetWidth;
-    dot.classList.add('pulse-dot');
-  }
-}
-
-function updateServerStatusUI() {
-  const badge = document.getElementById('server-status-badge');
-  const dot = document.getElementById('server-status-dot');
-  const text = document.getElementById('server-status-text');
-  const count = document.getElementById('server-client-count');
-  const addr = document.getElementById('server-lan-address');
-
-  if (!text) return;
-
-  if (ServerAPI.isServerAvailable) {
-    text.textContent = t('server_status_online');
-    if (dot) {
-      dot.className = 'h-1.5 w-1.5 rounded-full bg-emerald-500 pulse-dot';
-    }
-    if (badge) {
-      badge.className = 'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30';
-    }
-    if (count) {
-      count.textContent = t('connected_devices_count', { count: ServerAPI.activeClients || 1 });
-    }
-    if (addr) {
-      const lan = (ServerAPI.localIps && ServerAPI.localIps.length) ? ServerAPI.localIps[0] : window.location.origin;
-      addr.textContent = lan;
-    }
-  } else {
-    text.textContent = t('server_status_offline');
-    if (dot) {
-      dot.className = 'h-1.5 w-1.5 rounded-full bg-gray-400';
-    }
-    if (badge) {
-      badge.className = 'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700';
-    }
-    if (count) {
-      count.textContent = t('connected_devices_count', { count: 1 });
-    }
-    if (addr) {
-      addr.textContent = 'file:/// (Local Browser Storage)';
-    }
-  }
-}
 
 /* ==========================================================================
    GOOGLE SHEETS API INTEGRATION CLIENT (Asynchronous & Resilient)
@@ -2710,10 +2283,6 @@ async function testAndSaveSheetsUrl() {
   const url = (input ? input.value : '').trim();
   state.settings.sheetsApiUrl = url;
   saveState();
-
-  if (ServerAPI.isServerAvailable) {
-    ServerAPI.saveConfig(url);
-  }
 
   const btn = document.getElementById('btn-test-db');
   const latText = document.getElementById('db-latency-info');
@@ -3459,12 +3028,8 @@ async function finishRoute() {
   state.navHistory.unshift({ buildingId: building ? building.id : null, lotId: best ? best.lot.id : null, ts: Date.now() });
   saveState();
 
-  if (building && best) {
-    if (ServerAPI.isServerAvailable) {
-      ServerAPI.recordParking(state.currentUser || 'guest', building.id, best.lot.id);
-    } else if (SheetsDB.isConfigured()) {
-      SheetsDB.recordParking(building.id, best.lot.id, state.currentUser || 'guest');
-    }
+  if (building && best && SheetsDB.isConfigured()) {
+    SheetsDB.recordParking(building.id, best.lot.id, state.currentUser || 'guest');
   }
 
   if (btn) btn.disabled = false;
@@ -3493,14 +3058,10 @@ async function checkOutParking() {
   state.activeParking = null;
   saveState();
 
-  // Sync with Server Host & Google Sheets
-  if (currentActive.lotId) {
-    if (ServerAPI.isServerAvailable) {
-      ServerAPI.recordCheckOut(state.currentUser || 'guest', currentActive.lotId, currentActive.buildingId || '');
-    } else if (SheetsDB.isConfigured()) {
-      SheetsDB.recordCheckOut(currentActive.buildingId || '', currentActive.lotId, state.currentUser || 'guest');
-      SheetsDB.adjustLot(currentActive.lotId, 1);
-    }
+  // Sync with Google Sheets
+  if (SheetsDB.isConfigured() && currentActive.lotId) {
+    SheetsDB.recordCheckOut(currentActive.buildingId || '', currentActive.lotId, state.currentUser || 'guest');
+    SheetsDB.adjustLot(currentActive.lotId, 1);
   }
 
   const successMsg = t('toast_checkout_success_desc', { lot: lotTitle });
@@ -3833,18 +3394,16 @@ async function submitReview() {
   document.getElementById('review-text').value = '';
   saveState();
 
-  let savedToBackend = false;
-  if (ServerAPI.isServerAvailable) {
-    savedToBackend = await ServerAPI.submitReview(newRev);
-  } else if (SheetsDB.isConfigured()) {
+  let savedToSheets = false;
+  if (SheetsDB.isConfigured()) {
     const res = await SheetsDB.submitReview(newRev);
-    if (res && res.success) savedToBackend = true;
+    if (res && res.success) savedToSheets = true;
   }
 
   if (btn) btn.disabled = false;
   if (btnText) btnText.textContent = t('submit_review_btn');
 
-  if (savedToBackend) {
+  if (savedToSheets) {
     showToast(t('toast_review_success_title'), t('toast_review_success_sheets'), 'success');
   } else {
     showToast(t('toast_review_success_title'), t('toast_review_success_default'), 'success');
@@ -3965,9 +3524,7 @@ async function adjustLot(id, change) {
   saveState();
   renderAll();
 
-  if (ServerAPI.isServerAvailable) {
-    ServerAPI.adjustLot(id, change);
-  } else if (SheetsDB.isConfigured()) {
+  if (SheetsDB.isConfigured()) {
     SheetsDB.adjustLot(id, change);
   }
 }
@@ -4020,9 +3577,7 @@ async function saveEditedLot() {
 
   saveState();
 
-  if (ServerAPI.isServerAvailable) {
-    await ServerAPI.saveLot(lot);
-  } else if (SheetsDB.isConfigured()) {
+  if (SheetsDB.isConfigured()) {
     await SheetsDB.saveLot(lot);
   }
 
@@ -4058,12 +3613,10 @@ async function addBuilding() {
   state.buildings.push(newBuilding);
   saveState();
 
-  let saved = false;
-  if (ServerAPI.isServerAvailable) {
-    saved = await ServerAPI.saveBuilding(newBuilding);
-  } else if (SheetsDB.isConfigured()) {
+  let savedToSheets = false;
+  if (SheetsDB.isConfigured()) {
     const res = await SheetsDB.saveBuilding(newBuilding);
-    if (res && res.success) saved = true;
+    if (res && res.success) savedToSheets = true;
   }
 
   if (btn) btn.disabled = false;
@@ -4088,9 +3641,7 @@ function deleteBuilding(id) {
     state.buildings = state.buildings.filter(b => b.id !== id);
     saveState();
 
-    if (ServerAPI.isServerAvailable) {
-      ServerAPI.deleteBuilding(id);
-    } else if (SheetsDB.isConfigured()) {
+    if (SheetsDB.isConfigured()) {
       SheetsDB.deleteBuilding(id);
     }
 
@@ -4134,12 +3685,10 @@ async function addLot() {
   state.lots.push(newLot);
   saveState();
 
-  let saved = false;
-  if (ServerAPI.isServerAvailable) {
-    saved = await ServerAPI.saveLot(newLot);
-  } else if (SheetsDB.isConfigured()) {
+  let savedToSheets = false;
+  if (SheetsDB.isConfigured()) {
     const res = await SheetsDB.saveLot(newLot);
-    if (res && res.success) saved = true;
+    if (res && res.success) savedToSheets = true;
   }
 
   if (btn) btn.disabled = false;
@@ -4147,10 +3696,10 @@ async function addLot() {
   document.getElementById('new-lot-name').value = '';
   document.getElementById('new-lot-name-en').value = '';
 
-  if (saved) {
+  if (savedToSheets) {
     showToast(t('toast_lot_added_title'), t('toast_lot_added_sheets'), 'success');
-  } else if (SheetsDB.isConfigured() || ServerAPI.isServerAvailable) {
-    showToast(t('toast_lot_added_title'), t('lot_added_success'), 'success');
+  } else if (SheetsDB.isConfigured()) {
+    showToast(t('toast_lot_added_title') + ' (Local)', t('toast_register_success_local'), 'info');
   } else {
     showToast(t('toast_lot_added_title'), t('lot_added_success'), 'success');
   }
@@ -4172,9 +3721,7 @@ function deleteLot(id) {
     state.favorites = state.favorites.filter(f => f !== id);
     saveState();
 
-    if (ServerAPI.isServerAvailable) {
-      ServerAPI.deleteLot(id);
-    } else if (SheetsDB.isConfigured()) {
+    if (SheetsDB.isConfigured()) {
       SheetsDB.deleteLot(id);
     }
 
@@ -4214,11 +3761,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Periodic timer update for active parking duration
   setInterval(updateActiveParkingTimer, 30000);
 
-  // Initialize Central Server Host & SSE Stream
-  await ServerAPI.init();
-
-  // Initial background sync with Google Sheets if in standalone mode and configured
-  if (!ServerAPI.isServerAvailable && SheetsDB.isConfigured()) {
+  // Initial silent background sync with Google Sheets if configured
+  if (SheetsDB.isConfigured()) {
     const pingRes = await SheetsDB.ping();
     updateDbStatusUI(pingRes);
     if (pingRes.success) {
