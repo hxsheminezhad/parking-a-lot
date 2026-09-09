@@ -88,15 +88,90 @@ body{
   font-family:"Google Sans Flex","Google Sans","Noto Sans Thai",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
   color:var(--ink);
   background:var(--paper);
-  transition:background-color .3s cubic-bezier(0.16,1,0.3,1),color .3s cubic-bezier(0.16,1,0.3,1);
+  transition:background-color .38s cubic-bezier(0.16,1,0.3,1),color .35s cubic-bezier(0.16,1,0.3,1);
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
 }
+
+body, section.app-view, header, nav, main, footer, .parking-card, .interactive-card, .stat-card-anim, .hero-card-anim, input, select, textarea, button, .settings-pill {
+  transition: background-color 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.35s ease,
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
 .app-view{display:none;min-height:100dvh}
-.app-view.active{display:block;animation:viewEnter .35s cubic-bezier(0.16,1,0.3,1) both}
+.app-view.active{display:block;animation:viewEnter .38s cubic-bezier(0.16,1,0.3,1) both}
 @keyframes viewEnter{from{opacity:0;transform:translateY(10px) scale(0.995)}to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes modalPopIn{from{opacity:0;transform:translateY(14px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes toastIn{from{opacity:0;transform:translate(-50%,-20px) scale(0.95)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+@keyframes modalPopIn{from{opacity:0;transform:translateY(18px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.modal-wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.36s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.36s ease,
+              backdrop-filter 0.36s ease,
+              visibility 0.36s ease;
+}
+.modal-wrapper.modal-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  background-color: rgba(0, 0, 0, 0.52);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.modal-wrapper .modal-panel {
+  transform: translateY(18px) scale(0.95);
+  opacity: 0;
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.modal-wrapper.modal-open .modal-panel {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+#toast-banner {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  z-index: 50;
+  width: 92%;
+  max-width: 28rem;
+  transform: translate(-50%, -24px) scale(0.94);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.35s ease;
+}
+#toast-banner.toast-visible {
+  transform: translate(-50%, 0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.badge-pop {
+  animation: badgePop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes badgePop {
+  0% { transform: scale(0.75); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
 
 .grid-map{background-color:var(--grid-bg);background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:26px 26px}
 .route-line{stroke-dasharray:8 9;animation:dash 2s linear infinite}
@@ -345,7 +420,7 @@ html.dark .hero-highlight-gradient {
 <body class="w-full bg-[#f7f9fd] dark:bg-[#0e0f1a] text-[#181b2e] dark:text-[#f1f3fc]">
 
 <!-- GLOBAL NOTIFICATION TOAST / ERROR BANNER -->
-<div id="toast-banner" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden max-w-md w-[92%] rounded-2xl p-4 shadow-2xl transition-all duration-300 transform border backdrop-blur-md">
+<div id="toast-banner" class="rounded-2xl p-4 shadow-2xl backdrop-blur-md border">
   <div class="flex items-start gap-3">
     <div id="toast-icon-wrap" class="mt-0.5 rounded-full p-1 text-white shadow-sm"></div>
     <div class="flex-1">
@@ -357,12 +432,12 @@ html.dark .hero-highlight-gradient {
 </div>
 
 <!-- GOOGLE SHEETS & QUICK SETTINGS MODAL -->
-<div id="quick-controls-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4 transition-opacity duration-300">
-  <div class="modal-content-anim w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
+<div id="quick-controls-modal" class="modal-wrapper">
+  <div class="modal-panel w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
     <div class="flex items-center justify-between pb-4 border-b border-[#edf1f8] dark:border-[#262845]">
       <div class="flex items-center gap-2">
         <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] text-white shadow-sm"><i data-lucide="sliders" class="h-4 w-4"></i></span>
-        <h3 class="font-bold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="quick_settings_title">การตั้งค่าระบบ & Google Sheets</h3>
+        <h3 class="font-bold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="quick_settings_title">การตั้งค่าระบบ</h3>
       </div>
       <button type="button" onclick="toggleQuickSettings(false)" class="rounded-full p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition"><i data-lucide="x" class="h-5 w-5"></i></button>
     </div>
@@ -409,13 +484,6 @@ html.dark .hero-highlight-gradient {
         </div>
 
         <p id="db-latency-info" class="text-[11px] text-[#5a627a] dark:text-[#9da7c5]"></p>
-
-        <!-- SETUP INSTRUCTION ACCORDION -->
-        <details class="text-[11px] text-[#5a627a] dark:text-[#9da7c5] pt-1 group">
-          <summary class="cursor-pointer font-bold text-[#A680C2] dark:text-[#D9B1E6] hover:underline flex items-center gap-1" data-i18n="how_to_setup_sheets">📖 วิธีเชื่อมต่อ Google Sheets ด้วยตนเอง</summary>
-          <div class="mt-2 space-y-2 pl-3 border-l-2 border-[#A680C2] dark:border-[#D9B1E6]" data-i18n-html="how_to_setup_sheets_body">
-          </div>
-        </details>
       </div>
 
       <!-- LANGUAGE SELECTOR -->
@@ -601,10 +669,6 @@ html.dark .hero-highlight-gradient {
         <span data-i18n="no_account">ยังไม่มีบัญชี?</span> 
         <button type="button" onclick="showView('auth-register')" class="font-bold text-[#96A4DD] dark:text-[#D9B1E6] hover:underline" data-i18n="register_link">สมัครสมาชิก</button>
       </p>
-
-      <div class="mt-6 rounded-2xl border border-[#CAE0DC]/70 dark:border-[#CAE0DC]/30 bg-[#f0f8f7] dark:bg-[#132221] p-4 text-xs text-[#5a627a] dark:text-[#9da7c5]">
-        <span class="font-bold text-[#2d6f65] dark:text-[#CAE0DC]" data-i18n="quick_test_hint">💡 สำหรับทดสอบด่วน:</span> <span data-i18n-html="quick_test_desc">คุณสามารถใช้ <b>Ardeshir</b> (รหัสผ่าน <b>hassanzxdeh</b>) หรือ <b>Project Alpine</b> (รหัสผ่าน <b>orchid</b>) หรือใช้งานแบบผู้เยี่ยมชม</span>
-      </div>
     </div>
     <p class="mt-10 text-center text-xs text-[#8f9bb3] dark:text-[#6d7796]">Developed by ให้รถในวงเวียนไปก่อน</p>
   </div>
@@ -1077,8 +1141,56 @@ html.dark .hero-highlight-gradient {
 
     <div class="mt-8 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
       <p class="text-sm font-bold text-[#96A4DD] dark:text-[#D9B1E6]" data-i18n="lot_list_title">รายการลานจอดรถ</p>
-      <h2 class="mt-1 font-extrabold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="lot_list_sub">ปรับจำนวนช่องว่าง หรือ ลบลานจอดรถ</h2>
+      <h2 class="mt-1 font-extrabold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="lot_list_sub">แก้ไขข้อมูล ปรับจำนวนช่องว่าง หรือลบลานจอดรถ</h2>
       <div id="admin-lot-list" class="mt-4 space-y-3"></div>
+    </div>
+
+    <!-- ADD BUILDING SECTION -->
+    <div class="mt-8 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-bold text-[#96A4DD] dark:text-[#D9B1E6]" data-i18n="add_bldg_heading">เพิ่มอาคารที่รองรับ</p>
+          <h2 class="mt-1 font-extrabold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="add_bldg_sub">อาคารจะปรากฏในระบบค้นหาและแผนที่ทันที</h2>
+        </div>
+      </div>
+      <div class="mt-4 grid gap-3 md:grid-cols-2">
+        <div>
+          <label class="mb-1 block text-sm font-bold" data-i18n="bldg_name_th">ชื่ออาคาร (ไทย)</label>
+          <input id="new-bldg-name" type="text" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-bold" data-i18n="bldg_name_en">ชื่ออาคาร (English)</label>
+          <input id="new-bldg-name-en" type="text" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-bold" data-i18n="bldg_category">หมวดหมู่อาคาร</label>
+          <select id="new-bldg-category" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+            <option value="classroom">อาคารเรียน (Classrooms)</option>
+            <option value="office">อาคารสำนักงาน (Offices)</option>
+            <option value="parking">ลานจอดรถ (Parking)</option>
+          </select>
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-bold" data-i18n="bldg_lat_lng">ตำแหน่งบนแผนที่ (Lat, Lng: 5-95)</label>
+          <div class="grid grid-cols-2 gap-2">
+            <input id="new-bldg-lat" type="number" min="5" max="95" value="50" placeholder="Lat (5-95)" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+            <input id="new-bldg-lng" type="number" min="5" max="95" value="50" placeholder="Lng (5-95)" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+          </div>
+        </div>
+      </div>
+      
+      <button type="button" id="btn-add-bldg" onclick="addBuilding()" class="interactive-btn mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] px-5 py-3 font-bold text-white shadow hover:opacity-95">
+        <i data-lucide="plus" class="h-4 w-4" id="add-bldg-icon"></i>
+        <span data-i18n="add_bldg_btn" id="add-bldg-text">เพิ่มอาคาร</span>
+      </button>
+      <p id="admin-bldg-message" class="mt-3 hidden rounded-xl bg-[#f0f4fc] dark:bg-[#222442] p-3 text-sm font-semibold text-[#262447] dark:text-[#D9B1E6] border border-[#96A4DD]/40"></p>
+    </div>
+
+    <!-- BUILDINGS LIST SECTION -->
+    <div class="mt-8 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
+      <p class="text-sm font-bold text-[#96A4DD] dark:text-[#D9B1E6]" data-i18n="building_list_title">รายการอาคารที่รองรับ</p>
+      <h2 class="mt-1 font-extrabold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="building_list_sub">อาคารทั้งหมดในแผนที่และการค้นหา</h2>
+      <div id="admin-building-list" class="mt-4 space-y-3"></div>
     </div>
 
     <div class="mt-8 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
@@ -1091,9 +1203,54 @@ html.dark .hero-highlight-gradient {
   </main>
 </section>
 
+<!-- EDIT LOT MODAL -->
+<div id="edit-lot-modal" class="modal-wrapper">
+  <div class="modal-panel w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
+    <div class="flex items-center justify-between pb-4 border-b border-[#edf1f8] dark:border-[#262845]">
+      <div class="flex items-center gap-2">
+        <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] text-white shadow-sm"><i data-lucide="edit-3" class="h-4 w-4"></i></span>
+        <h3 class="font-bold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="edit_lot_title">แก้ไขข้อมูลลานจอดรถ</h3>
+      </div>
+      <button type="button" onclick="closeEditLot()" class="rounded-full p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition"><i data-lucide="x" class="h-5 w-5"></i></button>
+    </div>
+    
+    <input id="edit-lot-id" type="hidden">
+    
+    <div class="mt-5 space-y-4">
+      <div>
+        <label class="mb-1 block text-sm font-bold" data-i18n="lot_name_label">ชื่อลานจอดรถ (ไทย)</label>
+        <input id="edit-lot-name" type="text" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-bold" data-i18n="lot_name_en_label">ชื่อลานจอดรถ (English)</label>
+        <input id="edit-lot-name-en" type="text" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-bold" data-i18n="near_bldg_label">อาคารใกล้เคียง</label>
+        <select id="edit-lot-building" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3"></select>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="mb-1 block text-sm font-bold" data-i18n="capacity_label">ความจุทั้งหมด (ช่อง)</label>
+          <input id="edit-lot-capacity" type="number" min="1" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-bold" data-i18n="lot_spaces_available">ช่องว่างปัจจุบัน (ช่อง)</label>
+          <input id="edit-lot-available" type="number" min="0" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+        </div>
+      </div>
+    </div>
+    
+    <div class="mt-6 flex gap-3">
+      <button type="button" onclick="closeEditLot()" class="interactive-btn flex-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] py-3 font-bold hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" data-i18n="cancel_btn">ยกเลิก</button>
+      <button type="button" id="btn-save-lot" onclick="saveEditedLot()" class="interactive-btn flex-1 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3 font-bold text-white shadow hover:opacity-95" data-i18n="save_lot_btn">บันทึกการแก้ไข</button>
+    </div>
+  </div>
+</div>
+
 <!-- CONFIRM DIALOG -->
-<div id="confirm-dialog" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm p-5 transition-opacity duration-300">
-  <div class="modal-content-anim w-full max-w-sm rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
+<div id="confirm-dialog" class="modal-wrapper">
+  <div class="modal-panel w-full max-w-sm rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
     <p id="confirm-message" class="font-semibold text-lg">ยืนยันการลบหรือไม่</p>
     <div class="mt-5 flex gap-3">
       <button type="button" onclick="closeConfirm(false)" class="interactive-btn flex-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] py-3 font-bold hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" data-i18n="cancel_btn">ยกเลิก</button>
@@ -1342,7 +1499,26 @@ const i18n = {
     confirm_checkout: 'ยืนยันการออกจากที่จอดรถ "{lot}" หรือไม่? ระบบจะคืนช่องว่าง +1 ให้กับลานจอดนี้',
     toast_checkout_success_title: "ออกจากที่จอดรถแล้ว",
     toast_checkout_success_desc: "คืนช่องว่างให้กับ {lot} เรียบร้อยแล้ว ขอบคุณที่ใช้บริการ",
-    view_route_btn: "ดูตำแหน่งบนแผนที่"
+    view_route_btn: "ดูตำแหน่งบนแผนที่",
+    edit_lot_title: "แก้ไขข้อมูลลานจอดรถ",
+    edit_lot_sub: "แก้ไขชื่อ อาคารใกล้เคียง ความจุ และช่องว่างปัจจุบัน",
+    save_lot_btn: "บันทึกการแก้ไข",
+    edit_btn: "แก้ไข",
+    building_list_title: "รายการอาคารที่รองรับ",
+    building_list_sub: "อาคารทั้งหมดในแผนที่และการค้นหา",
+    add_bldg_heading: "เพิ่มอาคารที่รองรับ",
+    add_bldg_sub: "อาคารจะปรากฏในระบบค้นหาและแผนที่ทันที",
+    bldg_name_th: "ชื่ออาคาร (ไทย)",
+    bldg_name_en: "ชื่ออาคาร (English)",
+    bldg_category: "หมวดหมู่อาคาร",
+    bldg_lat_lng: "ตำแหน่งบนแผนที่ (Lat, Lng: 5-95)",
+    add_bldg_btn: "เพิ่มอาคาร",
+    confirm_delete_bldg: 'ยืนยันการลบอาคาร "{name}" หรือไม่? ลานจอดรถที่ผูกกับอาคารนี้อาจได้รับผลกระทบ',
+    toast_bldg_added: "เพิ่มอาคารสำเร็จและบันทึกลงระบบแล้ว",
+    toast_bldg_deleted: "ลบอาคารแล้ว",
+    toast_lot_updated: "บันทึกการแก้ไขลานจอดรถเรียบร้อยแล้ว",
+    lot_spaces_available: "ช่องว่างปัจจุบัน (ช่อง)",
+    fill_bldg_fields: "กรุณากรอกชื่ออาคารให้ครบถ้วน"
   },
   en: {
     quick_settings_title: "System Settings",
@@ -1579,7 +1755,26 @@ const i18n = {
     confirm_checkout: 'Confirm check out from "{lot}"? This will release +1 parking space back to the lot.',
     toast_checkout_success_title: "Checked Out Successfully",
     toast_checkout_success_desc: "1 spot released at {lot}. Thank you for using our service!",
-    view_route_btn: "View on Map"
+    view_route_btn: "View on Map",
+    edit_lot_title: "Edit Parking Lot Details",
+    edit_lot_sub: "Edit name, nearby building, capacity, and available spaces",
+    save_lot_btn: "Save Changes",
+    edit_btn: "Edit",
+    building_list_title: "Supported Buildings List",
+    building_list_sub: "All buildings in map and search index",
+    add_bldg_heading: "Add Supported Building",
+    add_bldg_sub: "Building appears in search and map immediately",
+    bldg_name_th: "Building Name (Thai)",
+    bldg_name_en: "Building Name (English)",
+    bldg_category: "Building Category",
+    bldg_lat_lng: "Map Coordinates (Lat, Lng: 5-95)",
+    add_bldg_btn: "Add Building",
+    confirm_delete_bldg: 'Confirm deleting building "{name}"? Lots associated with this building may be affected.',
+    toast_bldg_added: "Building added and saved to system",
+    toast_bldg_deleted: "Building deleted",
+    toast_lot_updated: "Parking lot updated successfully",
+    lot_spaces_available: "Available Spots (spots)",
+    fill_bldg_fields: "Please enter building name"
   }
 };
 
@@ -1624,7 +1819,7 @@ function showToast(title, message, type = 'info') {
   tTitle.textContent = title;
   tMsg.textContent = message;
 
-  toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-md w-[92%] rounded-2xl p-4 shadow-2xl backdrop-blur-md transition-all duration-300 transform border ';
+  toast.className = 'rounded-2xl p-4 shadow-2xl backdrop-blur-md border ';
   
   if (type === 'success') {
     toast.classList.add('bg-white/95', 'dark:bg-[#161729]/95', 'border-[#CAE0DC]', 'text-[#181b2e]', 'dark:text-[#f1f3fc]');
@@ -1640,7 +1835,9 @@ function showToast(title, message, type = 'info') {
     tIconWrap.innerHTML = '<i data-lucide="info" class="h-4 w-4"></i>';
   }
 
-  toast.classList.remove('hidden');
+  requestAnimationFrame(() => {
+    toast.classList.add('toast-visible');
+  });
   if (window.lucide) lucide.createIcons();
 
   toastTimeout = setTimeout(() => { hideToast(); }, 4000);
@@ -1648,7 +1845,7 @@ function showToast(title, message, type = 'info') {
 
 function hideToast() {
   const toast = document.getElementById('toast-banner');
-  if (toast) toast.classList.add('hidden');
+  if (toast) toast.classList.remove('toast-visible');
 }
 
 /* ==========================================================================
@@ -2020,6 +2217,20 @@ const SheetsDB = {
     });
   },
 
+  async saveBuilding(building) {
+    return await this.request('POST', { action: 'saveBuilding' }, {
+      action: 'saveBuilding',
+      building
+    });
+  },
+
+  async deleteBuilding(id) {
+    return await this.request('POST', { action: 'deleteBuilding' }, {
+      action: 'deleteBuilding',
+      id
+    });
+  },
+
   async saveLot(lot) {
     return await this.request('POST', { action: 'saveLot' }, {
       action: 'saveLot',
@@ -2311,8 +2522,7 @@ function updateLanguageUI() {
 function toggleQuickSettings(show) {
   const modal = document.getElementById('quick-controls-modal');
   if (!modal) return;
-  modal.classList.toggle('hidden', !show);
-  modal.classList.toggle('flex', show);
+  modal.classList.toggle('modal-open', show);
   if (show) {
     const input = document.getElementById('sheets-url-input');
     if (input) input.value = state.settings.sheetsApiUrl || '';
@@ -2590,6 +2800,12 @@ function renderLanding() {
   document.getElementById('landing-space').textContent = totalAvailable();
   document.getElementById('landing-lots').textContent = state.lots.length;
   document.getElementById('landing-buildings').textContent = state.buildings.length;
+
+  const admin = isAdmin();
+  const landingAdminBtn = document.getElementById('landing-admin-nav-btn');
+  const landingManageBtn = document.getElementById('landing-manage-lots-btn');
+  if (landingAdminBtn) landingAdminBtn.classList.toggle('hidden', !admin);
+  if (landingManageBtn) landingManageBtn.classList.toggle('hidden', !admin);
 }
 
 function initialsAvatar(user) {
@@ -3241,9 +3457,11 @@ function renderNotifications() {
    ADMIN MANAGEMENT (Live Google Sheets & Local CRUD)
    ========================================================================== */
 function populateBuildingSelect() {
-  const sel = document.getElementById('new-lot-building');
-  if (!sel) return;
-  sel.innerHTML = state.buildings.map(b => `<option value="${b.id}">${bName(b)}</option>`).join('');
+  const newLotSel = document.getElementById('new-lot-building');
+  const editLotSel = document.getElementById('edit-lot-building');
+  const options = state.buildings.map(b => `<option value="${b.id}">${bName(b)}</option>`).join('');
+  if (newLotSel) newLotSel.innerHTML = options;
+  if (editLotSel) editLotSel.innerHTML = options;
 }
 
 function renderAdmin() {
@@ -3252,6 +3470,7 @@ function renderAdmin() {
   document.getElementById('admin-building-count').textContent = state.buildings.length;
   populateBuildingSelect();
 
+  // 1. Render Lots List with Edit + Delete + Adjust buttons
   const list = document.getElementById('admin-lot-list');
   if (!state.lots.length) {
     list.innerHTML = `
@@ -3262,27 +3481,58 @@ function renderAdmin() {
   } else {
     list.innerHTML = state.lots.map(l => {
       const b = buildingById(l.buildingId);
-      return `<div class="parking-card flex items-center justify-between rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 shadow-sm">
-        <div><p class="font-bold text-[#262447] dark:text-[#c4b5fd]">${lName(l)}</p><p class="text-xs text-[#8f9bb3] dark:text-[#6d7796]">${t('near_prefix', { building: b ? bName(b) : '-' })} · ${t('from_total', { cap: l.capacity })}</p></div>
-        <div class="flex items-center gap-3">
-          <button type="button" onclick="adjustLot('${l.id}',-1)" class="interactive-btn rounded-lg border border-[#d5deed] dark:border-[#2a2d4a] p-2 hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" aria-label="Decrease available spots"><i data-lucide="minus" class="h-4 w-4"></i></button>
-          <b class="w-7 text-center font-bold text-[#96A4DD] dark:text-[#D9B1E6]">${l.available}</b>
-          <button type="button" onclick="adjustLot('${l.id}',1)" class="interactive-btn rounded-lg border border-[#d5deed] dark:border-[#2a2d4a] p-2 hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" aria-label="Increase available spots"><i data-lucide="plus" class="h-4 w-4"></i></button>
-          <button type="button" onclick="deleteLot('${l.id}')" class="interactive-btn rounded-lg border border-[#D9B1E6]/60 dark:border-[#BF87C9]/40 p-2 text-[#BF87C9] dark:text-[#D9B1E6] hover:bg-[#D9B1E6]/20 dark:hover:bg-[#BF87C9]/20" aria-label="Delete lot"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
+      return `<div class="parking-card flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 shadow-sm">
+        <div>
+          <p class="font-bold text-[#262447] dark:text-[#c4b5fd]">${lName(l)}</p>
+          <p class="text-xs text-[#8f9bb3] dark:text-[#6d7796] mt-0.5">${t('near_prefix', { building: b ? bName(b) : '-' })} · ${t('from_total', { cap: l.capacity })}</p>
+        </div>
+        <div class="flex items-center gap-2 self-end sm:self-auto">
+          <div class="flex items-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-1 bg-[#f8fafd] dark:bg-[#121324]">
+            <button type="button" onclick="adjustLot('${l.id}',-1)" class="interactive-btn rounded-lg p-1.5 hover:bg-white dark:hover:bg-[#222442] text-[#5a627a] dark:text-[#9da7c5]" aria-label="Decrease available spots"><i data-lucide="minus" class="h-3.5 w-3.5"></i></button>
+            <b class="w-7 text-center font-bold text-sm text-[#96A4DD] dark:text-[#D9B1E6]">${l.available}</b>
+            <button type="button" onclick="adjustLot('${l.id}',1)" class="interactive-btn rounded-lg p-1.5 hover:bg-white dark:hover:bg-[#222442] text-[#5a627a] dark:text-[#9da7c5]" aria-label="Increase available spots"><i data-lucide="plus" class="h-3.5 w-3.5"></i></button>
+          </div>
+          <button type="button" onclick="openEditLot('${l.id}')" class="interactive-btn rounded-xl border border-[#96A4DD]/60 dark:border-[#96A4DD]/40 p-2 text-[#96A4DD] dark:text-[#D9B1E6] hover:bg-[#96A4DD]/15 dark:hover:bg-[#96A4DD]/20" title="${t('edit_btn')}" aria-label="Edit lot"><i data-lucide="pencil" class="h-4 w-4"></i></button>
+          <button type="button" onclick="deleteLot('${l.id}')" class="interactive-btn rounded-xl border border-[#BF87C9]/60 dark:border-[#BF87C9]/40 p-2 text-[#BF87C9] dark:text-[#D9B1E6] hover:bg-[#BF87C9]/15 dark:hover:bg-[#BF87C9]/20" title="${t('delete_btn')}" aria-label="Delete lot"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
         </div></div>`;
     }).join('');
   }
 
+  // 2. Render Supported Buildings List with Delete button
+  const bldgList = document.getElementById('admin-building-list');
+  if (bldgList) {
+    if (!state.buildings.length) {
+      bldgList.innerHTML = `<p class="text-center text-sm text-[#5a627a] dark:text-[#9da7c5] py-4">ยังไม่มีอาคารในระบบ</p>`;
+    } else {
+      bldgList.innerHTML = state.buildings.map(b => {
+        const lotCount = state.lots.filter(l => l.buildingId === b.id).length;
+        return `<div class="parking-card flex items-center justify-between rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 shadow-sm">
+          <div class="flex items-center gap-3">
+            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-[#95BBE6]/20 dark:bg-[#252347] text-[#96A4DD] dark:text-[#D9B1E6]"><i data-lucide="${b.category === 'office' ? 'briefcase' : (b.category === 'parking' ? 'parking-circle' : 'building')}" class="h-4 w-4"></i></span>
+            <div>
+              <p class="font-bold text-[#262447] dark:text-[#c4b5fd]">${bName(b)}</p>
+              <p class="text-xs text-[#8f9bb3] dark:text-[#6d7796] mt-0.5">${categoryLabel(b.category)} · ${lotCount} ลานจอด · (${b.lat}, ${b.lng})</p>
+            </div>
+          </div>
+          <button type="button" onclick="deleteBuilding('${b.id}')" class="interactive-btn rounded-xl border border-[#BF87C9]/60 dark:border-[#BF87C9]/40 p-2 text-[#BF87C9] dark:text-[#D9B1E6] hover:bg-[#BF87C9]/15 dark:hover:bg-[#BF87C9]/20" title="${t('delete_btn')}" aria-label="Delete building"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // 3. Render Recent Reviews
   const reviewList = document.getElementById('admin-review-list');
-  if (!state.reviews.length) {
-    reviewList.innerHTML = `<p class="text-center text-[#5a627a] dark:text-[#9da7c5]">${t('no_reviews')}</p>`;
-  } else {
-    reviewList.innerHTML = state.reviews.slice(0, 5).map(r => `
-      <div class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 shadow-sm">
-        <div class="text-amber-500">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</div>
-        <p class="mt-1 text-sm text-[#181b2e] dark:text-[#e0e4f7]">${r.text || ''}</p>
-        <p class="mt-1 text-xs text-[#8f9bb3] dark:text-[#6d7796]">${r.name}</p>
-      </div>`).join('');
+  if (reviewList) {
+    if (!state.reviews.length) {
+      reviewList.innerHTML = `<p class="text-center text-[#5a627a] dark:text-[#9da7c5]">${t('no_reviews')}</p>`;
+    } else {
+      reviewList.innerHTML = state.reviews.slice(0, 5).map(r => `
+        <div class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 shadow-sm">
+          <div class="text-amber-500">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</div>
+          <p class="mt-1 text-sm text-[#181b2e] dark:text-[#e0e4f7]">${r.text || ''}</p>
+          <p class="mt-1 text-xs text-[#8f9bb3] dark:text-[#6d7796]">${r.name}</p>
+        </div>`).join('');
+    }
   }
   if (window.lucide) lucide.createIcons();
 }
@@ -3297,6 +3547,127 @@ async function adjustLot(id, change) {
   if (SheetsDB.isConfigured()) {
     SheetsDB.adjustLot(id, change);
   }
+}
+
+function openEditLot(lotId) {
+  const lot = lotById(lotId);
+  if (!lot) return;
+  populateBuildingSelect();
+  document.getElementById('edit-lot-id').value = lot.id;
+  document.getElementById('edit-lot-name').value = lot.name || '';
+  document.getElementById('edit-lot-name-en').value = lot.nameEn || lot.name || '';
+  document.getElementById('edit-lot-building').value = lot.buildingId || '';
+  document.getElementById('edit-lot-capacity').value = lot.capacity || 20;
+  document.getElementById('edit-lot-available').value = typeof lot.available !== 'undefined' ? lot.available : lot.capacity;
+
+  const modal = document.getElementById('edit-lot-modal');
+  if (modal) modal.classList.add('modal-open');
+}
+
+function closeEditLot() {
+  const modal = document.getElementById('edit-lot-modal');
+  if (modal) modal.classList.remove('modal-open');
+}
+
+async function saveEditedLot() {
+  const id = document.getElementById('edit-lot-id')?.value;
+  const name = (document.getElementById('edit-lot-name')?.value || '').trim();
+  const nameEn = (document.getElementById('edit-lot-name-en')?.value || '').trim() || name;
+  const buildingId = document.getElementById('edit-lot-building')?.value || '';
+  const capacity = Math.max(1, parseInt(document.getElementById('edit-lot-capacity')?.value, 10) || 20);
+  const available = Math.max(0, Math.min(capacity, parseInt(document.getElementById('edit-lot-available')?.value, 10) || 0));
+
+  if (!id || !name || !buildingId) {
+    showToast(t('toast_missing_info_title'), t('fill_lot_fields'), 'error');
+    return;
+  }
+
+  const lot = lotById(id);
+  if (!lot) return;
+
+  const btn = document.getElementById('btn-save-lot');
+  if (btn) btn.innerHTML = '<i data-lucide="loader-2" class="h-4 w-4 animate-spin inline mr-1"></i> ' + t('saving_data');
+  if (window.lucide) lucide.createIcons();
+
+  lot.name = name;
+  lot.nameEn = nameEn;
+  lot.buildingId = buildingId;
+  lot.capacity = capacity;
+  lot.available = available;
+
+  saveState();
+
+  if (SheetsDB.isConfigured()) {
+    await SheetsDB.saveLot(lot);
+  }
+
+  if (btn) btn.innerHTML = t('save_lot_btn');
+  closeEditLot();
+  showToast(t('toast_lot_updated'), lName(lot), 'success');
+  renderAll();
+}
+
+async function addBuilding() {
+  const name = (document.getElementById('new-bldg-name')?.value || '').trim();
+  const nameEn = (document.getElementById('new-bldg-name-en')?.value || '').trim() || name;
+  const category = document.getElementById('new-bldg-category')?.value || 'classroom';
+  const lat = Math.max(5, Math.min(95, parseFloat(document.getElementById('new-bldg-lat')?.value) || 50));
+  const lng = Math.max(5, Math.min(95, parseFloat(document.getElementById('new-bldg-lng')?.value) || 50));
+  const msg = document.getElementById('admin-bldg-message');
+  const btn = document.getElementById('btn-add-bldg');
+  const btnText = document.getElementById('add-bldg-text');
+
+  if (!name) {
+    showToast(t('toast_missing_info_title'), t('fill_bldg_fields'), 'error');
+    if (msg) { msg.textContent = t('fill_bldg_fields'); msg.classList.remove('hidden'); }
+    return;
+  }
+
+  if (btn) btn.disabled = true;
+  if (btnText) btnText.innerHTML = '<i data-lucide="loader-2" class="h-4 w-4 animate-spin inline mr-1"></i> ' + t('saving_data');
+  if (window.lucide) lucide.createIcons();
+
+  const id = 'bldg-' + Date.now();
+  const newBuilding = { id, name, nameEn, category, lat, lng };
+
+  state.buildings.push(newBuilding);
+  saveState();
+
+  let savedToSheets = false;
+  if (SheetsDB.isConfigured()) {
+    const res = await SheetsDB.saveBuilding(newBuilding);
+    if (res && res.success) savedToSheets = true;
+  }
+
+  if (btn) btn.disabled = false;
+  if (btnText) btnText.textContent = t('add_bldg_btn');
+  document.getElementById('new-bldg-name').value = '';
+  document.getElementById('new-bldg-name-en').value = '';
+
+  showToast(t('toast_bldg_added'), bName(newBuilding), 'success');
+  if (msg) {
+    msg.textContent = t('toast_bldg_added');
+    msg.classList.remove('hidden');
+  }
+
+  renderAll();
+}
+
+function deleteBuilding(id) {
+  const building = buildingById(id);
+  if (!building) return;
+  askConfirm(t('confirm_delete_bldg', { name: bName(building) })).then(async ok => {
+    if (!ok) return;
+    state.buildings = state.buildings.filter(b => b.id !== id);
+    saveState();
+
+    if (SheetsDB.isConfigured()) {
+      SheetsDB.deleteBuilding(id);
+    }
+
+    showToast(t('toast_bldg_deleted'), bName(building), 'info');
+    renderAll();
+  });
 }
 
 async function addLot() {
@@ -3382,17 +3753,18 @@ function deleteLot(id) {
 function askConfirm(message) {
   document.getElementById('confirm-message').textContent = message;
   const dialog = document.getElementById('confirm-dialog');
-  dialog.classList.remove('hidden');
-  dialog.classList.add('flex');
+  if (dialog) dialog.classList.add('modal-open');
   return new Promise(resolve => { confirmResolver = resolve; });
 }
 
 function closeConfirm(result) {
   const dialog = document.getElementById('confirm-dialog');
-  dialog.classList.add('hidden');
-  dialog.classList.remove('flex');
-  if (confirmResolver) confirmResolver(result);
-  confirmResolver = null;
+  if (dialog) dialog.classList.remove('modal-open');
+  if (confirmResolver) {
+    const r = confirmResolver;
+    confirmResolver = null;
+    r(result);
+  }
 }
 
 /* ==========================================================================

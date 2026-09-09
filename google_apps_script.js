@@ -279,6 +279,52 @@ function handleAction(action, body) {
       return jsonResponse({ success: true, message: 'Profile updated in Google Sheets', data: current });
     }
 
+    case 'saveBuilding': {
+      const bldg = body.building || body;
+      const id = bldg.id || 'b' + Date.now();
+      const name_th = (bldg.name_th || bldg.name || '').trim();
+      const name_en = (bldg.name_en || bldg.nameEn || name_th).trim();
+      const category = (bldg.category || 'classroom').trim();
+      const lat = parseFloat(bldg.lat) || 50;
+      const lng = parseFloat(bldg.lng) || 50;
+
+      if (!name_th) {
+        return errorResponse('Building name is required', 400);
+      }
+
+      const buildings = getRows(SHEETS.BUILDINGS);
+      const existingIdx = buildings.findIndex(b => String(b.id) === String(id));
+
+      const buildingData = {
+        id,
+        name_th,
+        name_en,
+        category,
+        lat,
+        lng,
+        updated_at: new Date().toISOString()
+      };
+
+      if (existingIdx >= 0) {
+        updateRow(SHEETS.BUILDINGS, existingIdx + 2, buildingData);
+      } else {
+        appendRow(SHEETS.BUILDINGS, buildingData);
+      }
+
+      return jsonResponse({ success: true, message: 'Building saved successfully to Google Sheets', data: buildingData });
+    }
+
+    case 'deleteBuilding': {
+      const id = body.id || '';
+      if (!id) return errorResponse('Building ID required', 400);
+      const buildings = getRows(SHEETS.BUILDINGS);
+      const idx = buildings.findIndex(b => String(b.id) === String(id));
+      if (idx === -1) return errorResponse('Building not found', 404);
+
+      deleteRow(SHEETS.BUILDINGS, idx + 2);
+      return jsonResponse({ success: true, message: 'Building deleted successfully from Google Sheets' });
+    }
+
     case 'saveLot': {
       const lot = body.lot || body;
       const id = lot.id || 'lot-' + Date.now();
