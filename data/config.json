@@ -1,0 +1,6 @@
+{
+  "googleSheetsUrl": "https://script.google.com/macros/s/AKfycbz_test/exec",
+  "syncIntervalSeconds": 60,
+  "serverName": "Parking-A-Lot Realtime Host",
+  "autoSyncWithSheets": true
+}
