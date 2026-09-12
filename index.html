@@ -436,7 +436,7 @@ html.dark .hero-highlight-gradient {
   <div class="modal-panel w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
     <div class="flex items-center justify-between pb-4 border-b border-[#edf1f8] dark:border-[#262845]">
       <div class="flex items-center gap-2">
-        <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] text-white shadow-sm"><i data-lucide="sliders" class="h-4 w-4"></i></span>
+        <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] text-[#181b2e] dark:text-[#0e0f1a] shadow-sm"><i data-lucide="sliders" class="h-4 w-4"></i></span>
         <h3 class="font-bold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="quick_settings_title">การตั้งค่าระบบ</h3>
       </div>
       <button type="button" onclick="toggleQuickSettings(false)" class="rounded-full p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition"><i data-lucide="x" class="h-5 w-5"></i></button>
@@ -476,7 +476,7 @@ html.dark .hero-highlight-gradient {
           <input id="sheets-url-input" type="url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-3 py-2 text-xs font-mono">
           
           <div class="grid grid-cols-2 gap-2">
-            <button type="button" onclick="testAndSaveSheetsUrl()" id="btn-test-db" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-2 text-xs font-bold text-white shadow-sm hover:opacity-95">
+            <button type="button" onclick="testAndSaveSheetsUrl()" id="btn-test-db" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-2 text-xs font-extrabold text-[#181b2e] dark:text-[#0e0f1a] shadow-sm hover:opacity-95">
               <i data-lucide="check-circle" class="h-3.5 w-3.5"></i>
               <span data-i18n="test_and_save_btn">บันทึก & ทดสอบ</span>
             </button>
@@ -532,7 +532,7 @@ html.dark .hero-highlight-gradient {
       </div>
     </div>
     
-    <button type="button" onclick="toggleQuickSettings(false)" class="interactive-btn mt-6 w-full rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3 text-sm font-bold text-white shadow-md hover:opacity-95" data-i18n="done_btn">เสร็จสิ้น</button>
+    <button type="button" onclick="toggleQuickSettings(false)" class="interactive-btn mt-6 w-full rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3 text-sm font-extrabold text-[#181b2e] dark:text-[#0e0f1a] shadow-md hover:opacity-95" data-i18n="done_btn">เสร็จสิ้น</button>
   </div>
 </div>
 
@@ -581,7 +581,7 @@ html.dark .hero-highlight-gradient {
       <p class="hero-anim-3 mt-6 max-w-lg text-lg leading-8 text-[#5a627a] dark:text-[#9da7c5]" data-i18n="hero_subtitle">ค้นหาลานจอดรถอย่างรวดเร็วทันใจ ด้วยระบบแนะนำลานจอดรถที่ใกล้ที่สุดพร้อมเส้นทางการเดินทางในทันที</p>
       
       <div class="hero-anim-3 mt-8 flex flex-wrap gap-3">
-        <button type="button" onclick="showView(state.currentUser?'user-dashboard':'auth-login')" class="interactive-btn inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] px-6 py-4 font-bold text-white shadow-lg shadow-[#96A4DD]/30 hover:opacity-95"><i data-lucide="navigation" class="h-5 w-5"></i><span data-i18n="start_finding">เริ่มหาที่จอด</span></button>
+        <button type="button" onclick="showView(state.currentUser?'user-dashboard':'auth-login')" class="interactive-btn inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] px-6 py-4 font-extrabold text-[#181b2e] dark:text-[#0e0f1a] shadow-lg shadow-[#96A4DD]/30 hover:opacity-95"><i data-lucide="navigation" class="h-5 w-5"></i><span data-i18n="start_finding">เริ่มหาที่จอด</span></button>
         <button type="button" onclick="loginAsGuest()" class="interactive-btn inline-flex items-center gap-2 rounded-xl border border-[#96A4DD] bg-white/80 dark:bg-[#222442]/80 backdrop-blur-sm px-5 py-4 font-bold text-[#262447] dark:text-[#D9B1E6] hover:bg-[#e4ebf9]"><i data-lucide="user" class="h-5 w-5 text-[#96A4DD]"></i><span data-i18n="guest_btn">ใช้งานในฐานะผู้เยี่ยมชม</span></button>
         <button type="button" id="landing-manage-lots-btn" onclick="showView('admin-dashboard')" class="interactive-btn inline-flex items-center gap-2 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white/80 dark:bg-[#161729]/80 backdrop-blur-sm px-6 py-4 font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038] hover:border-[#96A4DD]"><i data-lucide="layout-dashboard" class="h-5 w-5 text-[#A680C2]"></i><span data-i18n="manage_lots">จัดการลานจอด</span></button>
       </div>
@@ -662,7 +662,7 @@ html.dark .hero-highlight-gradient {
       </div>
       <p id="login-error" class="hidden text-sm font-semibold text-[#BF87C9] dark:text-[#D9B1E6]"></p>
       
-      <button type="button" id="login-submit-btn" onclick="login()" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3.5 font-bold text-white hover:opacity-95 shadow-md shadow-[#96A4DD]/25">
+      <button type="button" id="login-submit-btn" onclick="login()" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3.5 font-extrabold text-[#181b2e] dark:text-[#0e0f1a] hover:opacity-95 shadow-md shadow-[#96A4DD]/25">
         <i data-lucide="log-in" class="h-4 w-4" id="login-btn-icon"></i>
         <span data-i18n="login_btn" id="login-btn-text">เข้าสู่ระบบ</span>
       </button>
@@ -683,7 +683,7 @@ html.dark .hero-highlight-gradient {
         <button type="button" onclick="showView('auth-register')" class="font-bold text-[#96A4DD] dark:text-[#D9B1E6] hover:underline" data-i18n="register_link">สมัครสมาชิก</button>
       </p>
     </div>
-    <p class="mt-10 text-center text-xs text-[#8f9bb3] dark:text-[#6d7796]">Developed by ให้รถในวงเวียนไปก่อน</p>
+    <p class="mt-10 text-center text-xs text-[#5a627a] dark:text-[#9da7c5]">Developed by ให้รถในวงเวียนไปก่อน</p>
   </div>
 </section>
 
@@ -708,12 +708,12 @@ html.dark .hero-highlight-gradient {
       </div>
       <p id="reg-error" class="hidden text-sm font-semibold text-[#BF87C9] dark:text-[#D9B1E6]"></p>
       
-      <button type="button" id="reg-submit-btn" onclick="register()" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3.5 font-bold text-white hover:opacity-95 shadow-md shadow-[#96A4DD]/25">
+      <button type="button" id="reg-submit-btn" onclick="register()" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3.5 font-extrabold text-[#181b2e] dark:text-[#0e0f1a] hover:opacity-95 shadow-md shadow-[#96A4DD]/25">
         <i data-lucide="user-plus" class="h-4 w-4" id="reg-btn-icon"></i>
         <span data-i18n="register_btn" id="reg-btn-text">สมัครสมาชิก</span>
       </button>
     </div>
-    <p class="mt-10 text-center text-xs text-[#8f9bb3] dark:text-[#6d7796]">Developed by ให้รถในวงเวียนไปก่อน</p>
+    <p class="mt-10 text-center text-xs text-[#5a627a] dark:text-[#9da7c5]">Developed by ให้รถในวงเวียนไปก่อน</p>
   </div>
 </section>
 
@@ -752,7 +752,7 @@ html.dark .hero-highlight-gradient {
     <div id="dashboard-active-parking" class="mt-6 hidden rounded-3xl border border-[#96A4DD]/50 dark:border-[#A680C2]/40 bg-gradient-to-r from-[#CAE0DC]/30 via-[#95BBE6]/20 to-[#D9B1E6]/25 dark:from-[#252347] dark:via-[#1f1d38] dark:to-[#2e2447] p-5 shadow-sm">
       <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div class="flex items-start gap-3.5">
-          <div class="flex h-11 w-11 shrink-0 aspect-square items-center justify-center rounded-2xl bg-gradient-to-br from-[#96A4DD] to-[#A680C2] text-white shadow-md">
+          <div class="flex h-11 w-11 shrink-0 aspect-square items-center justify-center rounded-2xl bg-gradient-to-br from-[#96A4DD] to-[#A680C2] text-[#181b2e] dark:text-[#0e0f1a] shadow-md">
             <i data-lucide="car-front" class="h-6 w-6"></i>
           </div>
           <div>
@@ -793,10 +793,10 @@ html.dark .hero-highlight-gradient {
       <p class="text-sm font-bold text-[#96A4DD] dark:text-[#D9B1E6]" data-i18n="recommended_for_you">แนะนำสำหรับคุณ</p>
       <h2 class="mt-1 font-bold" data-i18n="nearest_lot_now">ลานจอดรถที่ใกล้ที่สุดตอนนี้</h2>
       <div id="recommend-box" class="mt-4 rounded-2xl bg-[#f1f4fb] dark:bg-[#1c1d33] p-4 border border-[#e2e8f4] dark:border-[#262845]"></div>
-      <button type="button" onclick="showView('user-search')" class="interactive-btn mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3.5 font-bold text-white hover:opacity-95 shadow-md shadow-[#96A4DD]/25"><i data-lucide="navigation" class="h-4 w-4"></i><span data-i18n="select_destination">เลือกอาคารปลายทาง</span></button>
+      <button type="button" onclick="showView('user-search')" class="interactive-btn mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3.5 font-extrabold text-[#181b2e] dark:text-[#0e0f1a] hover:opacity-95 shadow-md shadow-[#96A4DD]/25"><i data-lucide="navigation" class="h-4 w-4"></i><span data-i18n="select_destination">เลือกอาคารปลายทาง</span></button>
     </div>
 
-    <p class="mt-8 text-center text-xs text-[#8f9bb3] dark:text-[#6d7796]">Developed by ให้รถในวงเวียนไปก่อน</p>
+    <p class="mt-8 text-center text-xs text-[#5a627a] dark:text-[#9da7c5]">Developed by ให้รถในวงเวียนไปก่อน</p>
   </main>
   <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white/95 dark:bg-[#161729]/95 py-2 backdrop-blur-md">
     <button type="button" onclick="showView('user-dashboard')" class="nav-item active flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="home" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
@@ -813,7 +813,7 @@ html.dark .hero-highlight-gradient {
     <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="search_title">ค้นหาอาคาร / ลานจอดรถ</h1>
     <p class="mt-2 text-[#5a627a] dark:text-[#9da7c5]" data-i18n="search_sub">พิมพ์ชื่ออาคารหรือลานจอดรถ แล้วเลือกหมวดหมู่ที่ต้องการ</p>
     <div class="relative mt-5"><i data-lucide="search" class="absolute left-4 top-4 h-5 w-5 text-[#8f9bb3]"></i>
-      <input id="search-input" type="search" oninput="renderSearchResults()" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] py-4 pl-12 pr-4 shadow-sm">
+      <input id="search-input" type="search" placeholder="ค้นหาชื่ออาคาร หรือ ลานจอดรถ" data-i18n-placeholder="search_placeholder" oninput="renderSearchResults()" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] py-4 pl-12 pr-4 shadow-sm">
     </div>
     <div class="mt-4 flex flex-wrap gap-2" id="search-chips"></div>
     <div id="search-results" class="mt-6 space-y-3"></div>
@@ -829,7 +829,7 @@ html.dark .hero-highlight-gradient {
 <!-- MAP / NAVIGATION (S3) -->
 <section id="user-map" class="app-view bg-[#f7f9fd] dark:bg-[#0e0f1a]">
   <div class="mx-auto max-w-3xl px-5 pb-16 pt-6">
-    <button type="button" onclick="showView('user-search')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd] interactive-btn"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
+    <button type="button" onclick="returnFromMap()" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd] interactive-btn"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
     <div class="rounded-3xl bg-gradient-to-br from-[#262447] via-[#2f2757] to-[#3a2c66] dark:from-[#191830] dark:to-[#271f45] border border-[#BF87C9]/20 p-6 text-white shadow-lg">
       <p class="text-sm font-semibold text-[#D9B1E6]" data-i18n="destination_label">ปลายทาง</p>
       <h1 id="route-title" class="mt-1 text-xl font-extrabold">-</h1>
@@ -846,7 +846,7 @@ html.dark .hero-highlight-gradient {
       <div class="p-4"><i data-lucide="car-front" class="mx-auto h-5 w-5 text-[#96A4DD] dark:text-[#D9B1E6]"></i><span id="route-lot-name" class="mt-1 block text-xs text-[#5a627a] dark:text-[#9da7c5]">-</span></div>
     </div>
     
-    <button type="button" id="finish-route-btn" onclick="finishRoute()" class="interactive-btn mt-5 w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-4 font-bold text-white shadow-lg shadow-[#96A4DD]/30 hover:opacity-95">
+    <button type="button" id="finish-route-btn" onclick="finishRoute()" class="interactive-btn mt-5 w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-4 font-extrabold text-[#181b2e] dark:text-[#0e0f1a] shadow-lg shadow-[#96A4DD]/30 hover:opacity-95">
       <i data-lucide="check" class="h-5 w-5" id="finish-btn-icon"></i>
       <span data-i18n="finish_nav" id="finish-btn-text">ถึงลานจอดรถแล้ว / จบการนำทาง</span>
     </button>
@@ -887,7 +887,7 @@ html.dark .hero-highlight-gradient {
         <div>
           <div class="flex items-center gap-2 flex-wrap">
             <h1 id="profile-name" class="text-xl font-extrabold text-white">-</h1>
-            <span id="profile-role-badge" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-gradient-to-r from-[#96A4DD] to-[#A680C2] text-white shadow-sm">
+            <span id="profile-role-badge" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-gradient-to-r from-[#96A4DD] to-[#A680C2] text-[#181b2e] dark:text-[#0e0f1a] shadow-sm">
               <i data-lucide="user-check" class="h-3 w-3"></i>
               <span data-i18n="role_member">สมาชิกทั่วไป</span>
             </span>
@@ -1000,7 +1000,7 @@ html.dark .hero-highlight-gradient {
         <input id="edit-password" type="password" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 shadow-sm">
       </div>
       
-      <button type="button" id="save-profile-btn" onclick="saveProfile()" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3 font-bold text-white hover:opacity-95 shadow-md">
+      <button type="button" id="save-profile-btn" onclick="saveProfile()" class="interactive-btn w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3 font-extrabold text-[#181b2e] dark:text-[#0e0f1a] hover:opacity-95 shadow-md">
         <i data-lucide="save" class="h-4 w-4" id="save-profile-icon"></i>
         <span data-i18n="save_changes" id="save-profile-text">บันทึกการเปลี่ยนแปลง</span>
       </button>
@@ -1037,7 +1037,7 @@ html.dark .hero-highlight-gradient {
       <i data-lucide="log-out" class="h-4 w-4"></i><span data-i18n="logout_btn">ออกจากระบบ</span>
     </button>
 
-    <p class="pt-4 text-center text-xs text-[#8f9bb3] dark:text-[#6d7796]">Developed by ให้รถในวงเวียนไปก่อน</p>
+    <p class="pt-4 text-center text-xs text-[#5a627a] dark:text-[#9da7c5]">Developed by ให้รถในวงเวียนไปก่อน</p>
   </div>
   <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white/95 dark:bg-[#161729]/95 py-2 backdrop-blur-md">
     <button type="button" onclick="showView('user-dashboard')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="home" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
@@ -1073,9 +1073,9 @@ html.dark .hero-highlight-gradient {
     <div class="mt-5 rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
       <p class="font-bold" data-i18n="rate_prompt">ให้คะแนนการใช้งาน</p>
       <div id="star-input" class="mt-3 flex gap-2"></div>
-      <textarea id="review-text" rows="3" class="mt-3 w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3"></textarea>
+      <textarea id="review-text" rows="3" placeholder="เล่าประสบการณ์การใช้งานของคุณ (อย่างน้อย 3 ตัวอักษร)" data-i18n-placeholder="review_placeholder" class="mt-3 w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3"></textarea>
       
-      <button type="button" id="review-submit-btn" onclick="submitReview()" class="interactive-btn mt-3 w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3 font-bold text-white hover:opacity-95 shadow-md">
+      <button type="button" id="review-submit-btn" onclick="submitReview()" class="interactive-btn mt-3 w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3 font-extrabold text-[#181b2e] dark:text-[#0e0f1a] hover:opacity-95 shadow-md">
         <i data-lucide="send" class="h-4 w-4" id="review-btn-icon"></i>
         <span data-i18n="submit_review_btn" id="review-btn-text">ส่งรีวิว</span>
       </button>
@@ -1149,7 +1149,7 @@ html.dark .hero-highlight-gradient {
         </div>
       </div>
       
-      <button type="button" id="btn-add-lot" onclick="addLot()" class="interactive-btn mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] px-5 py-3 font-bold text-white shadow hover:opacity-95">
+      <button type="button" id="btn-add-lot" onclick="addLot()" class="interactive-btn mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] px-5 py-3 font-extrabold text-[#181b2e] dark:text-[#0e0f1a] shadow hover:opacity-95">
         <i data-lucide="plus" class="h-4 w-4" id="add-lot-icon"></i>
         <span data-i18n="add_lot_btn" id="add-lot-text">เพิ่มลานจอดรถ</span>
       </button>
@@ -1183,6 +1183,8 @@ html.dark .hero-highlight-gradient {
           <label class="mb-1 block text-sm font-bold" data-i18n="bldg_category">หมวดหมู่อาคาร</label>
           <select id="new-bldg-category" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
             <option value="classroom">อาคารเรียน (Classrooms)</option>
+            <option value="cafeteria">โรงอาหาร (Cafeteria)</option>
+            <option value="hospital">โรงพยาบาล (Hospital)</option>
             <option value="office">อาคารสำนักงาน (Offices)</option>
             <option value="parking">ลานจอดรถ (Parking)</option>
           </select>
@@ -1196,7 +1198,7 @@ html.dark .hero-highlight-gradient {
         </div>
       </div>
       
-      <button type="button" id="btn-add-bldg" onclick="addBuilding()" class="interactive-btn mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] px-5 py-3 font-bold text-white shadow hover:opacity-95">
+      <button type="button" id="btn-add-bldg" onclick="addBuilding()" class="interactive-btn mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] px-5 py-3 font-extrabold text-[#181b2e] dark:text-[#0e0f1a] shadow hover:opacity-95">
         <i data-lucide="plus" class="h-4 w-4" id="add-bldg-icon"></i>
         <span data-i18n="add_bldg_btn" id="add-bldg-text">เพิ่มอาคาร</span>
       </button>
@@ -1216,7 +1218,7 @@ html.dark .hero-highlight-gradient {
       <div id="admin-review-list" class="mt-4 space-y-3"></div>
     </div>
 
-    <p class="mt-8 text-center text-xs text-[#8f9bb3] dark:text-[#6d7796]">Developed by ให้รถในวงเวียนไปก่อน</p>
+    <p class="mt-8 text-center text-xs text-[#5a627a] dark:text-[#9da7c5]">Developed by ให้รถในวงเวียนไปก่อน</p>
   </main>
 </section>
 
@@ -1225,7 +1227,7 @@ html.dark .hero-highlight-gradient {
   <div class="modal-panel w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
     <div class="flex items-center justify-between pb-4 border-b border-[#edf1f8] dark:border-[#262845]">
       <div class="flex items-center gap-2">
-        <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] text-white shadow-sm"><i data-lucide="edit-3" class="h-4 w-4"></i></span>
+        <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] text-[#181b2e] dark:text-[#0e0f1a] shadow-sm"><i data-lucide="edit-3" class="h-4 w-4"></i></span>
         <h3 class="font-bold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="edit_lot_title">แก้ไขข้อมูลลานจอดรถ</h3>
       </div>
       <button type="button" onclick="closeEditLot()" class="rounded-full p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition"><i data-lucide="x" class="h-5 w-5"></i></button>
@@ -1260,7 +1262,7 @@ html.dark .hero-highlight-gradient {
     
     <div class="mt-6 flex gap-3">
       <button type="button" onclick="closeEditLot()" class="interactive-btn flex-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] py-3 font-bold hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" data-i18n="cancel_btn">ยกเลิก</button>
-      <button type="button" id="btn-save-lot" onclick="saveEditedLot()" class="interactive-btn flex-1 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3 font-bold text-white shadow hover:opacity-95" data-i18n="save_lot_btn">บันทึกการแก้ไข</button>
+      <button type="button" id="btn-save-lot" onclick="saveEditedLot()" class="interactive-btn flex-1 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3 font-extrabold text-[#181b2e] dark:text-[#0e0f1a] shadow hover:opacity-95" data-i18n="save_lot_btn">บันทึกการแก้ไข</button>
     </div>
   </div>
 </div>
@@ -1362,6 +1364,8 @@ const i18n = {
     search_placeholder: "ค้นหาชื่ออาคาร หรือ ลานจอดรถ",
     cat_all: "ทั้งหมด",
     cat_classroom: "อาคารเรียน",
+    cat_cafeteria: "โรงอาหาร",
+    cat_hospital: "โรงพยาบาล",
     cat_parking: "ลานจอดรถ",
     cat_office: "อาคารสำนักงาน",
     no_search_results: "ไม่พบผลลัพธ์ ลองค้นหาด้วยคำอื่น",
@@ -1432,8 +1436,6 @@ const i18n = {
     changelog_link_text: "ดูบันทึกการเปลี่ยนแปลง (Changelog)",
     changelog_sub: "ประวัติการพัฒนาและรายการอัปเดตเวอร์ชัน",
     view_doc: "เปิดเอกสาร",
-    quick_test_hint: "💡 สำหรับทดสอบด่วน:",
-    quick_test_desc: "คุณสามารถใช้ <b>Project Alpine</b> (รหัสผ่าน <b>orchid</b>) หรือใช้งานแบบผู้เยี่ยมชม",
     sheets_db_title: "ฐานข้อมูล Google Sheets (เฉพาะ Admin)",
     sheets_url_label: "Google Apps Script Web App URL",
     test_and_save_btn: "บันทึก & ทดสอบ",
@@ -1614,6 +1616,8 @@ const i18n = {
     search_placeholder: "Search building or parking lot name...",
     cat_all: "All",
     cat_classroom: "Classrooms",
+    cat_cafeteria: "Cafeteria",
+    cat_hospital: "Hospital",
     cat_parking: "Parking Lots",
     cat_office: "Offices",
     no_search_results: "No results found. Try another search query.",
@@ -1684,8 +1688,6 @@ const i18n = {
     changelog_link_text: "View Changelog & Updates",
     changelog_sub: "Version history and development release notes",
     view_doc: "Open Doc",
-    quick_test_hint: "💡 Quick Testing Hint:",
-    quick_test_desc: "You can use <b>Project Alpine</b> (password: <b>orchid</b>), or continue as Guest.",
     sheets_db_title: "Google Sheets Database (Admin Only)",
     sheets_url_label: "Google Apps Script Web App URL",
     test_and_save_btn: "Save & Test",
@@ -1807,6 +1809,10 @@ function updateStaticTranslations() {
     const key = el.getAttribute('data-i18n-html');
     el.innerHTML = t(key);
   });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    el.placeholder = t(key);
+  });
   const searchInput = document.getElementById('search-input');
   if(searchInput) searchInput.placeholder = t('search_placeholder');
   const reviewText = document.getElementById('review-text');
@@ -1840,7 +1846,7 @@ function showToast(title, message, type = 'info') {
     tIconWrap.innerHTML = '<i data-lucide="alert-triangle" class="h-4 w-4"></i>';
   } else {
     toast.classList.add('bg-white/95', 'dark:bg-[#161729]/95', 'border-[#96A4DD]', 'text-[#181b2e]', 'dark:text-[#f1f3fc]');
-    tIconWrap.className = 'mt-0.5 rounded-full p-1.5 bg-gradient-to-tr from-[#96A4DD] to-[#A680C2] text-white shadow-sm';
+    tIconWrap.className = 'mt-0.5 rounded-full p-1.5 bg-gradient-to-tr from-[#96A4DD] to-[#A680C2] text-[#181b2e] dark:text-[#0e0f1a] shadow-sm';
     tIconWrap.innerHTML = '<i data-lucide="info" class="h-4 w-4"></i>';
   }
 
@@ -1872,28 +1878,11 @@ function getStoredUsers() {
     { username: 'Ardeshir', password: 'hassanzxdeh', name: 'Ardeshir (Admin)', role: 'admin', avatar: null },
     { username: 'Project Alpine', password: 'orchid', name: 'Project Alpine (Admin)', role: 'admin', avatar: null }
   ];
-  defaultUsers.forEach(u => usersMap.set(u.username.toLowerCase(), u));
+  defaultUsers.forEach(u => usersMap.set(u.username.toLowerCase(), { ...u }));
 
-  try {
-    const rawUsers = localStorage.getItem(USERS_DB_KEY);
-    if (rawUsers) {
-      const parsed = JSON.parse(rawUsers);
-      if (Array.isArray(parsed)) {
-        parsed.forEach(u => {
-          if (u && u.username) {
-            const unLower = u.username.toLowerCase();
-            if (unLower === 'ardeshir' || unLower === 'project alpine') {
-              u.role = 'admin';
-            }
-            usersMap.set(unLower, u);
-          }
-        });
-      }
-    }
-  } catch(e) {}
-
-  const oldKeys = ['parkingalot-state-v6', 'parkingalot-state-v5', 'parkingalot-state-v4', 'parkingalot-state-v3', 'parkingalot-state-v2'];
-  oldKeys.forEach(key => {
+  // 1. Migrate legacy version stores (older keys first)
+  const legacyKeys = ['parkingalot-state-v5', 'parkingalot-state-v4', 'parkingalot-state-v3', 'parkingalot-state-v2'];
+  legacyKeys.forEach(key => {
     try {
       const raw = localStorage.getItem(key);
       if (raw) {
@@ -1902,10 +1891,7 @@ function getStoredUsers() {
           parsed.users.forEach(u => {
             if (u && u.username) {
               const unLower = u.username.toLowerCase();
-              if (unLower === 'ardeshir' || unLower === 'project alpine') {
-                u.role = 'admin';
-              }
-              usersMap.set(unLower, u);
+              usersMap.set(unLower, { ...u });
             }
           });
         }
@@ -1913,7 +1899,37 @@ function getStoredUsers() {
     } catch(e) {}
   });
 
-  // Enforce admin privileges and credentials for system admin accounts
+  // 2. Read from current application state store
+  try {
+    const rawState = localStorage.getItem(STORAGE_KEY);
+    if (rawState) {
+      const parsedState = JSON.parse(rawState);
+      if (parsedState && Array.isArray(parsedState.users)) {
+        parsedState.users.forEach(u => {
+          if (u && u.username) {
+            usersMap.set(u.username.toLowerCase(), { ...u });
+          }
+        });
+      }
+    }
+  } catch(e) {}
+
+  // 3. Read from dedicated users database store (highest local priority)
+  try {
+    const rawUsers = localStorage.getItem(USERS_DB_KEY);
+    if (rawUsers) {
+      const parsed = JSON.parse(rawUsers);
+      if (Array.isArray(parsed)) {
+        parsed.forEach(u => {
+          if (u && u.username) {
+            usersMap.set(u.username.toLowerCase(), { ...u });
+          }
+        });
+      }
+    }
+  } catch(e) {}
+
+  // 4. Enforce admin privileges and credentials for system admin accounts
   if (usersMap.has('ardeshir')) {
     const u = usersMap.get('ardeshir');
     u.role = 'admin';
@@ -2142,7 +2158,7 @@ const SheetsDB = {
     return await this.request('POST', { action: 'testWrite' }, {
       action: 'testWrite',
       message: 'Client UI diagnostic check',
-      username: state.currentUser || 'tester'
+      username: state.currentUser || 'admin'
     });
   },
 
@@ -2680,11 +2696,20 @@ async function login() {
     if (remoteRes && remoteRes.success && remoteRes.data) {
       remoteSuccess = true;
       const foundIdx = state.users.findIndex(x => x.username.toLowerCase() === u.toLowerCase());
+      const existing = foundIdx >= 0 ? state.users[foundIdx] : {};
+      const mergedUser = {
+        ...existing,
+        ...remoteRes.data,
+        name: remoteRes.data.name || existing.name || u,
+        avatar: remoteRes.data.avatar || existing.avatar || null,
+        password: p
+      };
       if (foundIdx >= 0) {
-        state.users[foundIdx] = { ...state.users[foundIdx], ...remoteRes.data, password: p };
+        state.users[foundIdx] = mergedUser;
       } else {
-        state.users.push({ ...remoteRes.data, username: u, password: p });
+        state.users.push(mergedUser);
       }
+      saveStoredUsers(state.users);
     }
   }
 
@@ -2964,13 +2989,22 @@ function renderDashboard() {
 
 function categoryLabel(c) {
   if (c === 'classroom') return t('cat_classroom');
+  if (c === 'cafeteria') return t('cat_cafeteria');
+  if (c === 'hospital') return t('cat_hospital');
   if (c === 'office') return t('cat_office');
   return t('cat_parking');
 }
 
 function renderSearchChips() {
   const wrap = document.getElementById('search-chips');
-  const cats = [['all', t('cat_all')], ['classroom', t('cat_classroom')], ['parking', t('cat_parking')], ['office', t('cat_office')]];
+  const cats = [
+    ['all', t('cat_all')],
+    ['classroom', t('cat_classroom')],
+    ['cafeteria', t('cat_cafeteria')],
+    ['hospital', t('cat_hospital')],
+    ['office', t('cat_office')],
+    ['parking', t('cat_parking')]
+  ];
   const active = state.ui.searchCategory || 'all';
   wrap.innerHTML = cats.map(([id, label]) => `<button type="button" onclick="setSearchCategory('${id}')" class="chip ${active === id ? 'active' : ''}">${label}</button>`).join('');
 }
@@ -3042,9 +3076,15 @@ function renderSearchResults() {
   if (window.lucide) lucide.createIcons();
 }
 
-function goToBuilding(buildingId) {
+function returnFromMap() {
+  const target = state.ui.mapReturnView || 'user-search';
+  showView(target);
+}
+
+function goToBuilding(buildingId, originView) {
   state.ui.destinationBuilding = buildingId;
   state.ui.routeType = 'fast';
+  state.ui.mapReturnView = originView || (state.ui.currentView !== 'user-map' ? state.ui.currentView : 'user-search');
   saveState();
   showView('user-map');
 }
@@ -3152,6 +3192,7 @@ function showActiveParkingMap() {
   if (state.activeParking && state.activeParking.buildingId) {
     state.ui.destinationBuilding = state.activeParking.buildingId;
     state.ui.routeType = 'fast';
+    state.ui.mapReturnView = 'user-dashboard';
     saveState();
     showView('user-map');
   } else {
@@ -3265,12 +3306,24 @@ async function saveProfile() {
 
   user.name = name;
   if (pw) user.password = pw;
+  saveStoredUsers(state.users);
   saveState();
 
   let savedToSheets = false;
   if (SheetsDB.isConfigured()) {
-    const res = await SheetsDB.updateProfile(user.username, { name, password: pw || user.password });
-    if (res && res.success) savedToSheets = true;
+    const res = await SheetsDB.updateProfile(user.username, { 
+      name, 
+      password: pw || user.password,
+      avatar: user.avatar || ''
+    });
+    if (res && res.success) {
+      savedToSheets = true;
+      if (res.data && res.data.name) {
+        user.name = res.data.name;
+      }
+      saveStoredUsers(state.users);
+      saveState();
+    }
   }
 
   if (btn) btn.disabled = false;
@@ -3293,6 +3346,7 @@ function uploadAvatar(evt) {
   const reader = new FileReader();
   reader.onload = () => {
     user.avatar = reader.result;
+    saveStoredUsers(state.users);
     saveState();
     if (SheetsDB.isConfigured()) {
       SheetsDB.updateProfile(user.username, { avatar: user.avatar });
@@ -3329,7 +3383,7 @@ function renderProfile() {
       roleBadgeEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-[#95BBE6] to-[#96A4DD] text-[#0e0f1a] dark:text-white shadow-sm';
       roleBadgeEl.innerHTML = `<i data-lucide="user" class="h-3.5 w-3.5"></i> <span>${t('role_guest')}</span>`;
     } else {
-      roleBadgeEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-[#96A4DD] to-[#A680C2] text-white shadow-sm';
+      roleBadgeEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-[#96A4DD] to-[#A680C2] text-[#181b2e] dark:text-[#0e0f1a] shadow-sm';
       roleBadgeEl.innerHTML = `<i data-lucide="user-check" class="h-3.5 w-3.5"></i> <span>${t('role_member')}</span>`;
     }
   }
@@ -3566,7 +3620,7 @@ function renderAdmin() {
         const lotCount = state.lots.filter(l => l.buildingId === b.id).length;
         return `<div class="parking-card flex items-center justify-between rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 shadow-sm">
           <div class="flex items-center gap-3">
-            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-[#95BBE6]/20 dark:bg-[#252347] text-[#96A4DD] dark:text-[#D9B1E6]"><i data-lucide="${b.category === 'office' ? 'briefcase' : (b.category === 'parking' ? 'parking-circle' : 'building')}" class="h-4 w-4"></i></span>
+            <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-[#95BBE6]/20 dark:bg-[#252347] text-[#96A4DD] dark:text-[#D9B1E6]"><i data-lucide="${b.category === 'office' ? 'briefcase' : (b.category === 'parking' ? 'parking-circle' : (b.category === 'cafeteria' ? 'utensils' : (b.category === 'hospital' ? 'heart-pulse' : 'building')))}" class="h-4 w-4"></i></span>
             <div>
               <p class="font-bold text-[#262447] dark:text-[#c4b5fd]">${bName(b)}</p>
               <p class="text-xs text-[#8f9bb3] dark:text-[#6d7796] mt-0.5">${categoryLabel(b.category)} · ${lotCount} ลานจอด · (${b.lat}, ${b.lng})</p>
