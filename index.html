@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#262447">
-<title>Parking-A-Lot Version 0.9.5 BETA TEST</title>
+<title>Parking-A-Lot Version 0.9.9 BETA TEST</title>
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script>
   tailwind.config = {
@@ -443,47 +443,60 @@ html.dark .hero-highlight-gradient {
     </div>
     
     <div class="mt-5 space-y-6">
-      <!-- GOOGLE SHEETS DATABASE CONNECTOR -->
+      <!-- GOOGLE SHEETS DATABASE CONNECTOR (Globally Visible) -->
       <div id="modal-sheets-db-section" class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-[#f8fafd] dark:bg-[#1c1d33] p-4 space-y-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <i data-lucide="table" class="h-4 w-4 text-[#96A4DD] dark:text-[#BF87C9]"></i>
+            <i data-lucide="cloud" class="h-4 w-4 text-[#96A4DD] dark:text-[#BF87C9]"></i>
             <span class="text-xs font-bold uppercase tracking-wider text-[#262447] dark:text-[#c4b5fd]" data-i18n="sheets_db_title">Google Sheets Database</span>
           </div>
           <span id="db-status-badge" class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-[#CAE0DC]/40 dark:bg-[#CAE0DC]/20 text-[#1e4d45] dark:text-[#CAE0DC] border border-[#CAE0DC]/60">
             <span class="h-1.5 w-1.5 rounded-full bg-[#CAE0DC]"></span>
-            <span id="db-status-text">โหมดออฟไลน์ / สำรองข้อมูลในเครื่อง</span>
+            <span id="db-status-text">กำลังเชื่อมต่อ...</span>
           </span>
         </div>
-        
-        <div>
-          <label class="block text-[11px] font-semibold text-[#5a627a] dark:text-[#9da7c5] mb-1" data-i18n="sheets_url_label">Google Apps Script Web App URL</label>
-          <input id="sheets-url-input" type="url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-3 py-2 text-xs font-mono">
-        </div>
-        
-        <div class="grid grid-cols-2 gap-2">
-          <button type="button" onclick="testAndSaveSheetsUrl()" id="btn-test-db" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-2 text-xs font-bold text-white shadow-sm hover:opacity-95">
-            <i data-lucide="check-circle" class="h-3.5 w-3.5"></i>
-            <span data-i18n="test_and_save_btn">บันทึก & ทดสอบ</span>
-          </button>
-          <button type="button" onclick="syncWithSheets(true)" id="btn-sync-db" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-3 py-2 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]">
+
+        <p class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="db_global_info">เชื่อมต่อฐานข้อมูลกลางอัตโนมัติ (log-project-alpine)</p>
+
+        <!-- Public Sync Action -->
+        <div class="flex items-center justify-between gap-2 pt-1">
+          <p id="db-latency-info" class="text-[11px] text-[#5a627a] dark:text-[#9da7c5]"></p>
+          <button type="button" onclick="syncWithSheets(true)" id="btn-sync-db" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-3 py-1.5 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]">
             <i data-lucide="refresh-cw" class="h-3.5 w-3.5" id="sync-icon"></i>
             <span data-i18n="sync_now_btn">ซิงค์ข้อมูล</span>
           </button>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
-          <button type="button" onclick="testWriteToSheets()" id="btn-test-write" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl border border-[#96A4DD] bg-[#f0f4fc] dark:bg-[#222442] py-2 text-xs font-bold text-[#4c5aa6] dark:text-[#D9B1E6] hover:bg-[#e4ebf9]">
-            <i data-lucide="pencil-line" class="h-3.5 w-3.5"></i>
-            <span data-i18n="test_write_btn">ทดสอบเขียนลง Sheet</span>
-          </button>
-          <button type="button" onclick="initSheetsStructure()" id="btn-init-sheets" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] py-2 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]">
-            <i data-lucide="layers" class="h-3.5 w-3.5"></i>
-            <span data-i18n="init_sheets_btn">สร้างตาราง 8 ชีต</span>
-          </button>
-        </div>
+        <!-- Admin Advanced Controls (Visible Only to Admins) -->
+        <div id="admin-sheets-controls" class="space-y-3 pt-3 border-t border-[#e2e8f4] dark:border-[#262845]">
+          <div class="flex items-center justify-between">
+            <label class="block text-[11px] font-semibold text-[#5a627a] dark:text-[#9da7c5]" data-i18n="sheets_url_label">Google Apps Script Web App URL</label>
+            <span class="text-[10px] font-bold text-[#A680C2] uppercase tracking-wider" data-i18n="admin_only_badge">เฉพาะผู้ดูแลระบบ</span>
+          </div>
+          <input id="sheets-url-input" type="url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-3 py-2 text-xs font-mono">
+          
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="testAndSaveSheetsUrl()" id="btn-test-db" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-2 text-xs font-bold text-white shadow-sm hover:opacity-95">
+              <i data-lucide="check-circle" class="h-3.5 w-3.5"></i>
+              <span data-i18n="test_and_save_btn">บันทึก & ทดสอบ</span>
+            </button>
+            <button type="button" onclick="resetSheetsUrlToDefault()" id="btn-reset-db" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-3 py-2 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]">
+              <i data-lucide="rotate-ccw" class="h-3.5 w-3.5"></i>
+              <span data-i18n="reset_default_url_btn">คืนค่า URL เริ่มต้น</span>
+            </button>
+          </div>
 
-        <p id="db-latency-info" class="text-[11px] text-[#5a627a] dark:text-[#9da7c5]"></p>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="testWriteToSheets()" id="btn-test-write" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl border border-[#96A4DD] bg-[#f0f4fc] dark:bg-[#222442] py-2 text-xs font-bold text-[#4c5aa6] dark:text-[#D9B1E6] hover:bg-[#e4ebf9]">
+              <i data-lucide="pencil-line" class="h-3.5 w-3.5"></i>
+              <span data-i18n="test_write_btn">ทดสอบเขียนลง Sheet</span>
+            </button>
+            <button type="button" onclick="initSheetsStructure()" id="btn-init-sheets" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] py-2 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]">
+              <i data-lucide="layers" class="h-3.5 w-3.5"></i>
+              <span data-i18n="init_sheets_btn">สร้างตาราง 8 ชีต</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- LANGUAGE SELECTOR -->
@@ -617,7 +630,7 @@ html.dark .hero-highlight-gradient {
       <div class="flex items-center gap-2">
         <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-[#262447] to-[#403884] dark:from-[#96A4DD] dark:to-[#A680C2] text-white dark:text-[#0e0f1a] text-[10px] font-bold"><i data-lucide="car-front" class="h-3.5 w-3.5"></i></span>
         <span class="font-extrabold text-[#262447] dark:text-[#c4b5fd]">Parking-A-Lot</span>
-        <span class="text-[#8f9bb3] dark:text-[#6d7796]">• Version 0.9.5 BETA</span>
+        <span class="text-[#8f9bb3] dark:text-[#6d7796]">• Version 0.9.9 BETA</span>
       </div>
       <a href="https://docs.google.com/document/d/1QQ2nvePn2MsxNwh_2KmTXQbrHRarNDiYpR3ptZoC5ls/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 font-semibold text-[#96A4DD] dark:text-[#c4b5fd] hover:underline">
         <i data-lucide="file-text" class="h-3.5 w-3.5"></i>
@@ -713,6 +726,10 @@ html.dark .hero-highlight-gradient {
         <span>Parking-A-Lot</span>
       </button>
       <div class="flex items-center gap-2">
+        <button type="button" id="global-cloud-badge" onclick="toggleQuickSettings(true)" class="interactive-btn flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 shadow-sm transition hover:opacity-90" title="Google Sheets Database Status">
+          <span class="h-2 w-2 rounded-full bg-emerald-500 pulse-dot" id="cloud-status-dot"></span>
+          <span id="cloud-status-text" data-i18n="cloud_db_live">Google Sheets Live</span>
+        </button>
         <button type="button" onclick="toggleQuickSettings(true)" aria-label="Quick Settings" class="rounded-lg p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition interactive-btn"><i data-lucide="settings" class="h-5 w-5"></i></button>
         <button type="button" onclick="showView('user-notifications')" aria-label="Notifications" class="relative rounded-lg p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition interactive-btn"><i data-lucide="bell" class="h-5 w-5"></i><span id="notif-dot" class="pulse-dot absolute right-2 top-2 hidden h-2 w-2 rounded-full bg-[#BF87C9]"></span></button>
         <button type="button" onclick="showView('user-profile')" aria-label="Profile" class="avatar-circle flex h-9 w-9 shrink-0 aspect-square items-center justify-center overflow-hidden rounded-full bg-[#f0f4fc] dark:bg-[#222442] font-bold text-[#4c5aa6] dark:text-[#D9B1E6] shadow-sm interactive-btn" id="header-avatar">?</button>
@@ -1433,6 +1450,12 @@ const i18n = {
     db_connected_with_latency: "เชื่อมต่อ Google Sheets แล้ว ({latency}ms)",
     db_latency_online: "สถานะ: ออนไลน์สมบูรณ์ (Latency: {latency} ms)",
     db_latency_offline: "สถานะ: ใช้งานออฟไลน์ด้วยพื้นที่จัดเก็บในเครื่อง",
+    cloud_db_live: "Google Sheets Live",
+    cloud_db_offline: "โหมดออฟไลน์",
+    cloud_syncing: "กำลังซิงค์...",
+    reset_default_url_btn: "คืนค่า URL เริ่มต้น",
+    toast_reset_url_success: "คืนค่า Google Sheets URL เป็นค่าเริ่มต้นเรียบร้อยแล้ว",
+    db_global_info: "เชื่อมต่อฐานข้อมูลกลางอัตโนมัติ (log-project-alpine)",
     toast_login_success_title: "เข้าสู่ระบบสำเร็จ",
     toast_login_success_desc: "ยินดีต้อนรับ, {name}",
     toast_logout_title: "ออกจากระบบแล้ว",
@@ -1679,6 +1702,12 @@ const i18n = {
     db_connected_with_latency: "Google Sheets Connected ({latency}ms)",
     db_latency_online: "Status: Online & Synced (Latency: {latency} ms)",
     db_latency_offline: "Status: Offline using local device storage",
+    cloud_db_live: "Google Sheets Live",
+    cloud_db_offline: "Offline Mode",
+    cloud_syncing: "Syncing...",
+    reset_default_url_btn: "Reset to Default URL",
+    toast_reset_url_success: "Google Sheets URL restored to production default",
+    db_global_info: "Connected to central Google Sheets database (log-project-alpine)",
     toast_login_success_title: "Signed In Successfully",
     toast_login_success_desc: "Welcome, {name}",
     toast_logout_title: "Signed Out",
@@ -1834,6 +1863,7 @@ function hideToast() {
 const STORAGE_KEY = 'parkingalot-state-v6';
 const USERS_DB_KEY = 'parkingalot-users-db';
 const SHEETS_CONFIG_KEY = 'parkingalot-sheets-url';
+const DEFAULT_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbypVqSfSjks1C4UAQ_D-hLe3hD4xt7G7mgen6YrNQtafBPghS5qRLUCL7eN5X56dGBfZw/exec';
 let confirmResolver = null;
 
 function getStoredUsers() {
@@ -1910,11 +1940,12 @@ function saveStoredUsers(usersList) {
 }
 
 function defaultState() {
+  const configuredSheets = (localStorage.getItem(SHEETS_CONFIG_KEY) || '').trim();
   return {
     settings: {
       lang: 'th',
       theme: 'system',
-      sheetsApiUrl: localStorage.getItem(SHEETS_CONFIG_KEY) || ''
+      sheetsApiUrl: configuredSheets || DEFAULT_SHEETS_URL
     },
     buildings: [
       {id:'b1', name:'อาคารเรียนรวม', nameEn:'Complex Lecture Building', category:'classroom', lat:40, lng:60},
@@ -1922,12 +1953,13 @@ function defaultState() {
       {id:'b3', name:'หอสมุดกลาง', nameEn:'Central Library', category:'classroom', lat:18, lng:78},
       {id:'b4', name:'อาคารสำนักงานอธิการบดี', nameEn:"President's Office Building", category:'office', lat:58, lng:12},
       {id:'b5', name:'คณะเกษตรศาสตร์', nameEn:'Faculty of Agriculture', category:'classroom', lat:88, lng:70},
-      {id:'b6', name:'สำนักบริการวิชาการ', nameEn:'Academic Services Bureau', category:'office', lat:10, lng:38}
+      {id:'b6', name:'สำนักบริการวิชาการ', nameEn:'Academic Services Bureau', category:'office', lat:10, lng:38},
+      {id:'b7', name:'คณะนิติศาสตร์', nameEn:'Faculty of Law', category:'classroom', lat:60, lng:60}
     ],
     lots: [
-      {id:'a', name:'ลาน A หน้าอาคารเรียนรวม', nameEn:'Lot A - Lecture Complex', buildingId:'b1', capacity:20, available:15, lat:38, lng:58},
-      {id:'b', name:'ลาน B ข้างวิศวกรรมศาสตร์', nameEn:'Lot B - Engineering Wing', buildingId:'b2', capacity:20, available:5, lat:75, lng:31},
-      {id:'d', name:'ลาน D หลังหอสมุดกลาง', nameEn:'Lot D - Behind Library', buildingId:'b3', capacity:20, available:8, lat:21, lng:75}
+      {id:'lot-1788616909712', name:'ลานจอดรถคณะวิศวกรรมศาสตร์', nameEn:'Faculty of Engineering Parking Lot', buildingId:'b2', capacity:200, available:200, lat:76.44, lng:28.90},
+      {id:'lot-1788618155580', name:'ลานจอดรถคณะนิติศาสตร์ - ลาน A', nameEn:'Faculty of Law - Lot A', buildingId:'b7', capacity:300, available:300, lat:86.16, lng:68.39},
+      {id:'lot-1788618208479', name:'ลานจอดรถคณะนิติศาสตร์ - ลาน B', nameEn:'Faculty of Law - Lot B', buildingId:'b7', capacity:300, available:300, lat:89.68, lng:68.62}
     ],
     users: getStoredUsers(),
     currentUser: null,
@@ -1956,11 +1988,16 @@ function loadState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
+      const configuredUrl = (localStorage.getItem(SHEETS_CONFIG_KEY) || parsed.settings?.sheetsApiUrl || '').trim();
       s = {
         ...s,
         ...parsed,
         activeParking: parsed.activeParking || null,
-        settings: { ...s.settings, ...(parsed.settings || {}), sheetsApiUrl: localStorage.getItem(SHEETS_CONFIG_KEY) || (parsed.settings?.sheetsApiUrl || '') },
+        settings: {
+          ...s.settings,
+          ...(parsed.settings || {}),
+          sheetsApiUrl: configuredUrl || DEFAULT_SHEETS_URL
+        },
         ui: { ...s.ui, ...(parsed.ui || {}), isLoading: false, isSyncing: false }
       };
     }
@@ -1997,7 +2034,8 @@ let state = loadState();
    ========================================================================== */
 const SheetsDB = {
   getUrl() {
-    return (state.settings?.sheetsApiUrl || '').trim();
+    const configured = (state.settings?.sheetsApiUrl || '').trim();
+    return configured || DEFAULT_SHEETS_URL;
   },
 
   isConfigured() {
@@ -2280,8 +2318,9 @@ const SheetsDB = {
    ========================================================================== */
 async function testAndSaveSheetsUrl() {
   const input = document.getElementById('sheets-url-input');
-  const url = (input ? input.value : '').trim();
+  const url = (input ? input.value : '').trim() || DEFAULT_SHEETS_URL;
   state.settings.sheetsApiUrl = url;
+  localStorage.setItem(SHEETS_CONFIG_KEY, url);
   saveState();
 
   const btn = document.getElementById('btn-test-db');
@@ -2302,6 +2341,24 @@ async function testAndSaveSheetsUrl() {
   }
 
   if (btn) btn.innerHTML = '<i data-lucide="check-circle" class="h-3.5 w-3.5"></i><span>' + t('test_and_save_btn') + '</span>';
+  if (window.lucide) lucide.createIcons();
+}
+
+async function resetSheetsUrlToDefault() {
+  state.settings.sheetsApiUrl = DEFAULT_SHEETS_URL;
+  localStorage.setItem(SHEETS_CONFIG_KEY, DEFAULT_SHEETS_URL);
+  const input = document.getElementById('sheets-url-input');
+  if (input) input.value = DEFAULT_SHEETS_URL;
+  saveState();
+
+  const btn = document.getElementById('btn-reset-db');
+  if (btn) btn.innerHTML = '<i data-lucide="loader-2" class="h-3.5 w-3.5 animate-spin"></i><span>' + t('loading_data') + '</span>';
+  if (window.lucide) lucide.createIcons();
+
+  showToast(t('toast_profile_saved_title'), t('toast_reset_url_success'), 'success');
+  await syncWithSheets(true);
+
+  if (btn) btn.innerHTML = '<i data-lucide="rotate-ccw" class="h-3.5 w-3.5"></i><span>' + t('reset_default_url_btn') + '</span>';
   if (window.lucide) lucide.createIcons();
 }
 
@@ -2372,23 +2429,39 @@ async function syncWithSheets(userTriggered = false) {
 
 function updateDbStatusUI(pingRes) {
   const isOnline = pingRes && pingRes.success;
+  const latency = (pingRes && pingRes.latency) ? pingRes.latency : 240;
   const badge = document.getElementById('db-status-badge');
   const statusText = document.getElementById('db-status-text');
   const latInfo = document.getElementById('db-latency-info');
   const profileStatus = document.getElementById('profile-db-status');
+  const cloudBadge = document.getElementById('global-cloud-badge');
+  const cloudDot = document.getElementById('cloud-status-dot');
+  const cloudText = document.getElementById('cloud-status-text');
 
   if (badge && statusText) {
     if (isOnline) {
       badge.className = 'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300';
-      statusText.textContent = t('db_connected_with_latency', { latency: pingRes.latency });
+      statusText.textContent = t('db_connected_with_latency', { latency });
     } else {
       badge.className = 'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300';
       statusText.textContent = t('db_status_offline');
     }
   }
 
+  if (cloudBadge && cloudDot && cloudText) {
+    if (isOnline) {
+      cloudBadge.className = 'interactive-btn flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 shadow-sm transition hover:opacity-90';
+      cloudDot.className = 'h-2 w-2 rounded-full bg-emerald-500 pulse-dot';
+      cloudText.textContent = `Google Sheets Live (${latency}ms)`;
+    } else {
+      cloudBadge.className = 'interactive-btn flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800 shadow-sm transition hover:opacity-90';
+      cloudDot.className = 'h-2 w-2 rounded-full bg-amber-500';
+      cloudText.textContent = t('cloud_db_offline');
+    }
+  }
+
   if (latInfo) {
-    latInfo.textContent = isOnline ? t('db_latency_online', { latency: pingRes.latency }) : t('db_latency_offline');
+    latInfo.textContent = isOnline ? t('db_latency_online', { latency }) : t('db_latency_offline');
   }
 
   if (profileStatus) {
@@ -2505,11 +2578,16 @@ function toggleQuickSettings(show) {
   modal.classList.toggle('modal-open', show);
   if (show) {
     const input = document.getElementById('sheets-url-input');
-    if (input) input.value = state.settings.sheetsApiUrl || '';
+    if (input) input.value = state.settings.sheetsApiUrl || DEFAULT_SHEETS_URL;
 
     const sheetsSection = document.getElementById('modal-sheets-db-section');
     if (sheetsSection) {
-      sheetsSection.classList.toggle('hidden', !isAdmin());
+      sheetsSection.classList.remove('hidden');
+    }
+
+    const adminControls = document.getElementById('admin-sheets-controls');
+    if (adminControls) {
+      adminControls.classList.toggle('hidden', !isAdmin());
     }
 
     updateThemeUI();
@@ -3271,7 +3349,7 @@ function renderProfile() {
   }
 
   if (sheetsTile) {
-    sheetsTile.classList.toggle('hidden', !admin);
+    sheetsTile.classList.remove('hidden');
   }
 
   if (editProfileBtn) {
@@ -3761,12 +3839,29 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Periodic timer update for active parking duration
   setInterval(updateActiveParkingTimer, 30000);
 
-  // Initial silent background sync with Google Sheets if configured
+  // Automatic periodic background sync every 45 seconds for global live data
+  setInterval(() => {
+    if (SheetsDB.isConfigured()) {
+      syncWithSheets(false);
+    }
+  }, 45000);
+
+  // Auto-refresh when user switches back to this tab
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && SheetsDB.isConfigured()) {
+      syncWithSheets(false);
+    }
+  });
+
+  // Initial immediate background sync with Google Sheets
   if (SheetsDB.isConfigured()) {
-    const pingRes = await SheetsDB.ping();
-    updateDbStatusUI(pingRes);
-    if (pingRes.success) {
-      await SheetsDB.fetchInitialData();
+    const fetchPromise = SheetsDB.fetchInitialData();
+    const pingPromise = SheetsDB.ping();
+
+    pingPromise.then(pingRes => updateDbStatusUI(pingRes));
+
+    const ok = await fetchPromise;
+    if (ok) {
       if (state.currentUser) {
         await SheetsDB.fetchUserData(state.currentUser);
       }
