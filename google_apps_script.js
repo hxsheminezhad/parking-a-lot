@@ -1,16 +1,27 @@
 /**
  * ============================================================================
  * PARKING-A-LOT: GOOGLE APPS SCRIPT DATABASE BACKEND (Code.gs)
- * Version: 2.1.0 (High-Reliability Dual-Mode Storage)
+ * Version: 2.2.0 (Full Cloud Sync for Buildings, Accounts, Reviews & Lots)
  * ============================================================================
  * 
- * INSTRUCTIONS FOR SETUP / คำแนะนำการติดตั้ง:
+ * 📌 HOW TO UPDATE EXISTING DEPLOYMENT / วิธีอัปเดตเวอร์ชันเดิม (CRITICAL):
+ * If you already have a Web App URL deployed:
+ * 1. In Google Sheets, open "Extensions" (ส่วนขยาย) > "Apps Script".
+ * 2. Select all code in Code.gs, delete it, and paste this entire updated file.
+ * 3. Click "Save" (บันทึก / Ctrl+S).
+ * 4. Click "Deploy" (การทำให้ใช้งานได้) > "Manage deployments" (จัดการการทำให้ใช้งานได้).
+ * 5. Click the Edit pencil icon next to your Web App deployment.
+ * 6. In the "Version" dropdown, choose "New version" (เวอร์ชันใหม่).
+ * 7. Click "Deploy" (ทำให้ใช้งานได้).
+ * 👉 This keeps your existing URL while instantly activating all new features!
+ * 
+ * 📌 FIRST-TIME SETUP / สำหรับการติดตั้งครั้งแรก:
  * 1. Open your Google Spreadsheet (or create a new one at https://sheets.new).
  * 2. In Google Sheets, click "Extensions" (ส่วนขยาย) > "Apps Script".
  * 3. Delete any default code in Code.gs, paste this entire file, and click "Save" (Ctrl+S / Cmd+S).
  * 4. Click "Deploy" (การทำให้ใช้งานได้) > "New deployment" (การทำให้ใช้งานได้รายการใหม่).
  * 5. Select type: "Web app" (เว็บแอป).
- * 6. Set Description: "Parking-A-Lot API v2.1".
+ * 6. Set Description: "Parking-A-Lot API v2.2".
  * 7. Execute as: "Me" (ฉัน - your email).
  * 8. Who has access: "Anyone" (ทุกคน - CRITICAL: Must be "Anyone" so the app can connect).
  * 9. Click "Deploy", authorize permissions when prompted, and copy the Web App URL.
@@ -277,6 +288,36 @@ function handleAction(action, body) {
 
       updateRow(SHEETS.USERS, rowIndex + 2, current);
       return jsonResponse({ success: true, message: 'Profile updated in Google Sheets', data: current });
+    }
+
+    case 'getUsers': {
+      const users = getRows(SHEETS.USERS).map(u => ({
+        id: u.id || '',
+        username: u.username || '',
+        name: u.name || u.username || '',
+        role: u.role || 'user',
+        avatar: u.avatar || '',
+        created_at: u.created_at || ''
+      }));
+      return jsonResponse({
+        success: true,
+        data: users,
+        count: users.length,
+        timestamp: Date.now()
+      });
+    }
+
+    case 'deleteUser': {
+      const username = (body.username || '').trim().toLowerCase();
+      if (!username) return errorResponse('Username is required', 400);
+      if (username === 'ardeshir' || username === 'project alpine') {
+        return errorResponse('Cannot delete default system administrators', 403);
+      }
+      const users = getRows(SHEETS.USERS);
+      const idx = users.findIndex(u => (u.username || '').toLowerCase() === username);
+      if (idx === -1) return errorResponse('User not found', 404);
+      deleteRow(SHEETS.USERS, idx + 2);
+      return jsonResponse({ success: true, message: 'User deleted from Google Sheets' });
     }
 
     case 'saveBuilding': {
@@ -601,7 +642,7 @@ function initializeDatabase(forceRefresh) {
         id: 'admin_alpine',
         username: 'Project Alpine',
         password: 'orchid',
-        name: 'Project Alpine (Tester / Admin)',
+        name: 'Project Alpine (Admin)',
         role: 'admin',
         avatar: '',
         created_at: new Date().toISOString(),

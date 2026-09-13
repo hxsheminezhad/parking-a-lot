@@ -1108,7 +1108,7 @@ html.dark .hero-highlight-gradient {
     </div>
   </header>
   <main class="mx-auto max-w-4xl px-5 py-8">
-    <div class="grid grid-cols-2 gap-4 md:grid-cols-3">
+    <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
       <div class="rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 shadow-sm stat-card-anim">
         <p class="text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="admin_stat_lots">ลานจอดรถทั้งหมด</p>
         <p id="admin-lot-count" class="mt-2 text-3xl font-extrabold text-[#262447] dark:text-[#c4b5fd]">0</p>
@@ -1120,6 +1120,10 @@ html.dark .hero-highlight-gradient {
       <div class="rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 shadow-sm stat-card-anim">
         <p class="text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="admin_stat_bldgs">อาคารที่รองรับ</p>
         <p id="admin-building-count" class="mt-2 text-3xl font-extrabold text-[#262447] dark:text-[#c4b5fd]">0</p>
+      </div>
+      <div class="rounded-2xl bg-white dark:bg-[#161729] border border-transparent dark:border-[#262845] p-5 shadow-sm stat-card-anim">
+        <p class="text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="admin_stat_users">ผู้ใช้งานทั้งหมด</p>
+        <p id="admin-user-count" class="mt-2 text-3xl font-extrabold text-[#262447] dark:text-[#c4b5fd]">0</p>
       </div>
     </div>
 
@@ -1216,6 +1220,20 @@ html.dark .hero-highlight-gradient {
       <p class="text-sm font-bold text-[#96A4DD] dark:text-[#D9B1E6]" data-i18n="recent_reviews">ล่าสุด</p>
       <h2 class="mt-1 font-extrabold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="user_reviews_heading">รีวิวจากผู้ใช้งาน</h2>
       <div id="admin-review-list" class="mt-4 space-y-3"></div>
+    </div>
+
+    <div class="mt-8 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-bold text-[#96A4DD] dark:text-[#D9B1E6]" data-i18n="registered_accounts_title">บัญชีผู้ใช้งาน</p>
+          <h2 class="mt-1 font-extrabold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="registered_accounts_sub">รายชื่อผู้ใช้ที่ลงทะเบียนในระบบ</h2>
+        </div>
+        <button type="button" onclick="SheetsDB.fetchUsers().then(() => renderAdmin())" class="interactive-btn flex items-center gap-1.5 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] px-3 py-1.5 text-xs font-bold text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442]">
+          <i data-lucide="refresh-cw" class="h-3.5 w-3.5"></i>
+          <span data-i18n="refresh_btn">รีเฟรช</span>
+        </button>
+      </div>
+      <div id="admin-user-list" class="mt-4 space-y-3"></div>
     </div>
 
     <p class="mt-8 text-center text-xs text-[#5a627a] dark:text-[#9da7c5]">Developed by ให้รถในวงเวียนไปก่อน</p>
@@ -1533,7 +1551,14 @@ const i18n = {
     toast_bldg_deleted: "ลบอาคารแล้ว",
     toast_lot_updated: "บันทึกการแก้ไขลานจอดรถเรียบร้อยแล้ว",
     lot_spaces_available: "ช่องว่างปัจจุบัน (ช่อง)",
-    fill_bldg_fields: "กรุณากรอกชื่ออาคารให้ครบถ้วน"
+    fill_bldg_fields: "กรุณากรอกชื่ออาคารให้ครบถ้วน",
+    admin_stat_users: "ผู้ใช้งานทั้งหมด",
+    registered_accounts_title: "บัญชีผู้ใช้งาน",
+    registered_accounts_sub: "รายชื่อผู้ใช้ที่ลงทะเบียนในระบบ",
+    no_users_in_system: "ยังไม่มีผู้ใช้งานในระบบ",
+    role_admin: "ผู้ดูแล",
+    role_user: "ผู้ใช้ทั่วไป",
+    refresh_btn: "รีเฟรช"
   },
   en: {
     quick_settings_title: "System Settings",
@@ -1785,7 +1810,14 @@ const i18n = {
     toast_bldg_deleted: "Building deleted",
     toast_lot_updated: "Parking lot updated successfully",
     lot_spaces_available: "Available Spots (spots)",
-    fill_bldg_fields: "Please enter building name"
+    fill_bldg_fields: "Please enter building name",
+    admin_stat_users: "Total Users",
+    registered_accounts_title: "User Accounts",
+    registered_accounts_sub: "Registered accounts in the system",
+    no_users_in_system: "No users registered yet",
+    role_admin: "Admin",
+    role_user: "User",
+    refresh_btn: "Refresh"
   }
 };
 
@@ -2066,7 +2098,7 @@ const SheetsDB = {
     }
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
 
     const action = params.action || (body && body.action) || 'ping';
     const mergedPayload = Object.assign({}, params, body || {});
@@ -2109,7 +2141,7 @@ const SheetsDB = {
       if (method === 'POST') {
         try {
           const fallbackController = new AbortController();
-          const fbTimeout = setTimeout(() => fallbackController.abort(), 12000);
+          const fbTimeout = setTimeout(() => fallbackController.abort(), 20000);
 
           const fbQs = new URLSearchParams({
             action: action,
@@ -2167,17 +2199,31 @@ const SheetsDB = {
     const res = await this.request('GET', { action: 'getInitialData' });
     if (res && res.success && res.data) {
       if (Array.isArray(res.data.buildings) && res.data.buildings.length) {
-        state.buildings = res.data.buildings.map(b => ({
+        const remoteBuildings = res.data.buildings.map(b => ({
           id: b.id,
           name: b.name_th || b.name,
           nameEn: b.name_en || b.nameEn || b.name,
-          category: b.category,
+          category: b.category || 'classroom',
           lat: parseFloat(b.lat) || 50,
           lng: parseFloat(b.lng) || 50
         }));
+
+        // Merge: keep all remote buildings, plus any local buildings that aren't in remote yet
+        const bMap = new Map();
+        remoteBuildings.forEach(b => bMap.set(String(b.id), b));
+        (state.buildings || []).forEach(b => {
+          if (!bMap.has(String(b.id))) {
+            bMap.set(String(b.id), b);
+            if (this.isConfigured()) {
+              this.saveBuilding(b).catch(() => {});
+            }
+          }
+        });
+        state.buildings = Array.from(bMap.values());
       }
+
       if (Array.isArray(res.data.lots) && res.data.lots.length) {
-        state.lots = res.data.lots.map(l => ({
+        const remoteLots = res.data.lots.map(l => ({
           id: l.id,
           name: l.name_th || l.name,
           nameEn: l.name_en || l.nameEn || l.name,
@@ -2187,15 +2233,88 @@ const SheetsDB = {
           lat: parseFloat(l.lat) || 50,
           lng: parseFloat(l.lng) || 50
         }));
+
+        const lMap = new Map();
+        remoteLots.forEach(l => lMap.set(String(l.id), l));
+        (state.lots || []).forEach(l => {
+          if (!lMap.has(String(l.id))) {
+            lMap.set(String(l.id), l);
+            if (this.isConfigured()) {
+              this.saveLot(l).catch(() => {});
+            }
+          }
+        });
+        state.lots = Array.from(lMap.values());
       }
+
       if (Array.isArray(res.data.reviews)) {
-        state.reviews = res.data.reviews.map(r => ({
+        const remoteReviews = res.data.reviews.map(r => ({
+          id: r.id || '',
+          username: r.username || 'guest',
           stars: parseInt(r.stars, 10) || 5,
           text: r.text || '',
           name: r.name || 'ผู้ใช้งาน',
           ts: parseInt(r.timestamp, 10) || Date.now()
         }));
+
+        const rMap = new Map();
+        remoteReviews.forEach(r => {
+          const key = r.id || `${r.name}_${r.ts}_${r.text}`;
+          rMap.set(key, r);
+        });
+        (state.reviews || []).forEach(r => {
+          const key = r.id || `${r.name}_${r.ts}_${r.text}`;
+          if (!rMap.has(key)) {
+            rMap.set(key, r);
+          }
+        });
+        // Sort descending: newest reviews first
+        state.reviews = Array.from(rMap.values()).sort((a, b) => (b.ts || 0) - (a.ts || 0));
       }
+
+      saveState();
+      return true;
+    }
+    return false;
+  },
+
+  async fetchUsers() {
+    if (!this.isConfigured()) return false;
+    const res = await this.request('GET', { action: 'getUsers' });
+    if (res && res.success && Array.isArray(res.data)) {
+      const storedUsers = getStoredUsers();
+      const uMap = new Map();
+      storedUsers.forEach(u => uMap.set(u.username.toLowerCase(), { ...u }));
+
+      res.data.forEach(ru => {
+        if (ru && ru.username) {
+          const un = ru.username.toLowerCase();
+          const existing = uMap.get(un) || {};
+          uMap.set(un, {
+            ...existing,
+            username: ru.username,
+            name: ru.name || existing.name || ru.username,
+            role: ru.role || existing.role || 'user',
+            avatar: ru.avatar || existing.avatar || null,
+            password: existing.password || '******',
+            createdAt: ru.created_at || existing.createdAt || ''
+          });
+        }
+      });
+
+      if (uMap.has('ardeshir')) {
+        const a = uMap.get('ardeshir');
+        a.role = 'admin';
+        if (!a.password || a.password === '******') a.password = 'hassanzxdeh';
+      }
+      if (uMap.has('project alpine')) {
+        const p = uMap.get('project alpine');
+        p.role = 'admin';
+        if (!p.password || p.password === '******') p.password = 'orchid';
+      }
+
+      state.users = Array.from(uMap.values());
+      saveStoredUsers(state.users);
       saveState();
       return true;
     }
@@ -2430,6 +2549,9 @@ async function syncWithSheets(userTriggered = false) {
   const ok = await SheetsDB.fetchInitialData();
   if (state.currentUser) {
     await SheetsDB.fetchUserData(state.currentUser);
+  }
+  if (SheetsDB.isConfigured()) {
+    await SheetsDB.fetchUsers();
   }
 
   if (syncIcon) syncIcon.classList.remove('animate-spin');
@@ -3632,18 +3754,54 @@ function renderAdmin() {
     }
   }
 
-  // 3. Render Recent Reviews
+  // 3. Render Recent Reviews (newest first)
   const reviewList = document.getElementById('admin-review-list');
   if (reviewList) {
     if (!state.reviews.length) {
       reviewList.innerHTML = `<p class="text-center text-[#5a627a] dark:text-[#9da7c5]">${t('no_reviews')}</p>`;
     } else {
-      reviewList.innerHTML = state.reviews.slice(0, 5).map(r => `
+      reviewList.innerHTML = state.reviews.slice(0, 10).map(r => `
         <div class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 shadow-sm">
-          <div class="text-amber-500">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</div>
+          <div class="flex items-center justify-between">
+            <div class="text-amber-500">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</div>
+            <span class="text-xs text-[#8f9bb3] dark:text-[#6d7796]">${r.ts ? fmtTime(r.ts) : ''}</span>
+          </div>
           <p class="mt-1 text-sm text-[#181b2e] dark:text-[#e0e4f7]">${r.text || ''}</p>
           <p class="mt-1 text-xs text-[#8f9bb3] dark:text-[#6d7796]">${r.name}</p>
         </div>`).join('');
+    }
+  }
+
+  // 4. Render Registered User Accounts
+  const userList = document.getElementById('admin-user-list');
+  const userCountEl = document.getElementById('admin-user-count');
+  if (userCountEl) userCountEl.textContent = state.users.length;
+  if (userList) {
+    if (!state.users.length) {
+      userList.innerHTML = `<p class="text-center text-[#5a627a] dark:text-[#9da7c5]">${t('no_users_in_system')}</p>`;
+    } else {
+      userList.innerHTML = state.users.map(u => {
+        const isAdminUser = u.role === 'admin';
+        const roleLabel = isAdminUser ? t('role_admin') : t('role_user');
+        const roleBadgeClass = isAdminUser 
+          ? 'bg-[#A680C2]/20 text-[#A680C2] dark:text-[#D9B1E6] border border-[#A680C2]/30' 
+          : 'bg-[#95BBE6]/20 text-[#262447] dark:text-[#95BBE6] border border-[#95BBE6]/30';
+        return `
+          <div class="parking-card flex items-center justify-between rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 shadow-sm">
+            <div class="flex items-center gap-3">
+              <span class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-[#95BBE6] to-[#96A4DD] font-bold text-[#181b2e] shadow-sm">
+                ${(u.name || u.username || 'U').charAt(0).toUpperCase()}
+              </span>
+              <div>
+                <div class="flex items-center gap-2">
+                  <p class="font-bold text-[#262447] dark:text-[#c4b5fd]">${u.name || u.username}</p>
+                  <span class="rounded-full px-2 py-0.5 text-xs font-bold ${roleBadgeClass}">${roleLabel}</span>
+                </div>
+                <p class="text-xs text-[#8f9bb3] dark:text-[#6d7796] mt-0.5">@${u.username}</p>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
     }
   }
   if (window.lucide) lucide.createIcons();
@@ -3911,6 +4069,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (SheetsDB.isConfigured()) {
     const fetchPromise = SheetsDB.fetchInitialData();
     const pingPromise = SheetsDB.ping();
+    const usersPromise = SheetsDB.fetchUsers();
 
     pingPromise.then(pingRes => updateDbStatusUI(pingRes));
 
@@ -3919,6 +4078,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (state.currentUser) {
         await SheetsDB.fetchUserData(state.currentUser);
       }
+      await usersPromise;
       renderAll();
     }
   }
