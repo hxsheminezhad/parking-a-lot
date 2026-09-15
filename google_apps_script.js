@@ -442,12 +442,12 @@ function handleAction(action, body) {
       const text = (body.text || '').trim();
 
       const reviewData = {
-        id: 'rev_' + Date.now(),
+        id: body.id || ('rev_' + Date.now()),
         username,
         name,
         stars,
         text,
-        timestamp: Date.now(),
+        timestamp: parseInt(body.timestamp || body.ts, 10) || Date.now(),
         status: 'published'
       };
 

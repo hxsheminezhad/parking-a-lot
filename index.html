@@ -280,6 +280,42 @@ html.dark .skeleton{
 .interactive-btn:hover { transform: translateY(-2px) scale(1.015); }
 .interactive-btn:active { transform: translateY(1px) scale(0.975); }
 
+/* Ethereal Glow Effect on Gradient Buttons */
+button[class*="bg-gradient"],
+a[class*="bg-gradient"],
+.ethereal-glow-btn {
+  position: relative;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.25s ease,
+              background-color 0.2s ease,
+              border-color 0.2s ease;
+}
+
+button[class*="bg-gradient"]:hover,
+a[class*="bg-gradient"]:hover,
+.ethereal-glow-btn:hover {
+  filter: brightness(1.04);
+  box-shadow: 0 0 20px -2px rgba(166, 128, 194, 0.55),
+              0 0 10px -1px rgba(150, 164, 221, 0.45),
+              0 8px 24px -4px rgba(191, 135, 201, 0.35);
+}
+
+html.dark button[class*="bg-gradient"]:hover,
+html.dark a[class*="bg-gradient"]:hover,
+html.dark .ethereal-glow-btn:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 0 24px -2px rgba(217, 177, 230, 0.45),
+              0 0 12px -1px rgba(166, 128, 194, 0.5),
+              0 8px 28px -4px rgba(0, 0, 0, 0.6);
+}
+
+button[class*="bg-gradient"]:active,
+a[class*="bg-gradient"]:active,
+.ethereal-glow-btn:active {
+  box-shadow: 0 0 12px -2px rgba(166, 128, 194, 0.4);
+}
+
 .stat-card-anim {
   transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s cubic-bezier(0.16,1,0.3,1), border-color 0.2s ease;
   will-change: transform;
@@ -1910,7 +1946,7 @@ function getStoredUsers() {
     { username: 'Ardeshir', password: 'hassanzxdeh', name: 'Ardeshir (Admin)', role: 'admin', avatar: null },
     { username: 'Project Alpine', password: 'orchid', name: 'Project Alpine (Admin)', role: 'admin', avatar: null }
   ];
-  defaultUsers.forEach(u => usersMap.set(u.username.toLowerCase(), { ...u }));
+  defaultUsers.forEach(u => usersMap.set(u.username.trim().toLowerCase(), { ...u }));
 
   // 1. Migrate legacy version stores (older keys first)
   const legacyKeys = ['parkingalot-state-v5', 'parkingalot-state-v4', 'parkingalot-state-v3', 'parkingalot-state-v2'];
@@ -1920,10 +1956,11 @@ function getStoredUsers() {
       if (raw) {
         const parsed = JSON.parse(raw);
         if (parsed && Array.isArray(parsed.users)) {
-          parsed.users.forEach(u => {
+          parsed.forEach(u => {
             if (u && u.username) {
-              const unLower = u.username.toLowerCase();
-              usersMap.set(unLower, { ...u });
+              const unLower = String(u.username).trim().toLowerCase();
+              const existing = usersMap.get(unLower) || {};
+              usersMap.set(unLower, { ...existing, ...u, username: String(u.username).trim() });
             }
           });
         }
@@ -1939,7 +1976,9 @@ function getStoredUsers() {
       if (parsedState && Array.isArray(parsedState.users)) {
         parsedState.users.forEach(u => {
           if (u && u.username) {
-            usersMap.set(u.username.toLowerCase(), { ...u });
+            const unLower = String(u.username).trim().toLowerCase();
+            const existing = usersMap.get(unLower) || {};
+            usersMap.set(unLower, { ...existing, ...u, username: String(u.username).trim() });
           }
         });
       }
@@ -1954,7 +1993,9 @@ function getStoredUsers() {
       if (Array.isArray(parsed)) {
         parsed.forEach(u => {
           if (u && u.username) {
-            usersMap.set(u.username.toLowerCase(), { ...u });
+            const unLower = String(u.username).trim().toLowerCase();
+            const existing = usersMap.get(unLower) || {};
+            usersMap.set(unLower, { ...existing, ...u, username: String(u.username).trim() });
           }
         });
       }
@@ -2053,14 +2094,48 @@ function loadState() {
 
   const allUsers = getStoredUsers();
   const map = new Map();
-  allUsers.forEach(u => map.set(u.username.toLowerCase(), u));
+  allUsers.forEach(u => map.set(u.username.trim().toLowerCase(), { ...u, username: u.username.trim() }));
   if (Array.isArray(s.users)) {
-    s.users.forEach(u => { if (u && u.username) map.set(u.username.toLowerCase(), u); });
+    s.users.forEach(u => {
+      if (u && u.username) {
+        const k = u.username.trim().toLowerCase();
+        const existing = map.get(k) || {};
+        map.set(k, { ...existing, ...u, username: u.username.trim() });
+      }
+    });
   }
   s.users = Array.from(map.values());
   saveStoredUsers(s.users);
 
+  if (Array.isArray(s.reviews)) {
+    s.reviews = deduplicateReviews(s.reviews);
+  }
+
   return s;
+}
+
+function deduplicateReviews(reviews) {
+  if (!Array.isArray(reviews)) return [];
+  const seenIds = new Set();
+  const seenContent = new Set();
+  const result = [];
+
+  for (const r of reviews) {
+    if (!r) continue;
+    const rid = String(r.id || '').trim();
+    if (rid && seenIds.has(rid)) continue;
+
+    const author = String(r.username || r.name || '').trim().toLowerCase();
+    const text = String(r.text || '').trim();
+    const contentKey = `${author}:::${text}`;
+
+    if (seenContent.has(contentKey)) continue;
+
+    if (rid) seenIds.add(rid);
+    seenContent.add(contentKey);
+    result.push(r);
+  }
+  return result;
 }
 
 function saveState() {
@@ -2257,19 +2332,8 @@ const SheetsDB = {
           ts: parseInt(r.timestamp, 10) || Date.now()
         }));
 
-        const rMap = new Map();
-        remoteReviews.forEach(r => {
-          const key = r.id || `${r.name}_${r.ts}_${r.text}`;
-          rMap.set(key, r);
-        });
-        (state.reviews || []).forEach(r => {
-          const key = r.id || `${r.name}_${r.ts}_${r.text}`;
-          if (!rMap.has(key)) {
-            rMap.set(key, r);
-          }
-        });
-        // Sort descending: newest reviews first
-        state.reviews = Array.from(rMap.values()).sort((a, b) => (b.ts || 0) - (a.ts || 0));
+        const merged = [...remoteReviews, ...(state.reviews || [])];
+        state.reviews = deduplicateReviews(merged).sort((a, b) => (b.ts || 0) - (a.ts || 0));
       }
 
       saveState();
@@ -2284,16 +2348,16 @@ const SheetsDB = {
     if (res && res.success && Array.isArray(res.data)) {
       const storedUsers = getStoredUsers();
       const uMap = new Map();
-      storedUsers.forEach(u => uMap.set(u.username.toLowerCase(), { ...u }));
+      storedUsers.forEach(u => uMap.set(u.username.trim().toLowerCase(), { ...u, username: u.username.trim() }));
 
       res.data.forEach(ru => {
         if (ru && ru.username) {
-          const un = ru.username.toLowerCase();
+          const un = ru.username.trim().toLowerCase();
           const existing = uMap.get(un) || {};
           uMap.set(un, {
             ...existing,
-            username: ru.username,
-            name: ru.name || existing.name || ru.username,
+            username: ru.username.trim(),
+            name: ru.name || existing.name || ru.username.trim(),
             role: ru.role || existing.role || 'user',
             avatar: ru.avatar || existing.avatar || null,
             password: existing.password || '******',
@@ -3462,20 +3526,67 @@ async function saveProfile() {
 }
 
 function uploadAvatar(evt) {
-  const file = evt.target.files[0];
+  const file = evt.target.files && evt.target.files[0];
   const user = currentUserObj();
   if (!file || !user) return;
   const reader = new FileReader();
   reader.onload = () => {
-    user.avatar = reader.result;
-    saveStoredUsers(state.users);
-    saveState();
-    if (SheetsDB.isConfigured()) {
-      SheetsDB.updateProfile(user.username, { avatar: user.avatar });
+    const rawData = reader.result;
+
+    const finalizeAvatar = async (avatarData) => {
+      user.avatar = avatarData;
+      const uIdx = state.users.findIndex(u => u.username.toLowerCase().trim() === user.username.toLowerCase().trim());
+      if (uIdx >= 0) {
+        state.users[uIdx].avatar = avatarData;
+      }
+      saveStoredUsers(state.users);
+      saveState();
+      renderProfile();
+      renderDashboard();
+      if (typeof renderHeader === 'function') renderHeader();
+      showToast(t('toast_avatar_success_title'), t('toast_avatar_success_desc'), 'success');
+
+      if (SheetsDB.isConfigured()) {
+        try {
+          await SheetsDB.updateProfile(user.username, { avatar: avatarData });
+        } catch(e) {
+          console.warn('[SheetsDB] Avatar sync failed:', e);
+        }
+      }
+    };
+
+    // Compress using Canvas so avatar easily fits within Google Sheets cell limit (50,000 chars)
+    if (typeof Image !== 'undefined' && typeof document.createElement === 'function') {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          const size = 128;
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext('2d');
+          let sx = 0, sy = 0, sw = img.width, sh = img.height;
+          if (sw > sh) {
+            sx = (sw - sh) / 2;
+            sw = sh;
+          } else if (sh > sw) {
+            sy = (sh - sw) / 2;
+            sh = sw;
+          }
+          ctx.drawImage(img, sx, sy, sw, sh, 0, 0, size, size);
+          const compressed = canvas.toDataURL('image/jpeg', 0.82);
+          finalizeAvatar(compressed);
+        } catch (ex) {
+          finalizeAvatar(rawData.slice(0, 45000));
+        }
+      };
+      img.onerror = () => {
+        finalizeAvatar(rawData.slice(0, 45000));
+      };
+      img.src = rawData;
+    } else {
+      finalizeAvatar(rawData.slice(0, 45000));
     }
-    renderProfile();
-    renderDashboard();
-    showToast(t('toast_avatar_success_title'), t('toast_avatar_success_desc'), 'success');
   };
   reader.readAsDataURL(file);
 }
@@ -3583,6 +3694,7 @@ function renderHistory() {
 }
 
 function renderReview() {
+  state.reviews = deduplicateReviews(state.reviews);
   const stars = document.getElementById('star-input');
   stars.innerHTML = [1, 2, 3, 4, 5].map(n => `<button type="button" onclick="setStars(${n})" class="star-btn ${n <= state.ui.reviewStars ? 'active' : ''} rounded-lg p-1"><i data-lucide="star" class="h-6 w-6 ${n <= state.ui.reviewStars ? 'text-amber-500 fill-amber-500' : 'text-[#d5deed] dark:text-[#2a2d4a]'}"></i></button>`).join('');
   
@@ -3636,22 +3748,32 @@ async function submitReview() {
   if (btnText) btnText.innerHTML = '<i data-lucide="loader-2" class="h-4 w-4 animate-spin inline mr-1"></i> ' + t('saving_data');
   if (window.lucide) lucide.createIcons();
 
+  const revTs = Date.now();
   const newRev = {
+    id: 'rev_' + revTs,
     stars: state.ui.reviewStars,
     text,
     name: user ? user.name : t('guest_user'),
     username: user ? user.username : 'guest',
-    ts: Date.now()
+    ts: revTs
   };
 
   state.reviews.unshift(newRev);
+  state.reviews = deduplicateReviews(state.reviews);
   document.getElementById('review-text').value = '';
   saveState();
 
   let savedToSheets = false;
   if (SheetsDB.isConfigured()) {
     const res = await SheetsDB.submitReview(newRev);
-    if (res && res.success) savedToSheets = true;
+    if (res && res.success) {
+      savedToSheets = true;
+      if (res.data) {
+        newRev.id = res.data.id || newRev.id;
+        newRev.ts = parseInt(res.data.timestamp || res.data.ts, 10) || newRev.ts;
+        saveState();
+      }
+    }
   }
 
   if (btn) btn.disabled = false;
@@ -3723,7 +3845,7 @@ function renderAdmin() {
         <div class="flex items-center gap-2 self-end sm:self-auto">
           <div class="flex items-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-1 bg-[#f8fafd] dark:bg-[#121324]">
             <button type="button" onclick="adjustLot('${l.id}',-1)" class="interactive-btn rounded-lg p-1.5 hover:bg-white dark:hover:bg-[#222442] text-[#5a627a] dark:text-[#9da7c5]" aria-label="Decrease available spots"><i data-lucide="minus" class="h-3.5 w-3.5"></i></button>
-            <b class="w-7 text-center font-bold text-sm text-[#96A4DD] dark:text-[#D9B1E6]">${l.available}</b>
+            <b class="min-w-[2.5rem] px-1.5 text-center font-bold text-sm text-[#96A4DD] dark:text-[#D9B1E6] tabular-nums whitespace-nowrap inline-block">${l.available}</b>
             <button type="button" onclick="adjustLot('${l.id}',1)" class="interactive-btn rounded-lg p-1.5 hover:bg-white dark:hover:bg-[#222442] text-[#5a627a] dark:text-[#9da7c5]" aria-label="Increase available spots"><i data-lucide="plus" class="h-3.5 w-3.5"></i></button>
           </div>
           <button type="button" onclick="openEditLot('${l.id}')" class="interactive-btn rounded-xl border border-[#96A4DD]/60 dark:border-[#96A4DD]/40 p-2 text-[#96A4DD] dark:text-[#D9B1E6] hover:bg-[#96A4DD]/15 dark:hover:bg-[#96A4DD]/20" title="${t('edit_btn')}" aria-label="Edit lot"><i data-lucide="pencil" class="h-4 w-4"></i></button>
@@ -3757,6 +3879,7 @@ function renderAdmin() {
   // 3. Render Recent Reviews (newest first)
   const reviewList = document.getElementById('admin-review-list');
   if (reviewList) {
+    state.reviews = deduplicateReviews(state.reviews);
     if (!state.reviews.length) {
       reviewList.innerHTML = `<p class="text-center text-[#5a627a] dark:text-[#9da7c5]">${t('no_reviews')}</p>`;
     } else {
@@ -3775,6 +3898,29 @@ function renderAdmin() {
   // 4. Render Registered User Accounts
   const userList = document.getElementById('admin-user-list');
   const userCountEl = document.getElementById('admin-user-count');
+
+  // Strict deduplication by normalized username
+  const uniqueUsersMap = new Map();
+  (state.users || []).forEach(u => {
+    if (u && u.username) {
+      const key = String(u.username).trim().toLowerCase();
+      if (!uniqueUsersMap.has(key)) {
+        uniqueUsersMap.set(key, { ...u, username: String(u.username).trim() });
+      } else {
+        const prev = uniqueUsersMap.get(key);
+        uniqueUsersMap.set(key, {
+          ...prev,
+          ...u,
+          username: String(u.username).trim(),
+          role: (prev.role === 'admin' || u.role === 'admin') ? 'admin' : 'user',
+          avatar: u.avatar || prev.avatar || null
+        });
+      }
+    }
+  });
+  state.users = Array.from(uniqueUsersMap.values());
+  saveStoredUsers(state.users);
+
   if (userCountEl) userCountEl.textContent = state.users.length;
   if (userList) {
     if (!state.users.length) {
