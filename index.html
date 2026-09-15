@@ -2111,6 +2111,14 @@ function loadState() {
     s.reviews = deduplicateReviews(s.reviews);
   }
 
+  if (Array.isArray(s.lots)) {
+    s.lots = s.lots.filter(l => l && String(l.id || '').trim() && String(l.id || '').trim() !== 'undefined' && String(l.id || '').trim() !== 'null' && String(l.name || '').trim() && String(l.name || '').trim() !== 'undefined');
+  }
+
+  if (Array.isArray(s.buildings)) {
+    s.buildings = s.buildings.filter(b => b && String(b.id || '').trim() && String(b.id || '').trim() !== 'undefined' && String(b.id || '').trim() !== 'null' && String(b.name || '').trim() && String(b.name || '').trim() !== 'undefined');
+  }
+
   return s;
 }
 
@@ -2274,63 +2282,77 @@ const SheetsDB = {
     const res = await this.request('GET', { action: 'getInitialData' });
     if (res && res.success && res.data) {
       if (Array.isArray(res.data.buildings) && res.data.buildings.length) {
-        const remoteBuildings = res.data.buildings.map(b => ({
-          id: b.id,
-          name: b.name_th || b.name,
-          nameEn: b.name_en || b.nameEn || b.name,
-          category: b.category || 'classroom',
-          lat: parseFloat(b.lat) || 50,
-          lng: parseFloat(b.lng) || 50
-        }));
+        const remoteBuildings = res.data.buildings
+          .filter(b => b && String(b.id || '').trim() && String(b.id || '').trim() !== 'undefined' && String(b.id || '').trim() !== 'null' && (b.name_th || b.name || b.name_en || b.nameEn))
+          .map(b => ({
+            id: String(b.id).trim(),
+            name: (b.name_th || b.name || '').trim(),
+            nameEn: (b.name_en || b.nameEn || b.name_th || b.name || '').trim(),
+            category: b.category || 'classroom',
+            lat: parseFloat(b.lat) || 50,
+            lng: parseFloat(b.lng) || 50
+          }));
 
         // Merge: keep all remote buildings, plus any local buildings that aren't in remote yet
         const bMap = new Map();
-        remoteBuildings.forEach(b => bMap.set(String(b.id), b));
+        remoteBuildings.forEach(b => {
+          if (b && b.id && b.name) bMap.set(String(b.id), b);
+        });
         (state.buildings || []).forEach(b => {
-          if (!bMap.has(String(b.id))) {
-            bMap.set(String(b.id), b);
-            if (this.isConfigured()) {
-              this.saveBuilding(b).catch(() => {});
+          if (b && String(b.id || '').trim() && String(b.id || '').trim() !== 'undefined' && (b.name || b.nameEn)) {
+            if (!bMap.has(String(b.id))) {
+              bMap.set(String(b.id), b);
+              if (this.isConfigured()) {
+                this.saveBuilding(b).catch(() => {});
+              }
             }
           }
         });
-        state.buildings = Array.from(bMap.values());
+        state.buildings = Array.from(bMap.values()).filter(b => b && b.id && b.id !== 'undefined' && (b.name || b.nameEn));
       }
 
       if (Array.isArray(res.data.lots) && res.data.lots.length) {
-        const remoteLots = res.data.lots.map(l => ({
-          id: l.id,
-          name: l.name_th || l.name,
-          nameEn: l.name_en || l.nameEn || l.name,
-          buildingId: l.building_id || l.buildingId,
-          capacity: parseInt(l.capacity, 10) || 20,
-          available: parseInt(l.available, 10) || 0,
-          lat: parseFloat(l.lat) || 50,
-          lng: parseFloat(l.lng) || 50
-        }));
+        const remoteLots = res.data.lots
+          .filter(l => l && String(l.id || '').trim() && String(l.id || '').trim() !== 'undefined' && String(l.id || '').trim() !== 'null' && (l.name_th || l.name || l.name_en || l.nameEn))
+          .map(l => ({
+            id: String(l.id).trim(),
+            name: (l.name_th || l.name || '').trim(),
+            nameEn: (l.name_en || l.nameEn || l.name_th || l.name || '').trim(),
+            buildingId: String(l.building_id || l.buildingId || '').trim(),
+            capacity: parseInt(l.capacity, 10) || 20,
+            available: typeof l.available !== 'undefined' && l.available !== '' ? Math.max(0, parseInt(l.available, 10)) : (parseInt(l.capacity, 10) || 20),
+            lat: parseFloat(l.lat) || 50,
+            lng: parseFloat(l.lng) || 50
+          }));
 
         const lMap = new Map();
-        remoteLots.forEach(l => lMap.set(String(l.id), l));
+        remoteLots.forEach(l => {
+          if (l && l.id && l.name) lMap.set(String(l.id), l);
+        });
         (state.lots || []).forEach(l => {
-          if (!lMap.has(String(l.id))) {
-            lMap.set(String(l.id), l);
-            if (this.isConfigured()) {
-              this.saveLot(l).catch(() => {});
+          if (l && String(l.id || '').trim() && String(l.id || '').trim() !== 'undefined' && (l.name || l.nameEn)) {
+            if (!lMap.has(String(l.id))) {
+              lMap.set(String(l.id), l);
+              if (this.isConfigured()) {
+                this.saveLot(l).catch(() => {});
+              }
             }
           }
         });
-        state.lots = Array.from(lMap.values());
+        state.lots = Array.from(lMap.values()).filter(l => l && l.id && l.id !== 'undefined' && (l.name || l.nameEn));
       }
 
       if (Array.isArray(res.data.reviews)) {
-        const remoteReviews = res.data.reviews.map(r => ({
-          id: r.id || '',
-          username: r.username || 'guest',
-          stars: parseInt(r.stars, 10) || 5,
-          text: r.text || '',
-          name: r.name || 'ผู้ใช้งาน',
-          ts: parseInt(r.timestamp, 10) || Date.now()
-        }));
+        const remoteReviews = res.data.reviews
+          .filter(r => r && (r.text || '').trim())
+          .map(r => ({
+            id: r.id || '',
+            username: r.username || 'guest',
+            stars: parseInt(r.stars, 10) || 5,
+            text: (r.text || '').trim(),
+            name: r.name || 'ผู้ใช้งาน',
+            ts: parseInt(r.timestamp, 10) || Date.now()
+          }));
 
         const merged = [...remoteReviews, ...(state.reviews || [])];
         state.reviews = deduplicateReviews(merged).sort((a, b) => (b.ts || 0) - (a.ts || 0));
@@ -2827,12 +2849,16 @@ function showView(id) {
 
 function bName(b) {
   if (!b) return '-';
-  return state.settings.lang === 'en' ? (b.nameEn || b.name) : b.name;
+  const name = state.settings.lang === 'en' ? (b.nameEn || b.name) : (b.name || b.nameEn);
+  if (!name || name === 'undefined' || name === 'null') return '-';
+  return name;
 }
 
 function lName(l) {
   if (!l) return '-';
-  return state.settings.lang === 'en' ? (l.nameEn || l.name) : l.name;
+  const name = state.settings.lang === 'en' ? (l.nameEn || l.name) : (l.name || l.nameEn);
+  if (!name || name === 'undefined' || name === 'null') return '-';
+  return name;
 }
 
 function distanceMeters(a, b) {
@@ -2840,10 +2866,19 @@ function distanceMeters(a, b) {
   return Math.round(Math.sqrt(dx * dx + dy * dy) * 14);
 }
 function walkMinutes(m) { return Math.max(1, Math.round(m / 75)); }
-function lotById(id) { return state.lots.find(l => l.id === id); }
-function buildingById(id) { return state.buildings.find(b => b.id === id); }
+function lotById(id) {
+  if (!id || id === 'undefined' || id === 'null') return null;
+  return (state.lots || []).find(l => l && l.id === id && l.name && l.name !== 'undefined');
+}
+function buildingById(id) {
+  if (!id || id === 'undefined' || id === 'null') return null;
+  return (state.buildings || []).find(b => b && b.id === id && b.name && b.name !== 'undefined');
+}
 function nearestLot(building) {
-  const withDist = state.lots.map(l => ({ lot: l, dist: distanceMeters(l, building) }));
+  if (!building) return null;
+  const validLots = (state.lots || []).filter(l => l && l.id && l.id !== 'undefined' && l.name && l.name !== 'undefined');
+  if (!validLots.length) return null;
+  const withDist = validLots.map(l => ({ lot: l, dist: distanceMeters(l, building) }));
   withDist.sort((a, b) => a.dist - b.dist);
   return withDist[0];
 }
@@ -3062,13 +3097,16 @@ function drawAllMaps() {
 }
 
 function totalAvailable() {
-  return state.lots.reduce((s, l) => s + (parseInt(l.available, 10) || 0), 0);
+  const validLots = (state.lots || []).filter(l => l && String(l.id || '').trim() && String(l.id || '').trim() !== 'undefined' && String(l.name || '').trim() && String(l.name || '').trim() !== 'undefined');
+  return validLots.reduce((s, l) => s + (parseInt(l.available, 10) || 0), 0);
 }
 
 function renderLanding() {
+  const validLots = (state.lots || []).filter(l => l && l.id && l.id !== 'undefined' && (l.name || l.nameEn));
+  const validBldgs = (state.buildings || []).filter(b => b && b.id && b.id !== 'undefined' && (b.name || b.nameEn));
   document.getElementById('landing-space').textContent = totalAvailable();
-  document.getElementById('landing-lots').textContent = state.lots.length;
-  document.getElementById('landing-buildings').textContent = state.buildings.length;
+  document.getElementById('landing-lots').textContent = validLots.length;
+  document.getElementById('landing-buildings').textContent = validBldgs.length;
 
   const admin = isAdmin();
   const landingAdminBtn = document.getElementById('landing-admin-nav-btn');
@@ -3146,14 +3184,15 @@ function renderDashboard() {
   }
 
   const statsBox = document.getElementById('dashboard-lot-stats');
-  if (!state.lots.length) {
+  const validLots = (state.lots || []).filter(l => l && l.id && l.id !== 'undefined' && (l.name || l.nameEn));
+  if (!validLots.length) {
     statsBox.innerHTML = `
       <div class="col-span-3 rounded-2xl border border-dashed border-[#d5deed] dark:border-[#2a2d4a] p-6 text-center text-xs text-[#5a627a] dark:text-[#9da7c5]">
         <i data-lucide="parking-circle" class="h-6 w-6 mx-auto text-[#8f9bb3] mb-1"></i>
         ${t('no_lots_in_system')}
       </div>`;
   } else {
-    statsBox.innerHTML = state.lots.map(l => `
+    statsBox.innerHTML = validLots.map(l => `
       <div class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 text-center shadow-sm stat-card-anim">
         <p class="text-xs text-[#5a627a] dark:text-[#9da7c5] truncate font-medium">${lName(l)}</p>
         <p class="mt-2 text-2xl font-extrabold text-[#96A4DD] dark:text-[#c4b5fd]">${l.available}</p>
@@ -3161,7 +3200,7 @@ function renderDashboard() {
       </div>`).join('');
   }
 
-  const best = state.lots.slice().sort((a, b) => (b.available || 0) - (a.available || 0))[0];
+  const best = validLots.slice().sort((a, b) => (b.available || 0) - (a.available || 0))[0];
   const box = document.getElementById('recommend-box');
   if (best) {
     const b = buildingById(best.buildingId);
@@ -3218,14 +3257,18 @@ function renderSearchResults() {
   const items = [];
 
   state.buildings.forEach(b => {
+    if (!b || !b.id || b.id === 'undefined' || !b.name || b.name === 'undefined') return;
     const catMatch = cat === 'all' || cat === b.category;
     const nameMatch = !q || b.name.toLowerCase().includes(q) || (b.nameEn && b.nameEn.toLowerCase().includes(q));
     if (catMatch && nameMatch) items.push({ type: 'building', data: b });
   });
 
   if (cat === 'all' || cat === 'parking') {
-    state.lots.forEach(l => {
-      const lotMatch = !q || l.name.toLowerCase().includes(q) || (l.nameEn && l.nameEn.toLowerCase().includes(q));
+    (state.lots || []).forEach(l => {
+      if (!l || !l.id || l.id === 'undefined' || (!l.name && !l.nameEn) || l.name === 'undefined') return;
+      const lNameStr = (l.name || '').toLowerCase();
+      const lNameEnStr = (l.nameEn || '').toLowerCase();
+      const lotMatch = !q || lNameStr.includes(q) || lNameEnStr.includes(q);
       if (lotMatch) items.push({ type: 'lot', data: l });
     });
   }
@@ -3821,21 +3864,26 @@ function populateBuildingSelect() {
 }
 
 function renderAdmin() {
-  document.getElementById('admin-lot-count').textContent = state.lots.length;
+  const validLots = (state.lots || []).filter(l => l && String(l.id || '').trim() && String(l.id || '').trim() !== 'undefined' && (l.name || l.nameEn));
+  const validBldgs = (state.buildings || []).filter(b => b && String(b.id || '').trim() && String(b.id || '').trim() !== 'undefined' && (b.name || b.nameEn));
+  state.lots = validLots;
+  state.buildings = validBldgs;
+
+  document.getElementById('admin-lot-count').textContent = validLots.length;
   document.getElementById('admin-total').textContent = totalAvailable();
-  document.getElementById('admin-building-count').textContent = state.buildings.length;
+  document.getElementById('admin-building-count').textContent = validBldgs.length;
   populateBuildingSelect();
 
   // 1. Render Lots List with Edit + Delete + Adjust buttons
   const list = document.getElementById('admin-lot-list');
-  if (!state.lots.length) {
+  if (!validLots.length) {
     list.innerHTML = `
       <div class="rounded-2xl bg-white dark:bg-[#161729] p-6 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">
         <i data-lucide="parking-circle" class="h-6 w-6 mx-auto text-[#8f9bb3] mb-1"></i>
         <p class="font-bold text-sm">${t('no_lots_in_system')}</p>
       </div>`;
   } else {
-    list.innerHTML = state.lots.map(l => {
+    list.innerHTML = validLots.map(l => {
       const b = buildingById(l.buildingId);
       return `<div class="parking-card flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 shadow-sm">
         <div>
@@ -3993,7 +4041,7 @@ async function saveEditedLot() {
   const capacity = Math.max(1, parseInt(document.getElementById('edit-lot-capacity')?.value, 10) || 20);
   const available = Math.max(0, Math.min(capacity, parseInt(document.getElementById('edit-lot-available')?.value, 10) || 0));
 
-  if (!id || !name || !buildingId) {
+  if (!id || !name || name === 'undefined' || !buildingId || buildingId === 'undefined') {
     showToast(t('toast_missing_info_title'), t('fill_lot_fields'), 'error');
     return;
   }
@@ -4095,7 +4143,7 @@ async function addLot() {
   const btn = document.getElementById('btn-add-lot');
   const btnText = document.getElementById('add-lot-text');
 
-  if (!name || !buildingId) {
+  if (!name || name === 'undefined' || !buildingId || buildingId === 'undefined') {
     showToast(t('toast_missing_info_title'), t('fill_lot_fields'), 'error');
     if (msg) { msg.textContent = t('fill_lot_fields'); msg.classList.remove('hidden'); }
     return;

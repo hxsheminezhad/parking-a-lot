@@ -178,6 +178,7 @@ function handleAction(action, body) {
     }
 
     case 'getInitialData':
+      cleanupEmptyRows();
       return jsonResponse({
         success: true,
         data: {
@@ -187,6 +188,10 @@ function handleAction(action, body) {
           timestamp: Date.now()
         }
       });
+
+    case 'cleanupDatabase':
+      cleanupEmptyRows();
+      return jsonResponse({ success: true, message: 'Database cleaned up successfully' });
 
     case 'getBuildings':
       return jsonResponse({ success: true, data: getRows(SHEETS.BUILDINGS) });
@@ -684,13 +689,46 @@ function getRows(sheetName) {
   const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
   const data = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
 
-  return data.map(row => {
-    const obj = {};
-    headers.forEach((h, i) => {
-      obj[h] = row[i];
+  return data
+    .filter(row => row.some(cell => String(cell || '').trim() !== ''))
+    .map(row => {
+      const obj = {};
+      headers.forEach((h, i) => {
+        obj[h] = row[i];
+      });
+      return obj;
+    })
+    .filter(obj => {
+      if (typeof obj.id !== 'undefined') {
+        const idStr = String(obj.id || '').trim();
+        return idStr !== '' && idStr !== 'undefined' && idStr !== 'null';
+      }
+      return true;
     });
-    return obj;
-  });
+}
+
+/**
+ * Remove blank or corrupted rows from all database sheets
+ */
+function cleanupEmptyRows() {
+  try {
+    const ss = getSpreadsheet();
+    [SHEETS.LOTS, SHEETS.BUILDINGS, SHEETS.USERS, SHEETS.REVIEWS].forEach(sheetName => {
+      const sheet = ss.getSheetByName(sheetName);
+      if (!sheet) return;
+      const lastRow = sheet.getLastRow();
+      if (lastRow <= 1) return;
+      for (let r = lastRow; r >= 2; r--) {
+        const idVal = String(sheet.getRange(r, 1).getValue() || '').trim();
+        const rowVals = sheet.getRange(r, 1, 1, sheet.getLastColumn()).getValues()[0];
+        const isAllEmpty = rowVals.every(c => String(c || '').trim() === '');
+        if (isAllEmpty || idVal === '' || idVal === 'undefined' || idVal === 'null') {
+          sheet.deleteRow(r);
+        }
+      }
+    });
+    SpreadsheetApp.flush();
+  } catch(e) {}
 }
 
 /**
