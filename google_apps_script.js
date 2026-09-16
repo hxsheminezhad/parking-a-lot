@@ -43,7 +43,8 @@ const SHEETS = {
   SEARCH_HISTORY: 'SearchHistory',
   FAVORITES: 'Favorites',
   REVIEWS: 'Reviews',
-  NOTIFICATIONS: 'Notifications'
+  NOTIFICATIONS: 'Notifications',
+  LOGS: 'Logs'
 };
 
 const SCHEMAS = {
@@ -54,7 +55,8 @@ const SCHEMAS = {
   SearchHistory: ['id', 'username', 'query', 'timestamp'],
   Favorites: ['id', 'username', 'lot_id', 'created_at'],
   Reviews: ['id', 'username', 'name', 'stars', 'text', 'timestamp', 'status'],
-  Notifications: ['id', 'username', 'text', 'timestamp', 'is_read']
+  Notifications: ['id', 'username', 'text', 'timestamp', 'is_read'],
+  Logs: ['id', 'timestamp', 'username', 'event_type', 'action', 'details', 'user_agent', 'url']
 };
 
 /**
@@ -276,6 +278,7 @@ function handleAction(action, body) {
 
     case 'updateProfile': {
       const username = (body.username || '').trim().toLowerCase();
+      const newUsername = (body.newUsername || body.new_username || '').trim();
       const name = (body.name || '').trim();
       const password = body.password ? String(body.password) : '';
       const avatar = body.avatar || '';
@@ -286,6 +289,16 @@ function handleAction(action, body) {
       if (rowIndex === -1) return errorResponse('User not found', 404);
 
       const current = users[rowIndex];
+      if (newUsername && newUsername.toLowerCase() !== username) {
+        if (username === 'ardeshir' || username === 'project alpine') {
+          return errorResponse('Cannot change default system administrator username', 403);
+        }
+        const exists = users.some((u, idx) => idx !== rowIndex && (u.username || '').toLowerCase() === newUsername.toLowerCase());
+        if (exists) {
+          return errorResponse('Username already taken', 409);
+        }
+        current.username = newUsername;
+      }
       if (name) current.name = name;
       if (password) current.password = password;
       if (avatar) current.avatar = avatar;
@@ -547,6 +560,43 @@ function handleAction(action, body) {
         });
         return jsonResponse({ success: true, message: 'Favorite saved to Google Sheets', isFavorite: true });
       }
+    }
+
+    case 'logEvent': {
+      const log = body.log || body;
+      const logEntry = {
+        id: log.id || 'log_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+        timestamp: log.timestamp || new Date().toISOString(),
+        username: log.username || log.user || 'guest',
+        event_type: log.event_type || log.eventType || 'event',
+        action: log.action || '',
+        details: typeof log.details === 'object' ? JSON.stringify(log.details) : String(log.details || ''),
+        user_agent: String(log.user_agent || log.userAgent || '').slice(0, 250),
+        url: String(log.url || '').slice(0, 250)
+      };
+      appendRow(SHEETS.LOGS, logEntry);
+      return jsonResponse({ success: true, message: 'Log recorded in Google Sheets', id: logEntry.id });
+    }
+
+    case 'logEvents': {
+      const logs = Array.isArray(body.logs) ? body.logs : (body.events || []);
+      if (!Array.isArray(logs) || logs.length === 0) {
+        return jsonResponse({ success: true, count: 0 });
+      }
+      logs.forEach(log => {
+        const logEntry = {
+          id: log.id || 'log_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+          timestamp: log.timestamp || new Date().toISOString(),
+          username: log.username || log.user || 'guest',
+          event_type: log.event_type || log.eventType || 'event',
+          action: log.action || '',
+          details: typeof log.details === 'object' ? JSON.stringify(log.details) : String(log.details || ''),
+          user_agent: String(log.user_agent || log.userAgent || '').slice(0, 250),
+          url: String(log.url || '').slice(0, 250)
+        };
+        appendRow(SHEETS.LOGS, logEntry);
+      });
+      return jsonResponse({ success: true, message: 'Batch logs recorded in Google Sheets', count: logs.length });
     }
 
     default:

@@ -286,8 +286,8 @@ a[class*="bg-gradient"],
 .ethereal-glow-btn {
   position: relative;
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 0.25s ease,
+              box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.28s cubic-bezier(0.16, 1, 0.3, 1),
               background-color 0.2s ease,
               border-color 0.2s ease;
 }
@@ -295,25 +295,26 @@ a[class*="bg-gradient"],
 button[class*="bg-gradient"]:hover,
 a[class*="bg-gradient"]:hover,
 .ethereal-glow-btn:hover {
-  filter: brightness(1.04);
-  box-shadow: 0 0 20px -2px rgba(166, 128, 194, 0.55),
-              0 0 10px -1px rgba(150, 164, 221, 0.45),
-              0 8px 24px -4px rgba(191, 135, 201, 0.35);
+  filter: brightness(1.08) drop-shadow(0 0 10px rgba(166, 128, 194, 0.6));
+  box-shadow: 0 0 28px 4px rgba(166, 128, 194, 0.75),
+              0 0 16px 2px rgba(150, 164, 221, 0.7),
+              0 8px 32px 3px rgba(191, 135, 201, 0.5);
 }
 
 html.dark button[class*="bg-gradient"]:hover,
 html.dark a[class*="bg-gradient"]:hover,
 html.dark .ethereal-glow-btn:hover {
-  filter: brightness(1.08);
-  box-shadow: 0 0 24px -2px rgba(217, 177, 230, 0.45),
-              0 0 12px -1px rgba(166, 128, 194, 0.5),
-              0 8px 28px -4px rgba(0, 0, 0, 0.6);
+  filter: brightness(1.15) drop-shadow(0 0 14px rgba(217, 177, 230, 0.75));
+  box-shadow: 0 0 35px 6px rgba(217, 177, 230, 0.7),
+              0 0 20px 3px rgba(166, 128, 194, 0.8),
+              0 10px 36px rgba(191, 135, 201, 0.6);
 }
 
 button[class*="bg-gradient"]:active,
 a[class*="bg-gradient"]:active,
 .ethereal-glow-btn:active {
-  box-shadow: 0 0 12px -2px rgba(166, 128, 194, 0.4);
+  box-shadow: 0 0 16px 1px rgba(166, 128, 194, 0.5);
+  filter: brightness(1.02);
 }
 
 .stat-card-anim {
@@ -488,7 +489,7 @@ html.dark .hero-highlight-gradient {
           </div>
           <span id="db-status-badge" class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-[#CAE0DC]/40 dark:bg-[#CAE0DC]/20 text-[#1e4d45] dark:text-[#CAE0DC] border border-[#CAE0DC]/60">
             <span class="h-1.5 w-1.5 rounded-full bg-[#CAE0DC]"></span>
-            <span id="db-status-text">กำลังเชื่อมต่อ...</span>
+            <span id="db-status-text" data-i18n="db_status_connecting">กำลังเชื่อมต่อ...</span>
           </span>
         </div>
 
@@ -882,6 +883,30 @@ html.dark .hero-highlight-gradient {
       <div class="p-4"><i data-lucide="car-front" class="mx-auto h-5 w-5 text-[#96A4DD] dark:text-[#D9B1E6]"></i><span id="route-lot-name" class="mt-1 block text-xs text-[#5a627a] dark:text-[#9da7c5]">-</span></div>
     </div>
     
+    <!-- ACTIVE PARKING CHECKOUT SECTION (In Destination View) -->
+    <div id="destination-checkout-section" class="mt-5 hidden rounded-2xl border border-emerald-300 dark:border-emerald-800/80 bg-white dark:bg-[#161729] p-5 shadow-sm space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
+            <i data-lucide="parking-square" class="h-5 w-5"></i>
+          </span>
+          <div>
+            <h3 class="font-extrabold text-sm text-[#262447] dark:text-[#c4b5fd]" data-i18n="dest_active_parking_title">การจอดรถที่กำลังใช้งานอยู่</h3>
+            <p id="dest-parking-lot-name" class="text-xs text-[#5a627a] dark:text-[#9da7c5]">-</p>
+          </div>
+        </div>
+        <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">
+          <span class="h-2 w-2 rounded-full bg-emerald-500 pulse-dot"></span>
+          <span id="dest-parking-timer">0 นาที</span>
+        </span>
+      </div>
+
+      <button type="button" onclick="checkOutParking()" class="interactive-btn ethereal-glow-btn w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-500 via-rose-600 to-amber-500 py-3.5 font-extrabold text-white shadow-lg shadow-rose-500/25 hover:opacity-95">
+        <i data-lucide="log-out" class="h-4 w-4"></i>
+        <span data-i18n="checkout_btn">เช็คเอาท์ / ออกจากที่จอดรถ</span>
+      </button>
+    </div>
+
     <button type="button" id="finish-route-btn" onclick="finishRoute()" class="interactive-btn mt-5 w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-4 font-extrabold text-[#181b2e] dark:text-[#0e0f1a] shadow-lg shadow-[#96A4DD]/30 hover:opacity-95">
       <i data-lucide="check" class="h-5 w-5" id="finish-btn-icon"></i>
       <span data-i18n="finish_nav" id="finish-btn-text">ถึงลานจอดรถแล้ว / จบการนำทาง</span>
@@ -1030,6 +1055,14 @@ html.dark .hero-highlight-gradient {
       <div>
         <label class="mb-1 block text-sm font-bold" data-i18n="fullname">ชื่อ-นามสกุล</label>
         <input id="edit-name" type="text" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 shadow-sm">
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-bold" data-i18n="username">ชื่อผู้ใช้ / Username</label>
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#8f9bb3] font-bold">@</span>
+          <input id="edit-username" type="text" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] pl-9 pr-4 py-3 shadow-sm font-semibold">
+        </div>
+        <p class="mt-1 text-[11px] text-[#5a627a] dark:text-[#9da7c5]" data-i18n="username_change_hint">สามารถเปลี่ยนชื่อผู้ใช้เพื่อเข้าสู่ระบบได้</p>
       </div>
       <div>
         <label class="mb-1 block text-sm font-bold" data-i18n="new_password_label">รหัสผ่านใหม่ (เว้นว่างหากไม่ต้องการเปลี่ยนรหัสผ่าน)</label>
@@ -1332,6 +1365,59 @@ html.dark .hero-highlight-gradient {
   </div>
 </div>
 
+<!-- AVATAR CROP & PREVIEW MODAL -->
+<div id="avatar-crop-modal" class="modal-wrapper">
+  <div class="modal-panel w-full max-w-md rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845] space-y-4">
+    <div class="flex items-center justify-between pb-3 border-b border-[#edf1f8] dark:border-[#262845]">
+      <div class="flex items-center gap-2">
+        <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] text-[#181b2e] dark:text-[#0e0f1a] shadow-sm"><i data-lucide="crop" class="h-4 w-4"></i></span>
+        <h3 id="crop-modal-title" class="font-bold text-base text-[#262447] dark:text-[#c4b5fd]" data-i18n="crop_avatar_title">ปรับแต่งและครอบตัดรูปโปรไฟล์</h3>
+      </div>
+      <button type="button" onclick="closeAvatarCropModal()" class="rounded-full p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition"><i data-lucide="x" class="h-5 w-5"></i></button>
+    </div>
+
+    <!-- Static Image Crop UI -->
+    <div id="crop-static-container" class="space-y-4">
+      <p class="text-xs text-[#5a627a] dark:text-[#9da7c5] text-center" data-i18n="crop_drag_hint">ลากเพื่อเลื่อนตำแหน่งรูปภาพ และปรับซูมตามต้องการ</p>
+      
+      <!-- Interactive Crop Viewport -->
+      <div class="relative mx-auto h-60 w-60 overflow-hidden rounded-full border-4 border-[#96A4DD] dark:border-[#A680C2] shadow-inner bg-[#181b2e] cursor-grab active:cursor-grabbing" id="crop-viewport">
+        <canvas id="crop-canvas" width="240" height="240" class="h-full w-full object-cover touch-none"></canvas>
+      </div>
+
+      <!-- Zoom Slider -->
+      <div class="space-y-1 px-4">
+        <div class="flex justify-between text-xs font-bold text-[#5a627a] dark:text-[#9da7c5]">
+          <span data-i18n="crop_zoom_label">ซูม / ย่อ-ขยาย</span>
+          <span id="crop-zoom-val">1.0x</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <i data-lucide="zoom-out" class="h-4 w-4 text-[#8f9bb3]"></i>
+          <input id="crop-zoom-slider" type="range" min="1" max="3" step="0.05" value="1" class="w-full accent-[#96A4DD]">
+          <i data-lucide="zoom-in" class="h-4 w-4 text-[#8f9bb3]"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Animated GIF Preview UI (for Animated GIF / WebP) -->
+    <div id="crop-animated-container" class="hidden space-y-4 text-center">
+      <span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold bg-[#A680C2]/20 text-[#A680C2] dark:text-[#D9B1E6]">
+        <i data-lucide="sparkles" class="h-3.5 w-3.5"></i>
+        <span data-i18n="animated_avatar_title">พรีวิวรูปโปรไฟล์เคลื่อนไหว (GIF)</span>
+      </span>
+      <div class="mx-auto h-40 w-40 overflow-hidden rounded-full border-4 border-[#BF87C9] shadow-lg">
+        <img id="crop-animated-preview" src="" alt="GIF Preview" class="h-full w-full object-cover rounded-full">
+      </div>
+      <p id="crop-animated-info" class="text-xs text-[#5a627a] dark:text-[#9da7c5]"></p>
+    </div>
+
+    <div class="flex gap-3 pt-2">
+      <button type="button" onclick="closeAvatarCropModal()" class="interactive-btn flex-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] py-3 text-sm font-bold hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" data-i18n="crop_cancel_btn">ยกเลิก</button>
+      <button type="button" id="crop-apply-btn" onclick="applyAvatarCrop()" class="interactive-btn ethereal-glow-btn flex-1 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3 text-sm font-extrabold text-[#181b2e] dark:text-[#0e0f1a] shadow-md hover:opacity-95" data-i18n="crop_apply_btn">ครอบตัด & ใช้งานรูปนี้</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ==========================================================================
    TRANSLATIONS & INTERNATIONALIZATION (i18n)
@@ -1594,7 +1680,26 @@ const i18n = {
     no_users_in_system: "ยังไม่มีผู้ใช้งานในระบบ",
     role_admin: "ผู้ดูแล",
     role_user: "ผู้ใช้ทั่วไป",
-    refresh_btn: "รีเฟรช"
+    refresh_btn: "รีเฟรช",
+    db_status_connecting: "กำลังเชื่อมต่อ...",
+    already_parked_title: "คุณมีรถที่จอดอยู่แล้ว",
+    already_parked_desc: "คุณได้บันทึกการจอดรถไว้แล้ว กรุณาเช็คเอาท์ก่อนเข้าจอดรอบใหม่",
+    dest_active_parking_title: "การจอดรถที่กำลังใช้งานอยู่",
+    crop_avatar_title: "ปรับแต่งและครอบตัดรูปโปรไฟล์",
+    crop_apply_btn: "ครอบตัด & ใช้งานรูปนี้",
+    crop_cancel_btn: "ยกเลิก",
+    crop_zoom_label: "ซูม / ย่อ-ขยาย",
+    crop_drag_hint: "ลากเพื่อเลื่อนตำแหน่งรูปภาพ และปรับซูมตามต้องการ",
+    animated_avatar_title: "พรีวิวรูปโปรไฟล์เคลื่อนไหว (GIF)",
+    terminate_user_btn: "ลบบัญชี",
+    confirm_terminate_user: 'คุณแน่ใจหรือไม่ว่าต้องการลบบัญชีผู้ใช้ "@{username}"? การกระทำนี้ไม่สามารถย้อนกลับได้',
+    toast_user_terminated_title: "ลบบัญชีสำเร็จ",
+    toast_user_terminated_desc: "ลบบัญชีผู้ใช้ @{username} เรียบร้อยแล้ว",
+    toast_err_username_exists_title: "ชื่อผู้ใช้นี้มีอยู่แล้ว",
+    toast_err_username_exists_desc: "ชื่อผู้ใช้ @{username} มีผู้ใช้งานแล้ว กรุณาเลือกชื่ออื่น",
+    toast_err_username_invalid_title: "ชื่อผู้ใช้ไม่ถูกต้อง",
+    toast_err_username_invalid_desc: "ชื่อผู้ใช้ต้องมีความยาวอย่างน้อย 3 ตัวอักษร และประกอบด้วยตัวอักษร ตัวเลข ขีดล่าง หรือขีดกลางเท่านั้น",
+    username_change_hint: "สามารถเปลี่ยนชื่อผู้ใช้เพื่อเข้าสู่ระบบได้"
   },
   en: {
     quick_settings_title: "System Settings",
@@ -1853,7 +1958,26 @@ const i18n = {
     no_users_in_system: "No users registered yet",
     role_admin: "Admin",
     role_user: "User",
-    refresh_btn: "Refresh"
+    refresh_btn: "Refresh",
+    db_status_connecting: "Connecting...",
+    already_parked_title: "Already Parked",
+    already_parked_desc: "You already have an active parking session. Please check out before parking again.",
+    dest_active_parking_title: "Active Parking Session",
+    crop_avatar_title: "Crop & Adjust Profile Picture",
+    crop_apply_btn: "Crop & Apply",
+    crop_cancel_btn: "Cancel",
+    crop_zoom_label: "Zoom",
+    crop_drag_hint: "Drag to reposition image and use slider to zoom",
+    animated_avatar_title: "Animated Avatar Preview (GIF)",
+    terminate_user_btn: "Terminate",
+    confirm_terminate_user: 'Are you sure you want to terminate user account "@{username}"? This action cannot be undone.',
+    toast_user_terminated_title: "Account Terminated",
+    toast_user_terminated_desc: "User account @{username} has been terminated.",
+    toast_err_username_exists_title: "Username Taken",
+    toast_err_username_exists_desc: "Username @{username} is already in use. Please choose another.",
+    toast_err_username_invalid_title: "Invalid Username",
+    toast_err_username_invalid_desc: "Username must be at least 3 characters and contain only letters, numbers, underscores, or hyphens.",
+    username_change_hint: "You can change your login username here"
   }
 };
 
@@ -2531,6 +2655,99 @@ const SheetsDB = {
       lot_id: lotId,
       username
     });
+  },
+
+  async deleteUser(username) {
+    if (!this.isConfigured() || !username) return false;
+    return await this.request('POST', { action: 'deleteUser' }, {
+      action: 'deleteUser',
+      username: username
+    });
+  },
+
+  async logEvents(events) {
+    if (!this.isConfigured() || !Array.isArray(events) || !events.length) return false;
+    return await this.request('POST', { action: 'logEvents' }, {
+      action: 'logEvents',
+      logs: events
+    });
+  }
+};
+
+/* ==========================================================================
+   APP TELEMETRY & AUDIT LOGGER (Cloud Sync to Sheets "Logs")
+   ========================================================================== */
+const AppLogger = {
+  buffer: [],
+  maxBuffer: 15,
+  flushInterval: 15000,
+  _timer: null,
+
+  init() {
+    if (this._timer) return;
+    this._timer = setInterval(() => this.flush(), this.flushInterval);
+
+    // Global Unhandled Errors
+    window.addEventListener('error', (evt) => {
+      this.log('error', 'window.onerror', {
+        message: evt.message || 'Script error',
+        filename: evt.filename || '',
+        lineno: evt.lineno || 0,
+        colno: evt.colno || 0
+      });
+    });
+
+    // Global Promise Rejections
+    window.addEventListener('unhandledrejection', (evt) => {
+      this.log('error', 'unhandledrejection', {
+        reason: evt.reason ? (evt.reason.message || String(evt.reason)) : 'Promise rejected'
+      });
+    });
+
+    // Global User Interaction Clicks (Buttons, Links, Interactive Elements)
+    document.addEventListener('click', (evt) => {
+      try {
+        const target = evt.target && evt.target.closest ? evt.target.closest('button, a, .interactive-btn, [data-i18n]') : null;
+        if (target) {
+          const label = (target.innerText || target.getAttribute('aria-label') || target.id || '').trim().slice(0, 60);
+          const elId = target.id || target.getAttribute('onclick') || target.getAttribute('data-i18n') || target.tagName.toLowerCase();
+          this.log('click', 'user_click', {
+            id: elId,
+            label: label,
+            view: (state && state.ui && state.ui.mapReturnView) || 'app'
+          });
+        }
+      } catch(e) {}
+    }, { passive: true });
+  },
+
+  log(eventType, action, details) {
+    const user = (state && state.currentUser) ? state.currentUser : 'guest';
+    const entry = {
+      id: 'log_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+      timestamp: new Date().toISOString(),
+      username: user,
+      event_type: eventType || 'event',
+      action: action || '',
+      details: typeof details === 'object' ? JSON.stringify(details) : String(details || ''),
+      user_agent: (navigator.userAgent || '').slice(0, 200),
+      url: (window.location.href || '').slice(0, 200)
+    };
+    this.buffer.push(entry);
+    if (this.buffer.length >= this.maxBuffer || eventType === 'error') {
+      this.flush();
+    }
+  },
+
+  async flush() {
+    if (!this.buffer.length || !SheetsDB.isConfigured()) return;
+    const toSend = [...this.buffer];
+    this.buffer = [];
+    try {
+      await SheetsDB.logEvents(toSend);
+    } catch(err) {
+      if (this.buffer.length > 50) this.buffer = this.buffer.slice(-20);
+    }
   }
 };
 
@@ -3153,9 +3370,14 @@ function formatDuration(startTime) {
 
 function updateActiveParkingTimer() {
   if (!state.activeParking) return;
+  const dur = formatDuration(state.activeParking.startTime);
   const timeEl = document.getElementById('active-parking-time');
   if (timeEl) {
-    timeEl.textContent = t('parked_duration', { time: formatDuration(state.activeParking.startTime) });
+    timeEl.textContent = t('parked_duration', { time: dur });
+  }
+  const destTimer = document.getElementById('dest-parking-timer');
+  if (destTimer) {
+    destTimer.textContent = dur;
   }
 }
 
@@ -3334,6 +3556,25 @@ function renderRoute() {
   document.getElementById('route-type-fast').classList.toggle('active', state.ui.routeType === 'fast');
   document.getElementById('route-type-safe').classList.toggle('active', state.ui.routeType === 'safe');
 
+  const activeParkingSection = document.getElementById('destination-checkout-section');
+  const finishRouteBtn = document.getElementById('finish-route-btn');
+
+  if (state.activeParking) {
+    if (activeParkingSection) {
+      activeParkingSection.classList.remove('hidden');
+      const lot = lotById(state.activeParking.lotId);
+      const lotTitle = lot ? lName(lot) : '-';
+      const timerEl = document.getElementById('dest-parking-timer');
+      const nameEl = document.getElementById('dest-parking-lot-name');
+      if (nameEl) nameEl.textContent = t('dest_active_parking_desc', { lot: lotTitle });
+      if (timerEl) timerEl.textContent = formatDuration(state.activeParking.startTime);
+    }
+    if (finishRouteBtn) finishRouteBtn.classList.add('hidden');
+  } else {
+    if (activeParkingSection) activeParkingSection.classList.add('hidden');
+    if (finishRouteBtn) finishRouteBtn.classList.remove('hidden');
+  }
+
   if (!best) {
     document.getElementById('route-description').textContent = t('no_lots_in_system');
     return;
@@ -3344,47 +3585,64 @@ function renderRoute() {
   document.getElementById('route-time').textContent = walkMinutes(dist);
   document.getElementById('route-distance').textContent = dist;
   document.getElementById('route-lot-name').textContent = lName(best.lot);
-  document.getElementById('route-finished').classList.add('hidden');
+  if (!state.activeParking) {
+    document.getElementById('route-finished').classList.add('hidden');
+  }
   drawMap('route-map', { lot: best.lot, building, safe: state.ui.routeType === 'safe' });
+  if (window.lucide) lucide.createIcons();
 }
 
 async function finishRoute() {
+  if (state.activeParking) {
+    showToast(t('already_parked_title'), t('already_parked_desc'), 'warning');
+    return;
+  }
+  if (finishRoute._submitting) return;
+  finishRoute._submitting = true;
+
   const building = buildingById(state.ui.destinationBuilding);
   const best = building ? nearestLot(building) : null;
   const btn = document.getElementById('finish-route-btn');
   const btnText = document.getElementById('finish-btn-text');
 
-  if (btn) btn.disabled = true;
-  if (btnText) btnText.innerHTML = '<i data-lucide="loader-2" class="h-4 w-4 animate-spin inline mr-1"></i> ' + t('saving_data');
-  if (window.lucide) lucide.createIcons();
+  try {
+    if (btn) btn.disabled = true;
+    if (btnText) btnText.innerHTML = '<i data-lucide="loader-2" class="h-4 w-4 animate-spin inline mr-1"></i> ' + t('saving_data');
+    if (window.lucide) lucide.createIcons();
 
-  if (best && best.lot.available > 0) {
-    best.lot.available -= 1;
+    if (best && best.lot.available > 0) {
+      best.lot.available -= 1;
+    }
+    const lotTitle = best ? lName(best.lot) : '';
+    const msg = t('nav_finish_notif', { lot: lotTitle });
+    pushNotification(msg);
+
+    // Set active parking session
+    state.activeParking = {
+      buildingId: building ? building.id : null,
+      lotId: best ? best.lot.id : null,
+      startTime: Date.now()
+    };
+
+    state.navHistory.unshift({ buildingId: building ? building.id : null, lotId: best ? best.lot.id : null, ts: Date.now() });
+    saveState();
+
+    if (building && best && SheetsDB.isConfigured()) {
+      SheetsDB.recordParking(building.id, best.lot.id, state.currentUser || 'guest');
+    }
+
+    if (typeof AppLogger !== 'undefined') {
+      AppLogger.log('action', 'parking_arrive', { buildingId: building?.id, lotId: best?.lot?.id });
+    }
+
+    document.getElementById('route-finished').classList.remove('hidden');
+    showToast(t('toast_parked_success_title'), msg, 'success');
+    renderAll();
+  } finally {
+    finishRoute._submitting = false;
+    if (btn) btn.disabled = false;
+    if (btnText) btnText.textContent = t('finish_nav');
   }
-  const lotTitle = best ? lName(best.lot) : '';
-  const msg = t('nav_finish_notif', { lot: lotTitle });
-  pushNotification(msg);
-
-  // Set active parking session
-  state.activeParking = {
-    buildingId: building ? building.id : null,
-    lotId: best ? best.lot.id : null,
-    startTime: Date.now()
-  };
-
-  state.navHistory.unshift({ buildingId: building ? building.id : null, lotId: best ? best.lot.id : null, ts: Date.now() });
-  saveState();
-
-  if (building && best && SheetsDB.isConfigured()) {
-    SheetsDB.recordParking(building.id, best.lot.id, state.currentUser || 'guest');
-  }
-
-  if (btn) btn.disabled = false;
-  if (btnText) btnText.textContent = t('finish_nav');
-  document.getElementById('route-finished').classList.remove('hidden');
-
-  showToast(t('toast_parked_success_title'), msg, 'success');
-  renderAll();
 }
 
 async function checkOutParking() {
@@ -3513,13 +3771,18 @@ function toggleProfileEdit() {
   const box = document.getElementById('profile-edit-box');
   box.classList.toggle('hidden');
   const user = currentUserObj();
-  if (user) document.getElementById('edit-name').value = user.name;
+  if (user) {
+    document.getElementById('edit-name').value = user.name || '';
+    const unEl = document.getElementById('edit-username');
+    if (unEl) unEl.value = user.username || '';
+  }
 }
 
 async function saveProfile() {
   const user = currentUserObj();
   if (!user) return;
   const name = (document.getElementById('edit-name')?.value || '').trim();
+  const rawNewUsername = (document.getElementById('edit-username')?.value || '').trim();
   const pw = document.getElementById('edit-password')?.value || '';
   const btn = document.getElementById('save-profile-btn');
   const btnText = document.getElementById('save-profile-text');
@@ -3529,30 +3792,66 @@ async function saveProfile() {
     return;
   }
 
+  const oldUsername = user.username;
+  let usernameChanged = false;
+  if (rawNewUsername && rawNewUsername.toLowerCase() !== oldUsername.toLowerCase()) {
+    if (rawNewUsername.length < 3 || !/^[a-zA-Z0-9_\-\.]+$/.test(rawNewUsername)) {
+      showToast(t('toast_err_username_invalid_title'), t('toast_err_username_invalid_desc'), 'error');
+      return;
+    }
+    const exists = (state.users || []).some(u => (u.username || '').toLowerCase() === rawNewUsername.toLowerCase() && (u.username || '').toLowerCase() !== oldUsername.toLowerCase());
+    if (exists) {
+      showToast(t('toast_err_username_exists_title'), t('toast_err_username_exists_desc', { username: rawNewUsername }), 'error');
+      return;
+    }
+    usernameChanged = true;
+  }
+
   if (btn) btn.disabled = true;
   if (btnText) btnText.innerHTML = '<i data-lucide="loader-2" class="h-3.5 w-3.5 animate-spin inline mr-1"></i> ' + t('saving_data');
   if (window.lucide) lucide.createIcons();
 
   user.name = name;
   if (pw) user.password = pw;
+  if (usernameChanged) {
+    user.username = rawNewUsername;
+    state.currentUser = rawNewUsername;
+    const uIdx = (state.users || []).findIndex(u => (u.username || '').toLowerCase() === oldUsername.toLowerCase());
+    if (uIdx >= 0) {
+      state.users[uIdx].username = rawNewUsername;
+      state.users[uIdx].name = name;
+    }
+  }
   saveStoredUsers(state.users);
   saveState();
 
   let savedToSheets = false;
   if (SheetsDB.isConfigured()) {
-    const res = await SheetsDB.updateProfile(user.username, { 
+    const payload = { 
       name, 
       password: pw || user.password,
       avatar: user.avatar || ''
-    });
+    };
+    if (usernameChanged) {
+      payload.newUsername = rawNewUsername;
+    }
+    const res = await SheetsDB.updateProfile(oldUsername, payload);
     if (res && res.success) {
       savedToSheets = true;
       if (res.data && res.data.name) {
         user.name = res.data.name;
       }
+      if (res.data && res.data.username) {
+        user.username = res.data.username;
+        state.currentUser = res.data.username;
+      }
       saveStoredUsers(state.users);
       saveState();
     }
+  }
+
+  if (typeof AppLogger !== 'undefined') {
+    AppLogger.log('action', 'profile_update', { username: user.username, usernameChanged });
   }
 
   if (btn) btn.disabled = false;
@@ -3566,72 +3865,214 @@ async function saveProfile() {
     showToast(t('toast_profile_saved_title'), t('toast_profile_saved_default'), 'success');
   }
   renderProfile();
+  renderDashboard();
+  if (typeof renderHeader === 'function') renderHeader();
+}
+
+let avatarCropState = {
+  img: null,
+  rawData: null,
+  isGif: false,
+  zoom: 1.0,
+  panX: 0,
+  panY: 0,
+  isDragging: false,
+  startX: 0,
+  startY: 0
+};
+
+function closeAvatarCropModal() {
+  const modal = document.getElementById('avatar-crop-modal');
+  if (modal) modal.classList.remove('modal-open');
+  const input = document.getElementById('avatar-input');
+  if (input) input.value = '';
+}
+
+function initCropCanvasListeners() {
+  const canvas = document.getElementById('crop-canvas');
+  const slider = document.getElementById('crop-zoom-slider');
+  if (!canvas || canvas._listenersAttached) return;
+  canvas._listenersAttached = true;
+
+  const onDragStart = (cx, cy) => {
+    avatarCropState.isDragging = true;
+    avatarCropState.startX = cx - avatarCropState.panX;
+    avatarCropState.startY = cy - avatarCropState.panY;
+  };
+
+  const onDragMove = (cx, cy) => {
+    if (!avatarCropState.isDragging) return;
+    avatarCropState.panX = cx - avatarCropState.startX;
+    avatarCropState.panY = cy - avatarCropState.startY;
+    drawCropCanvas();
+  };
+
+  const onDragEnd = () => {
+    avatarCropState.isDragging = false;
+  };
+
+  canvas.addEventListener('mousedown', (e) => onDragStart(e.clientX, e.clientY));
+  window.addEventListener('mousemove', (e) => onDragMove(e.clientX, e.clientY));
+  window.addEventListener('mouseup', onDragEnd);
+
+  canvas.addEventListener('touchstart', (e) => {
+    if (e.touches && e.touches[0]) onDragStart(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
+  window.addEventListener('touchmove', (e) => {
+    if (e.touches && e.touches[0]) onDragMove(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
+  window.addEventListener('touchend', onDragEnd);
+
+  if (slider) {
+    slider.addEventListener('input', (e) => {
+      avatarCropState.zoom = parseFloat(e.target.value) || 1.0;
+      const zoomVal = document.getElementById('crop-zoom-val');
+      if (zoomVal) zoomVal.textContent = avatarCropState.zoom.toFixed(1) + 'x';
+      drawCropCanvas();
+    });
+  }
+}
+
+function drawCropCanvas() {
+  const canvas = document.getElementById('crop-canvas');
+  if (!canvas || !avatarCropState.img) return;
+  const ctx = canvas.getContext('2d');
+  const cw = canvas.width;
+  const ch = canvas.height;
+  const img = avatarCropState.img;
+
+  ctx.clearRect(0, 0, cw, ch);
+  const baseScale = Math.max(cw / img.width, ch / img.height);
+  const scale = baseScale * avatarCropState.zoom;
+  const drawW = img.width * scale;
+  const drawH = img.height * scale;
+  const drawX = (cw - drawW) / 2 + avatarCropState.panX;
+  const drawY = (ch - drawH) / 2 + avatarCropState.panY;
+
+  ctx.drawImage(img, drawX, drawY, drawW, drawH);
 }
 
 function uploadAvatar(evt) {
   const file = evt.target.files && evt.target.files[0];
   const user = currentUserObj();
   if (!file || !user) return;
+
+  const isGif = file.type === 'image/gif' || file.name.toLowerCase().endsWith('.gif');
   const reader = new FileReader();
+
   reader.onload = () => {
     const rawData = reader.result;
+    avatarCropState.rawData = rawData;
+    avatarCropState.isGif = isGif;
+    avatarCropState.zoom = 1.0;
+    avatarCropState.panX = 0;
+    avatarCropState.panY = 0;
 
-    const finalizeAvatar = async (avatarData) => {
-      user.avatar = avatarData;
-      const uIdx = state.users.findIndex(u => u.username.toLowerCase().trim() === user.username.toLowerCase().trim());
-      if (uIdx >= 0) {
-        state.users[uIdx].avatar = avatarData;
+    const modal = document.getElementById('avatar-crop-modal');
+    const staticContainer = document.getElementById('crop-static-container');
+    const animContainer = document.getElementById('crop-animated-container');
+    const modalTitle = document.getElementById('crop-modal-title');
+    const applyBtn = document.getElementById('crop-apply-btn');
+
+    if (isGif) {
+      if (staticContainer) staticContainer.classList.add('hidden');
+      if (animContainer) animContainer.classList.remove('hidden');
+      if (modalTitle) modalTitle.textContent = t('animated_avatar_title');
+      const animImg = document.getElementById('crop-animated-preview');
+      if (animImg) animImg.src = rawData;
+      const infoEl = document.getElementById('crop-animated-info');
+      const kb = Math.round(rawData.length * 0.75 / 1024);
+      if (infoEl) {
+        infoEl.innerHTML = `GIF: ~${kb} KB · ` + (rawData.length <= 48000 ? '<span class="text-emerald-500 font-bold">Cloud Sync Supported</span>' : '<span class="text-amber-500 font-bold">Local Device Storage</span>');
       }
-      saveStoredUsers(state.users);
-      saveState();
-      renderProfile();
-      renderDashboard();
-      if (typeof renderHeader === 'function') renderHeader();
-      showToast(t('toast_avatar_success_title'), t('toast_avatar_success_desc'), 'success');
+      if (applyBtn) applyBtn.textContent = t('crop_apply_btn');
+    } else {
+      if (staticContainer) staticContainer.classList.remove('hidden');
+      if (animContainer) animContainer.classList.add('hidden');
+      if (modalTitle) modalTitle.textContent = t('crop_avatar_title');
+      if (applyBtn) applyBtn.textContent = t('crop_apply_btn');
 
-      if (SheetsDB.isConfigured()) {
-        try {
-          await SheetsDB.updateProfile(user.username, { avatar: avatarData });
-        } catch(e) {
-          console.warn('[SheetsDB] Avatar sync failed:', e);
-        }
-      }
-    };
-
-    // Compress using Canvas so avatar easily fits within Google Sheets cell limit (50,000 chars)
-    if (typeof Image !== 'undefined' && typeof document.createElement === 'function') {
       const img = new Image();
       img.onload = () => {
-        try {
-          const canvas = document.createElement('canvas');
-          const size = 128;
-          canvas.width = size;
-          canvas.height = size;
-          const ctx = canvas.getContext('2d');
-          let sx = 0, sy = 0, sw = img.width, sh = img.height;
-          if (sw > sh) {
-            sx = (sw - sh) / 2;
-            sw = sh;
-          } else if (sh > sw) {
-            sy = (sh - sw) / 2;
-            sh = sw;
-          }
-          ctx.drawImage(img, sx, sy, sw, sh, 0, 0, size, size);
-          const compressed = canvas.toDataURL('image/jpeg', 0.82);
-          finalizeAvatar(compressed);
-        } catch (ex) {
-          finalizeAvatar(rawData.slice(0, 45000));
-        }
-      };
-      img.onerror = () => {
-        finalizeAvatar(rawData.slice(0, 45000));
+        avatarCropState.img = img;
+        const slider = document.getElementById('crop-zoom-slider');
+        if (slider) slider.value = 1.0;
+        const zoomVal = document.getElementById('crop-zoom-val');
+        if (zoomVal) zoomVal.textContent = '1.0x';
+        initCropCanvasListeners();
+        drawCropCanvas();
       };
       img.src = rawData;
-    } else {
-      finalizeAvatar(rawData.slice(0, 45000));
     }
+
+    if (modal) modal.classList.add('modal-open');
+    if (window.lucide) lucide.createIcons();
   };
+
   reader.readAsDataURL(file);
+}
+
+async function applyAvatarCrop() {
+  const user = currentUserObj();
+  if (!user) return;
+
+  let finalAvatarData = null;
+
+  if (avatarCropState.isGif) {
+    // Retain animated GIF frames intact
+    finalAvatarData = avatarCropState.rawData;
+  } else if (avatarCropState.img) {
+    try {
+      const outCanvas = document.createElement('canvas');
+      const outSize = 160;
+      outCanvas.width = outSize;
+      outCanvas.height = outSize;
+      const outCtx = outCanvas.getContext('2d');
+
+      const cw = 240, ch = 240;
+      const img = avatarCropState.img;
+      const baseScale = Math.max(cw / img.width, ch / img.height);
+      const scale = baseScale * avatarCropState.zoom;
+      const drawW = img.width * scale;
+      const drawH = img.height * scale;
+      const drawX = (cw - drawW) / 2 + avatarCropState.panX;
+      const drawY = (ch - drawH) / 2 + avatarCropState.panY;
+
+      const ratio = outSize / cw;
+      outCtx.drawImage(img, drawX * ratio, drawY * ratio, drawW * ratio, drawH * ratio);
+      finalAvatarData = outCanvas.toDataURL('image/jpeg', 0.85);
+    } catch (e) {
+      finalAvatarData = avatarCropState.rawData.slice(0, 45000);
+    }
+  }
+
+  if (!finalAvatarData) return;
+  closeAvatarCropModal();
+
+  user.avatar = finalAvatarData;
+  const uIdx = (state.users || []).findIndex(u => (u.username || '').toLowerCase().trim() === user.username.toLowerCase().trim());
+  if (uIdx >= 0) {
+    state.users[uIdx].avatar = finalAvatarData;
+  }
+  saveStoredUsers(state.users);
+  saveState();
+  renderProfile();
+  renderDashboard();
+  if (typeof renderHeader === 'function') renderHeader();
+  showToast(t('toast_avatar_success_title'), t('toast_avatar_success_desc'), 'success');
+
+  if (typeof AppLogger !== 'undefined') {
+    AppLogger.log('action', 'avatar_updated', { isGif: avatarCropState.isGif });
+  }
+
+  if (SheetsDB.isConfigured()) {
+    try {
+      const syncData = finalAvatarData.length <= 48000 ? finalAvatarData : '';
+      await SheetsDB.updateProfile(user.username, { avatar: syncData });
+    } catch (e) {
+      console.warn('[SheetsDB] Avatar sync failed:', e);
+    }
+  }
 }
 
 function renderProfile() {
@@ -3886,11 +4327,11 @@ function renderAdmin() {
     list.innerHTML = validLots.map(l => {
       const b = buildingById(l.buildingId);
       return `<div class="parking-card flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 shadow-sm">
-        <div>
-          <p class="font-bold text-[#262447] dark:text-[#c4b5fd]">${lName(l)}</p>
+        <div class="min-w-0 flex-1">
+          <p class="font-bold text-[#262447] dark:text-[#c4b5fd] truncate">${lName(l)}</p>
           <p class="text-xs text-[#8f9bb3] dark:text-[#6d7796] mt-0.5">${t('near_prefix', { building: b ? bName(b) : '-' })} · ${t('from_total', { cap: l.capacity })}</p>
         </div>
-        <div class="flex items-center gap-2 self-end sm:self-auto">
+        <div class="flex shrink-0 items-center justify-end gap-2 self-end sm:self-auto">
           <div class="flex items-center gap-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] p-1 bg-[#f8fafd] dark:bg-[#121324]">
             <button type="button" onclick="adjustLot('${l.id}',-1)" class="interactive-btn rounded-lg p-1.5 hover:bg-white dark:hover:bg-[#222442] text-[#5a627a] dark:text-[#9da7c5]" aria-label="Decrease available spots"><i data-lucide="minus" class="h-3.5 w-3.5"></i></button>
             <b class="min-w-[2.5rem] px-1.5 text-center font-bold text-sm text-[#96A4DD] dark:text-[#D9B1E6] tabular-nums whitespace-nowrap inline-block">${l.available}</b>
@@ -3980,6 +4421,13 @@ function renderAdmin() {
         const roleBadgeClass = isAdminUser 
           ? 'bg-[#A680C2]/20 text-[#A680C2] dark:text-[#D9B1E6] border border-[#A680C2]/30' 
           : 'bg-[#95BBE6]/20 text-[#262447] dark:text-[#95BBE6] border border-[#95BBE6]/30';
+        const isProtected = (u.username || '').toLowerCase() === 'ardeshir' || (u.username || '').toLowerCase() === 'project alpine' || (u.username || '').toLowerCase() === (state.currentUser || '').toLowerCase();
+        const terminateBtn = !isProtected ? `
+          <button type="button" onclick="adminTerminateUser('${(u.username || '').replace(/'/g, "\\'")}')" class="interactive-btn flex items-center gap-1.5 rounded-xl border border-rose-200 dark:border-rose-900/50 bg-rose-50 dark:bg-rose-950/30 px-3 py-1.5 text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/50 transition" title="${t('terminate_user_btn')}">
+            <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
+            <span data-i18n="terminate_user_btn">${t('terminate_user_btn')}</span>
+          </button>` : '';
+
         return `
           <div class="parking-card flex items-center justify-between rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 shadow-sm">
             <div class="flex items-center gap-3">
@@ -3994,11 +4442,37 @@ function renderAdmin() {
                 <p class="text-xs text-[#8f9bb3] dark:text-[#6d7796] mt-0.5">@${u.username}</p>
               </div>
             </div>
+            ${terminateBtn}
           </div>`;
       }).join('');
     }
   }
   if (window.lucide) lucide.createIcons();
+}
+
+async function adminTerminateUser(username) {
+  if (!username) return;
+  const confirmed = await askConfirm(t('confirm_terminate_user', { username }));
+  if (!confirmed) return;
+
+  state.users = (state.users || []).filter(u => (u.username || '').toLowerCase() !== username.toLowerCase());
+  saveStoredUsers(state.users);
+  saveState();
+
+  if (SheetsDB.isConfigured()) {
+    try {
+      await SheetsDB.deleteUser(username);
+    } catch(e) {
+      console.warn('[SheetsDB] Failed to delete user:', e);
+    }
+  }
+
+  if (typeof AppLogger !== 'undefined') {
+    AppLogger.log('action', 'admin_terminate_user', { username });
+  }
+
+  showToast(t('toast_user_terminated_title'), t('toast_user_terminated_desc', { username }), 'success');
+  renderAdmin();
 }
 
 async function adjustLot(id, change) {
@@ -4235,6 +4709,7 @@ function closeConfirm(result) {
    INITIAL BOOTSTRAP & BACKGROUND SYNC
    ========================================================================== */
 document.addEventListener('DOMContentLoaded', async () => {
+  if (typeof AppLogger !== 'undefined') AppLogger.init();
   applyTheme();
   updateLanguageUI();
   if (!state.ui.destinationBuilding && state.buildings.length) {
