@@ -147,7 +147,7 @@ body, section.app-view, header, nav, main, footer, .parking-card, .interactive-c
   position: fixed;
   top: 1rem;
   left: 50%;
-  z-index: 50;
+  z-index: 9999;
   width: 92%;
   max-width: 28rem;
   transform: translate(-50%, -24px) scale(0.94);
@@ -163,6 +163,14 @@ body, section.app-view, header, nav, main, footer, .parking-card, .interactive-c
   opacity: 1;
   pointer-events: auto;
   visibility: visible;
+}
+@keyframes notifPopBounce {
+  0% { transform: translate(-50%, -28px) scale(0.92); opacity: 0; }
+  60% { transform: translate(-50%, 4px) scale(1.02); opacity: 1; }
+  100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+}
+#toast-banner.toast-visible.notif-pop {
+  animation: notifPopBounce 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
 .badge-pop {
@@ -459,9 +467,18 @@ html.dark .hero-highlight-gradient {
 <div id="toast-banner" class="rounded-2xl p-4 shadow-2xl backdrop-blur-md border">
   <div class="flex items-start gap-3">
     <div id="toast-icon-wrap" class="mt-0.5 rounded-full p-1 text-white shadow-sm"></div>
-    <div class="flex-1">
-      <h4 id="toast-title" class="font-bold text-sm">แจ้งเตือน</h4>
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2">
+        <h4 id="toast-title" class="font-bold text-sm">แจ้งเตือน</h4>
+        <span id="toast-badge" class="hidden text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#96A4DD]/20 text-[#262447] dark:text-[#D9B1E6]">เมื่อสักครู่</span>
+      </div>
       <p id="toast-message" class="text-xs mt-0.5 leading-relaxed"></p>
+      <div id="toast-actions" class="mt-2.5 hidden flex items-center gap-2">
+        <button type="button" id="toast-action-btn" onclick="openToastNotification()" class="interactive-btn inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-[#96A4DD] to-[#A680C2] px-3 py-1.5 text-xs font-bold text-[#181b2e] dark:text-[#0e0f1a] shadow-sm hover:opacity-95">
+          <i data-lucide="bell" class="h-3.5 w-3.5"></i>
+          <span data-i18n="view_notification_btn">ดูการแจ้งเตือน</span>
+        </button>
+      </div>
     </div>
     <button type="button" onclick="hideToast()" class="rounded-lg p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition"><i data-lucide="x" class="h-4 w-4"></i></button>
   </div>
@@ -879,7 +896,7 @@ html.dark .hero-highlight-gradient {
     <div class="mt-4 grid grid-cols-3 divide-x divide-[#e2e8f4] dark:divide-[#262845] rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] text-center shadow-sm">
       <div class="p-4"><b id="route-time" class="block text-xl text-[#262447] dark:text-[#c4b5fd]">-</b><span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="walk_minutes">นาที่ที่ใช้เดินทาง</span></div>
       <div class="p-4"><b id="route-distance" class="block text-xl text-[#262447] dark:text-[#c4b5fd]">-</b><span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="meters_unit">เมตร</span></div>
-      <div class="p-4"><i data-lucide="car-front" class="mx-auto h-5 w-5 text-[#96A4DD] dark:text-[#D9B1E6]"></i><span id="route-lot-name" class="mt-1 block text-xs text-[#5a627a] dark:text-[#9da7c5]">-</span></div>
+      <div class="p-4"><b id="route-lot-available" class="block text-xl text-[#96A4DD] dark:text-[#D9B1E6]">-</b><span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="nav_spots_available">ที่จอดว่างคงเหลือ</span><span id="route-lot-name" class="hidden"></span></div>
     </div>
     
     <!-- ACTIVE PARKING CHECKOUT SECTION (In Destination View) -->
@@ -1155,8 +1172,23 @@ html.dark .hero-highlight-gradient {
 <!-- NOTIFICATIONS -->
 <section id="user-notifications" class="app-view bg-[#f7f9fd] dark:bg-[#0e0f1a]">
   <div class="mx-auto max-w-3xl px-5 pb-16 pt-6">
-    <button type="button" onclick="showView('user-dashboard')" class="mb-6 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd] interactive-btn"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
-    <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="notif_title">การแจ้งเตือน</h1>
+    <div class="flex items-center justify-between mb-6">
+      <button type="button" onclick="showView('user-dashboard')" class="inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd] interactive-btn"><i data-lucide="arrow-left" class="h-5 w-5"></i><span data-i18n="back">กลับ</span></button>
+      <div class="flex items-center gap-2">
+        <button type="button" id="btn-enable-browser-notif" onclick="requestBrowserNotificationPermission()" class="interactive-btn hidden inline-flex items-center gap-1.5 rounded-xl border border-[#96A4DD] bg-white dark:bg-[#161729] px-3 py-1.5 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] shadow-sm">
+          <i data-lucide="bell-ring" class="h-3.5 w-3.5 text-[#96A4DD]"></i>
+          <span data-i18n="enable_browser_notif_btn">เปิดการแจ้งเตือนเบราว์เซอร์</span>
+        </button>
+        <button type="button" onclick="testNotificationAction()" class="interactive-btn inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] px-3.5 py-1.5 text-xs font-bold text-[#181b2e] dark:text-[#0e0f1a] shadow-sm hover:opacity-95">
+          <i data-lucide="bell" class="h-3.5 w-3.5"></i>
+          <span data-i18n="test_notif_btn">ทดสอบการแจ้งเตือน</span>
+        </button>
+      </div>
+    </div>
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="notif_title">การแจ้งเตือน</h1>
+      <span id="notif-count-badge" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#96A4DD]/15 text-[#262447] dark:text-[#D9B1E6]"></span>
+    </div>
     <div id="notifications-list" class="mt-6 space-y-3"></div>
   </div>
 </section>
@@ -1334,7 +1366,7 @@ html.dark .hero-highlight-gradient {
         <label class="mb-1 block text-sm font-bold" data-i18n="near_bldg_label">อาคารใกล้เคียง</label>
         <select id="edit-lot-building" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3"></select>
       </div>
-      <div class="grid grid-cols-2 gap-3">
+      <div cdlass="grid grid-cols-2 gap-3">
         <div>
           <label class="mb-1 block text-sm font-bold" data-i18n="capacity_label">ความจุทั้งหมด (ช่อง)</label>
           <input id="edit-lot-capacity" type="number" min="1" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
@@ -1549,6 +1581,13 @@ const i18n = {
     submit_review_btn: "ส่งรีวิว",
     notif_title: "การแจ้งเตือน",
     no_notifications: "ยังไม่มีการแจ้งเตือน",
+    nav_spots_available: "ที่จอดว่างคงเหลือ",
+    notif_just_now: "เมื่อสักครู่",
+    view_notification_btn: "ดูการแจ้งเตือน",
+    test_notif_btn: "ทดสอบการแจ้งเตือน",
+    test_notif_msg: "ระบบการแจ้งเตือนแบบป๊อปอัปทำงานได้สมบูรณ์แล้ว!",
+    enable_browser_notif_btn: "เปิดการแจ้งเตือนเบราว์เซอร์",
+    browser_notif_enabled: "เปิดการแจ้งเตือนของเบราว์เซอร์เรียบร้อยแล้ว",
     admin_tag: "สำหรับผู้ดูแลระบบ",
     admin_heading: "จัดการลานจอดรถ",
     exit_admin: "ออกจากหน้านี้",
@@ -1827,6 +1866,13 @@ const i18n = {
     submit_review_btn: "Submit Review",
     notif_title: "Notifications",
     no_notifications: "No notifications yet",
+    nav_spots_available: "Spots Available",
+    notif_just_now: "Just now",
+    view_notification_btn: "View Notification",
+    test_notif_btn: "Test Notification",
+    test_notif_msg: "Notification pop-up system is working properly!",
+    enable_browser_notif_btn: "Enable Browser Notifications",
+    browser_notif_enabled: "Browser notifications successfully enabled",
     admin_tag: "Administrator Portal",
     admin_heading: "Manage Parking Lots",
     exit_admin: "Exit Admin Portal",
@@ -2019,11 +2065,16 @@ function showToast(title, message, type = 'info') {
   const tTitle = document.getElementById('toast-title');
   const tMsg = document.getElementById('toast-message');
   const tIconWrap = document.getElementById('toast-icon-wrap');
+  const tBadge = document.getElementById('toast-badge');
+  const tActions = document.getElementById('toast-actions');
   if (!toast) return;
 
   clearTimeout(toastTimeout);
   tTitle.textContent = title;
   tMsg.textContent = message;
+  if (tBadge) tBadge.classList.add('hidden');
+  if (tActions) tActions.classList.add('hidden');
+  toast.classList.remove('notif-pop');
 
   toast.className = 'rounded-2xl p-4 shadow-2xl backdrop-blur-md border ';
   
@@ -2051,7 +2102,130 @@ function showToast(title, message, type = 'info') {
 
 function hideToast() {
   const toast = document.getElementById('toast-banner');
-  if (toast) toast.classList.remove('toast-visible');
+  if (toast) {
+    toast.classList.remove('toast-visible', 'notif-pop');
+  }
+}
+
+function showNotificationPopup(text, options = {}) {
+  const toast = document.getElementById('toast-banner');
+  const tTitle = document.getElementById('toast-title');
+  const tMsg = document.getElementById('toast-message');
+  const tIconWrap = document.getElementById('toast-icon-wrap');
+  const tBadge = document.getElementById('toast-badge');
+  const tActions = document.getElementById('toast-actions');
+  if (!toast) return;
+
+  clearTimeout(toastTimeout);
+  if (tTitle) tTitle.textContent = options.title || t('notif_title');
+  if (tMsg) tMsg.textContent = text;
+  if (tBadge) {
+    tBadge.textContent = t('notif_just_now');
+    tBadge.classList.remove('hidden');
+  }
+  if (tActions) {
+    tActions.classList.remove('hidden');
+  }
+
+  toast.className = 'rounded-2xl p-4 shadow-2xl backdrop-blur-md border bg-white/95 dark:bg-[#161729]/95 border-[#96A4DD] text-[#181b2e] dark:text-[#f1f3fc] notif-pop';
+  if (tIconWrap) {
+    tIconWrap.className = 'mt-0.5 rounded-full p-2 bg-gradient-to-tr from-[#96A4DD] to-[#BF87C9] text-white shadow-md flex items-center justify-center';
+    tIconWrap.innerHTML = '<i data-lucide="bell-ring" class="h-4 w-4"></i>';
+  }
+
+  requestAnimationFrame(() => {
+    toast.classList.add('toast-visible');
+  });
+  if (window.lucide) lucide.createIcons();
+
+  playNotificationSound();
+  triggerNativeNotification(options.title || t('notif_title'), text);
+
+  toastTimeout = setTimeout(() => {
+    hideToast();
+  }, 6000);
+}
+
+function openToastNotification() {
+  hideToast();
+  showView('user-notifications');
+}
+
+function playNotificationSound() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
+    }
+    const now = ctx.currentTime;
+    const osc1 = ctx.createOscillator();
+    const gain1 = ctx.createGain();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(659.25, now);
+    gain1.gain.setValueAtTime(0.08, now);
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+    osc1.connect(gain1);
+    gain1.connect(ctx.destination);
+    osc1.start(now);
+    osc1.stop(now + 0.35);
+
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(880, now + 0.1);
+    gain2.gain.setValueAtTime(0.09, now + 0.1);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+    osc2.connect(gain2);
+    gain2.connect(ctx.destination);
+    osc2.start(now + 0.1);
+    osc2.stop(now + 0.55);
+  } catch (e) {}
+}
+
+async function requestBrowserNotificationPermission() {
+  if (typeof window !== 'undefined' && 'Notification' in window) {
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        showToast(t('notif_title'), t('browser_notif_enabled'), 'success');
+        updateNotificationPermissionUI();
+      }
+    } catch(e) {}
+  }
+}
+
+function triggerNativeNotification(title, body) {
+  if (typeof window !== 'undefined' && 'Notification' in window) {
+    if (Notification.permission === 'granted') {
+      try {
+        const notif = new Notification(title, {
+          body,
+          icon: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="%2396A4DD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>'
+        });
+        notif.onclick = () => {
+          window.focus();
+          showView('user-notifications');
+        };
+      } catch(e) {}
+    }
+  }
+}
+
+function updateNotificationPermissionUI() {
+  const btn = document.getElementById('btn-enable-browser-notif');
+  if (!btn) return;
+  if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'default') {
+    btn.classList.remove('hidden');
+  } else {
+    btn.classList.add('hidden');
+  }
+}
+
+function testNotificationAction() {
+  pushNotification(t('test_notif_msg'));
+  renderNotifications();
 }
 
 /* ==========================================================================
@@ -3103,9 +3277,26 @@ function fmtTime(ts) {
   const locale = state.settings.lang === 'en' ? 'en-US' : 'th-TH';
   return d.toLocaleString(locale, { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
 }
-function pushNotification(text) {
-  state.notifications.unshift({ id: 'n' + Date.now(), text, ts: Date.now(), read: false });
+function pushNotification(text, options = {}) {
+  const notifObj = {
+    id: 'n' + Date.now() + Math.random().toString(36).slice(2, 6),
+    text,
+    ts: Date.now(),
+    read: false,
+    type: options.type || 'info'
+  };
+  state.notifications.unshift(notifObj);
   saveState();
+  updateNotificationDot();
+  showNotificationPopup(text, options);
+}
+
+function updateNotificationDot() {
+  const hasUnread = (state.notifications || []).some(n => !n.read);
+  const dot = document.getElementById('notif-dot');
+  if (dot) {
+    dot.classList.toggle('hidden', !hasUnread);
+  }
 }
 
 /* ==========================================================================
@@ -3576,6 +3767,10 @@ function renderRoute() {
 
   if (!best) {
     document.getElementById('route-description').textContent = t('no_lots_in_system');
+    document.getElementById('route-time').textContent = '-';
+    document.getElementById('route-distance').textContent = '-';
+    const availEl = document.getElementById('route-lot-available');
+    if (availEl) availEl.textContent = '-';
     return;
   }
   const multiplier = state.ui.routeType === 'safe' ? 1.35 : 1;
@@ -3583,7 +3778,14 @@ function renderRoute() {
   document.getElementById('route-description').textContent = t('route_rec_desc', { lot: lName(best.lot) });
   document.getElementById('route-time').textContent = walkMinutes(dist);
   document.getElementById('route-distance').textContent = dist;
-  document.getElementById('route-lot-name').textContent = lName(best.lot);
+  const availEl = document.getElementById('route-lot-available');
+  if (availEl) {
+    availEl.textContent = best.lot.available;
+  }
+  const lotNameEl = document.getElementById('route-lot-name');
+  if (lotNameEl) {
+    lotNameEl.textContent = lName(best.lot);
+  }
   if (!state.activeParking) {
     document.getElementById('route-finished').classList.add('hidden');
   }
@@ -3614,7 +3816,7 @@ async function finishRoute() {
     }
     const lotTitle = best ? lName(best.lot) : '';
     const msg = t('nav_finish_notif', { lot: lotTitle });
-    pushNotification(msg);
+    pushNotification(msg, { title: t('toast_parked_success_title'), type: 'success' });
 
     // Set active parking session
     state.activeParking = {
@@ -3635,7 +3837,6 @@ async function finishRoute() {
     }
 
     document.getElementById('route-finished').classList.remove('hidden');
-    showToast(t('toast_parked_success_title'), msg, 'success');
     renderAll();
   } finally {
     finishRoute._submitting = false;
@@ -3669,8 +3870,7 @@ async function checkOutParking() {
   }
 
   const successMsg = t('toast_checkout_success_desc', { lot: lotTitle });
-  pushNotification(successMsg);
-  showToast(t('toast_checkout_success_title'), successMsg, 'success');
+  pushNotification(successMsg, { title: t('toast_checkout_success_title'), type: 'success' });
   renderAll();
 }
 
@@ -4273,22 +4473,33 @@ async function submitReview() {
 
 function renderNotifications() {
   const list = document.getElementById('notifications-list');
+  const countBadge = document.getElementById('notif-count-badge');
+  if (countBadge) {
+    countBadge.textContent = state.notifications.length ? `${state.notifications.length}` : '';
+    countBadge.classList.toggle('hidden', !state.notifications.length);
+  }
   if (!state.notifications.length) {
     list.innerHTML = `
       <div class="rounded-2xl bg-white dark:bg-[#161729] p-8 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">
         <i data-lucide="bell-off" class="h-8 w-8 mx-auto text-[#8f9bb3] mb-2"></i>
         <p class="font-bold text-sm">${t('no_notifications')}</p>
       </div>`;
+    updateNotificationDot();
+    updateNotificationPermissionUI();
     if (window.lucide) lucide.createIcons();
     return;
   }
   list.innerHTML = state.notifications.map(n => `
     <div class="rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
-      <p class="font-semibold text-[#262447] dark:text-[#c4b5fd]">${n.text}</p>
-      <p class="mt-1 text-xs text-[#8f9bb3] dark:text-[#6d7796]">${fmtTime(n.ts)}</p>
+      <div class="flex items-start justify-between gap-3">
+        <p class="font-semibold text-[#262447] dark:text-[#c4b5fd] leading-relaxed">${n.text}</p>
+        <span class="shrink-0 text-[11px] text-[#8f9bb3] dark:text-[#6d7796] mt-0.5">${fmtTime(n.ts)}</span>
+      </div>
     </div>`).join('');
   state.notifications.forEach(n => n.read = true);
   saveState();
+  updateNotificationDot();
+  updateNotificationPermissionUI();
   if (window.lucide) lucide.createIcons();
 }
 
