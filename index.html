@@ -1186,10 +1186,34 @@ html.dark .hero-highlight-gradient {
       </div>
     </div>
     <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="notif_title">การแจ้งเตือน</h1>
-      <span id="notif-count-badge" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-[#96A4DD]/15 text-[#262447] dark:text-[#D9B1E6]"></span>
+      <div>
+        <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="notif_title">การแจ้งเตือน</h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <button type="button" id="btn-mark-all-read" onclick="markAllNotificationsReadAction()" class="interactive-btn inline-flex items-center gap-1.5 rounded-xl border border-[#96A4DD]/50 bg-white/80 dark:bg-[#161729]/80 px-3 py-1.5 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#96A4DD]/15 transition shadow-sm">
+          <i data-lucide="check-check" class="h-3.5 w-3.5 text-[#96A4DD]"></i>
+          <span data-i18n="mark_all_read_btn">อ่านทั้งหมด</span>
+        </button>
+        <button type="button" id="btn-clear-all-notifs" onclick="clearAllNotificationsAction()" class="interactive-btn inline-flex items-center gap-1.5 rounded-xl border border-rose-300 dark:border-rose-900 bg-white/80 dark:bg-[#161729]/80 px-3 py-1.5 text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition shadow-sm">
+          <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
+          <span data-i18n="clear_all_notif_btn">ล้างทั้งหมด</span>
+        </button>
+      </div>
     </div>
-    <div id="notifications-list" class="mt-6 space-y-3"></div>
+
+    <!-- NOTIFICATION FILTER TABS -->
+    <div class="mt-5 flex gap-2 border-b border-[#e2e8f4] dark:border-[#262845] pb-3">
+      <button type="button" onclick="setNotifFilter('all')" id="tab-notif-all" class="chip active flex items-center gap-1.5">
+        <span data-i18n="tab_notif_all">ทั้งหมด</span>
+        <span id="notif-all-count" class="rounded-full bg-[#96A4DD]/20 px-2 py-0.5 text-[11px] font-bold">0</span>
+      </button>
+      <button type="button" onclick="setNotifFilter('unread')" id="tab-notif-unread" class="chip flex items-center gap-1.5">
+        <span data-i18n="tab_notif_unread">ยังไม่ได้อ่าน</span>
+        <span id="notif-unread-count" class="rounded-full bg-[#D9B1E6]/40 px-2 py-0.5 text-[11px] font-bold text-[#7d3c8c] dark:text-[#f3d9fa]">0</span>
+      </button>
+    </div>
+
+    <div id="notifications-list" class="mt-4 space-y-3"></div>
   </div>
 </section>
 
@@ -1588,6 +1612,16 @@ const i18n = {
     test_notif_msg: "ระบบการแจ้งเตือนแบบป๊อปอัปทำงานได้สมบูรณ์แล้ว!",
     enable_browser_notif_btn: "เปิดการแจ้งเตือนเบราว์เซอร์",
     browser_notif_enabled: "เปิดการแจ้งเตือนของเบราว์เซอร์เรียบร้อยแล้ว",
+    tab_notif_all: "ทั้งหมด",
+    tab_notif_unread: "ยังไม่ได้อ่าน",
+    mark_all_read_btn: "อ่านทั้งหมด",
+    clear_all_notif_btn: "ล้างทั้งหมด",
+    notif_status_unread: "ยังไม่ได้อ่าน",
+    notif_status_read: "อ่านแล้ว",
+    mark_as_read: "ทำเครื่องหมายว่าอ่านแล้ว",
+    mark_as_unread: "ทำเครื่องหมายว่ายังไม่ได้อ่าน",
+    confirm_clear_notifs: "คุณแน่ใจหรือไม่ว่าต้องการล้างการแจ้งเตือนทั้งหมด?",
+    no_unread_notifications: "ไม่มีการแจ้งเตือนที่ยังไม่ได้อ่าน",
     admin_tag: "สำหรับผู้ดูแลระบบ",
     admin_heading: "จัดการลานจอดรถ",
     exit_admin: "ออกจากหน้านี้",
@@ -1873,6 +1907,16 @@ const i18n = {
     test_notif_msg: "Notification pop-up system is working properly!",
     enable_browser_notif_btn: "Enable Browser Notifications",
     browser_notif_enabled: "Browser notifications successfully enabled",
+    tab_notif_all: "All",
+    tab_notif_unread: "Unread",
+    mark_all_read_btn: "Mark All as Read",
+    clear_all_notif_btn: "Clear All",
+    notif_status_unread: "Unread",
+    notif_status_read: "Read",
+    mark_as_read: "Mark as read",
+    mark_as_unread: "Mark as unread",
+    confirm_clear_notifs: "Are you sure you want to clear all notifications?",
+    no_unread_notifications: "No unread notifications",
     admin_tag: "Administrator Portal",
     admin_heading: "Manage Parking Lots",
     exit_admin: "Exit Admin Portal",
@@ -2148,6 +2192,21 @@ function showNotificationPopup(text, options = {}) {
 
 function openToastNotification() {
   hideToast();
+  if (state.notifications && state.notifications.length) {
+    const latest = state.notifications[0];
+    if (latest && !latest.read) {
+      latest.read = true;
+      saveState();
+      updateNotificationDot();
+      if (typeof AppLogger !== 'undefined') {
+        AppLogger.log('notification', 'popup_click_view', { id: latest.id, text: latest.text, user: state.currentUser || 'guest' });
+        AppLogger.flush();
+      }
+      if (SheetsDB.isConfigured()) {
+        SheetsDB.updateNotification(latest.id, { is_read: true }).catch(() => {});
+      }
+    }
+  }
   showView('user-notifications');
 }
 
@@ -2361,6 +2420,7 @@ function defaultState() {
       historyTab:'nav',
       reviewStars:5,
       searchCategory:'all',
+      notifFilter: 'all',
       isLoading: false,
       isSyncing: false,
       dbStatus: 'offline' // 'online' | 'offline' | 'checking'
@@ -2722,6 +2782,26 @@ const SheetsDB = {
           ts: parseInt(s.timestamp, 10) || Date.now()
         }));
       }
+      if (Array.isArray(res.data.notifications)) {
+        const notifMap = new Map();
+        res.data.notifications.forEach(rn => {
+          if (rn && rn.id && rn.text) {
+            notifMap.set(String(rn.id), {
+              id: String(rn.id),
+              text: rn.text,
+              ts: parseInt(rn.timestamp, 10) || Date.now(),
+              read: rn.is_read === true || rn.is_read === 'true'
+            });
+          }
+        });
+        (state.notifications || []).forEach(ln => {
+          if (ln && ln.id && !notifMap.has(String(ln.id))) {
+            notifMap.set(String(ln.id), ln);
+          }
+        });
+        state.notifications = Array.from(notifMap.values()).sort((a, b) => (b.ts || 0) - (a.ts || 0));
+        updateNotificationDot();
+      }
       saveState();
       return true;
     }
@@ -2835,6 +2915,47 @@ const SheetsDB = {
     return await this.request('POST', { action: 'deleteUser' }, {
       action: 'deleteUser',
       username: username
+    });
+  },
+
+  async saveNotification(notification) {
+    if (!this.isConfigured() || !notification) return false;
+    return await this.request('POST', { action: 'saveNotification' }, {
+      action: 'saveNotification',
+      notification
+    });
+  },
+
+  async updateNotification(id, data) {
+    if (!this.isConfigured() || !id) return false;
+    return await this.request('POST', { action: 'updateNotification' }, {
+      action: 'updateNotification',
+      id,
+      ...data
+    });
+  },
+
+  async markAllNotificationsRead(username) {
+    if (!this.isConfigured()) return false;
+    return await this.request('POST', { action: 'markAllNotificationsRead' }, {
+      action: 'markAllNotificationsRead',
+      username: username || state.currentUser || 'guest'
+    });
+  },
+
+  async deleteNotification(id) {
+    if (!this.isConfigured() || !id) return false;
+    return await this.request('POST', { action: 'deleteNotification' }, {
+      action: 'deleteNotification',
+      id
+    });
+  },
+
+  async clearNotifications(username) {
+    if (!this.isConfigured()) return false;
+    return await this.request('POST', { action: 'clearNotifications' }, {
+      action: 'clearNotifications',
+      username: username || state.currentUser || 'guest'
     });
   },
 
@@ -3289,6 +3410,29 @@ function pushNotification(text, options = {}) {
   saveState();
   updateNotificationDot();
   showNotificationPopup(text, options);
+
+  // 1. Audit Telemetry Log on Notification Delivery
+  if (typeof AppLogger !== 'undefined') {
+    AppLogger.log('notification', 'notification_delivered', {
+      id: notifObj.id,
+      text: notifObj.text,
+      type: notifObj.type,
+      recipient: state.currentUser || 'guest',
+      title: options.title || t('notif_title')
+    });
+    AppLogger.flush();
+  }
+
+  // 2. Cloud persistence to Google Sheets "Notifications" table
+  if (SheetsDB.isConfigured()) {
+    SheetsDB.saveNotification({
+      id: notifObj.id,
+      username: state.currentUser || 'guest',
+      text: notifObj.text,
+      timestamp: notifObj.ts,
+      is_read: false
+    }).catch(() => {});
+  }
 }
 
 function updateNotificationDot() {
@@ -4471,36 +4615,172 @@ async function submitReview() {
   renderAdmin();
 }
 
+function setNotifFilter(filter) {
+  if (!state.ui) state.ui = {};
+  state.ui.notifFilter = filter;
+  saveState();
+  renderNotifications();
+}
+
 function renderNotifications() {
   const list = document.getElementById('notifications-list');
-  const countBadge = document.getElementById('notif-count-badge');
-  if (countBadge) {
-    countBadge.textContent = state.notifications.length ? `${state.notifications.length}` : '';
-    countBadge.classList.toggle('hidden', !state.notifications.length);
+  const allCountEl = document.getElementById('notif-all-count');
+  const unreadCountEl = document.getElementById('notif-unread-count');
+  const tabAll = document.getElementById('tab-notif-all');
+  const tabUnread = document.getElementById('tab-notif-unread');
+  const markAllBtn = document.getElementById('btn-mark-all-read');
+  const clearAllBtn = document.getElementById('btn-clear-all-notifs');
+
+  const filter = (state.ui && state.ui.notifFilter) || 'all';
+  const notifs = state.notifications || [];
+  const totalCount = notifs.length;
+  const unreadCount = notifs.filter(n => !n.read).length;
+
+  if (allCountEl) allCountEl.textContent = totalCount;
+  if (unreadCountEl) unreadCountEl.textContent = unreadCount;
+  if (tabAll) tabAll.classList.toggle('active', filter === 'all');
+  if (tabUnread) tabUnread.classList.toggle('active', filter === 'unread');
+  if (markAllBtn) {
+    markAllBtn.disabled = unreadCount === 0;
+    markAllBtn.classList.toggle('opacity-50', unreadCount === 0);
+    markAllBtn.classList.toggle('cursor-not-allowed', unreadCount === 0);
   }
-  if (!state.notifications.length) {
+  if (clearAllBtn) {
+    clearAllBtn.disabled = totalCount === 0;
+    clearAllBtn.classList.toggle('opacity-50', totalCount === 0);
+    clearAllBtn.classList.toggle('cursor-not-allowed', totalCount === 0);
+  }
+
+  updateNotificationDot();
+  updateNotificationPermissionUI();
+
+  if (!notifs.length) {
     list.innerHTML = `
       <div class="rounded-2xl bg-white dark:bg-[#161729] p-8 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">
         <i data-lucide="bell-off" class="h-8 w-8 mx-auto text-[#8f9bb3] mb-2"></i>
         <p class="font-bold text-sm">${t('no_notifications')}</p>
       </div>`;
-    updateNotificationDot();
-    updateNotificationPermissionUI();
     if (window.lucide) lucide.createIcons();
     return;
   }
-  list.innerHTML = state.notifications.map(n => `
-    <div class="rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845]">
-      <div class="flex items-start justify-between gap-3">
-        <p class="font-semibold text-[#262447] dark:text-[#c4b5fd] leading-relaxed">${n.text}</p>
-        <span class="shrink-0 text-[11px] text-[#8f9bb3] dark:text-[#6d7796] mt-0.5">${fmtTime(n.ts)}</span>
+
+  const filtered = filter === 'unread' ? notifs.filter(n => !n.read) : notifs;
+
+  if (!filtered.length && filter === 'unread') {
+    list.innerHTML = `
+      <div class="rounded-2xl bg-white dark:bg-[#161729] p-8 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">
+        <i data-lucide="check-circle" class="h-8 w-8 mx-auto text-emerald-500 mb-2"></i>
+        <p class="font-bold text-sm">${t('no_unread_notifications')}</p>
+      </div>`;
+    if (window.lucide) lucide.createIcons();
+    return;
+  }
+
+  list.innerHTML = filtered.map(n => {
+    const isUnread = !n.read;
+    return `
+      <div onclick="toggleNotificationRead('${n.id}', event)" class="interactive-btn group relative rounded-2xl p-4 shadow-sm transition-all cursor-pointer ${
+        isUnread
+          ? 'bg-gradient-to-r from-[#CAE0DC]/20 via-white to-white dark:from-[#262447]/60 dark:via-[#161729] dark:to-[#161729] border-l-4 border-l-[#96A4DD] dark:border-l-[#D9B1E6] border border-[#96A4DD]/40 dark:border-[#A680C2]/40 shadow-md ring-1 ring-[#96A4DD]/20'
+          : 'bg-white/80 dark:bg-[#161729]/80 border border-[#e2e8f4] dark:border-[#262845] opacity-80 hover:opacity-100'
+      }">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-start gap-3 flex-1 min-w-0">
+            <span class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
+              isUnread
+                ? 'bg-gradient-to-tr from-[#96A4DD] to-[#BF87C9] text-white shadow-sm'
+                : 'bg-[#eef3fb] dark:bg-[#20223b] text-[#8f9bb3] dark:text-[#6d7796]'
+            }">
+              <i data-lucide="${isUnread ? 'bell-ring' : 'bell'}" class="h-4 w-4"></i>
+            </span>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1 text-[11px] font-bold ${
+                  isUnread
+                    ? 'text-[#96A4DD] dark:text-[#D9B1E6]'
+                    : 'text-[#8f9bb3] dark:text-[#6d7796]'
+                }">
+                  ${isUnread ? '<span class="h-2 w-2 rounded-full bg-[#BF87C9] pulse-dot"></span>' : '<i data-lucide="check" class="h-3 w-3"></i>'}
+                  ${isUnread ? t('notif_status_unread') : t('notif_status_read')}
+                </span>
+                <span class="text-[11px] text-[#8f9bb3] dark:text-[#6d7796]">· ${fmtTime(n.ts)}</span>
+              </div>
+              <p class="mt-1 font-semibold text-sm leading-relaxed ${
+                isUnread ? 'text-[#262447] dark:text-[#c4b5fd]' : 'text-[#5a627a] dark:text-[#9da7c5]'
+              }">${n.text}</p>
+            </div>
+          </div>
+          <button type="button" onclick="event.stopPropagation(); toggleNotificationRead('${n.id}', event)" class="shrink-0 rounded-xl p-2 text-xs font-semibold text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition" title="${isUnread ? t('mark_as_read') : t('mark_as_unread')}">
+            <i data-lucide="${isUnread ? 'check' : 'rotate-ccw'}" class="h-4 w-4 ${isUnread ? 'text-[#96A4DD]' : 'text-[#8f9bb3]'}"></i>
+          </button>
+        </div>
       </div>
-    </div>`).join('');
-  state.notifications.forEach(n => n.read = true);
+    `;
+  }).join('');
+
+  if (window.lucide) lucide.createIcons();
+}
+
+async function toggleNotificationRead(id, event) {
+  if (event && event.stopPropagation) event.stopPropagation();
+  const n = (state.notifications || []).find(item => String(item.id) === String(id));
+  if (!n) return;
+  n.read = !n.read;
   saveState();
   updateNotificationDot();
-  updateNotificationPermissionUI();
-  if (window.lucide) lucide.createIcons();
+  renderNotifications();
+
+  const action = n.read ? 'notification_marked_read' : 'notification_marked_unread';
+  if (typeof AppLogger !== 'undefined') {
+    AppLogger.log('notification', action, { id: n.id, text: n.text, user: state.currentUser || 'guest' });
+  }
+
+  if (SheetsDB.isConfigured()) {
+    SheetsDB.updateNotification(n.id, { is_read: n.read }).catch(() => {});
+  }
+}
+
+async function markAllNotificationsReadAction() {
+  const notifs = state.notifications || [];
+  const unreadCount = notifs.filter(n => !n.read).length;
+  if (!unreadCount) return;
+
+  notifs.forEach(n => n.read = true);
+  saveState();
+  updateNotificationDot();
+  renderNotifications();
+  showToast(t('notif_title'), t('mark_all_read_btn') + ' (' + unreadCount + ')', 'success');
+
+  if (typeof AppLogger !== 'undefined') {
+    AppLogger.log('notification', 'mark_all_read', { count: unreadCount, user: state.currentUser || 'guest' });
+    AppLogger.flush();
+  }
+
+  if (SheetsDB.isConfigured()) {
+    SheetsDB.markAllNotificationsRead(state.currentUser || 'guest').catch(() => {});
+  }
+}
+
+async function clearAllNotificationsAction() {
+  if (!state.notifications.length) return;
+  const ok = await askConfirm(t('confirm_clear_notifs'));
+  if (!ok) return;
+
+  const count = state.notifications.length;
+  state.notifications = [];
+  saveState();
+  updateNotificationDot();
+  renderNotifications();
+  showToast(t('notif_title'), t('clear_all_notif_btn'), 'info');
+
+  if (typeof AppLogger !== 'undefined') {
+    AppLogger.log('notification', 'clear_all_notifications', { count, user: state.currentUser || 'guest' });
+    AppLogger.flush();
+  }
+
+  if (SheetsDB.isConfigured()) {
+    SheetsDB.clearNotifications(state.currentUser || 'guest').catch(() => {});
+  }
 }
 
 /* ==========================================================================
