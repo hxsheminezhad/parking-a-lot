@@ -562,6 +562,73 @@ function handleAction(action, body) {
       }
     }
 
+    case 'saveNotification': {
+      const n = body.notification || body;
+      const notifData = {
+        id: String(n.id || ('n_' + Date.now())),
+        username: String(n.username || n.user || 'guest').toLowerCase(),
+        text: String(n.text || '').trim(),
+        timestamp: parseInt(n.timestamp || n.ts, 10) || Date.now(),
+        is_read: n.is_read === true || n.read === true || false
+      };
+      appendRow(SHEETS.NOTIFICATIONS, notifData);
+      return jsonResponse({ success: true, message: 'Notification saved to Google Sheets', data: notifData });
+    }
+
+    case 'updateNotification': {
+      const notifId = String(body.id || '');
+      if (!notifId) return errorResponse('Notification ID is required', 400);
+      const notifs = getRows(SHEETS.NOTIFICATIONS);
+      const idx = notifs.findIndex(r => String(r.id) === notifId);
+      if (idx >= 0) {
+        const current = notifs[idx];
+        if (typeof body.is_read !== 'undefined') current.is_read = (body.is_read === true || body.is_read === 'true');
+        if (typeof body.read !== 'undefined') current.is_read = (body.read === true || body.read === 'true');
+        updateRow(SHEETS.NOTIFICATIONS, idx + 2, current);
+        return jsonResponse({ success: true, message: 'Notification updated in Google Sheets', data: current });
+      }
+      return errorResponse('Notification not found', 404);
+    }
+
+    case 'markAllNotificationsRead': {
+      const username = String(body.username || body.user || '').toLowerCase();
+      const notifs = getRows(SHEETS.NOTIFICATIONS);
+      let updatedCount = 0;
+      notifs.forEach((r, idx) => {
+        if (!username || String(r.username || '').toLowerCase() === username) {
+          if (!r.is_read || r.is_read === 'false') {
+            r.is_read = true;
+            updateRow(SHEETS.NOTIFICATIONS, idx + 2, r);
+            updatedCount++;
+          }
+        }
+      });
+      return jsonResponse({ success: true, message: 'All notifications marked as read', count: updatedCount });
+    }
+
+    case 'deleteNotification': {
+      const notifId = String(body.id || '');
+      if (!notifId) return errorResponse('Notification ID is required', 400);
+      const notifs = getRows(SHEETS.NOTIFICATIONS);
+      const idx = notifs.findIndex(r => String(r.id) === notifId);
+      if (idx >= 0) {
+        deleteRow(SHEETS.NOTIFICATIONS, idx + 2);
+        return jsonResponse({ success: true, message: 'Notification deleted from Google Sheets' });
+      }
+      return errorResponse('Notification not found', 404);
+    }
+
+    case 'clearNotifications': {
+      const username = String(body.username || body.user || '').toLowerCase();
+      const notifs = getRows(SHEETS.NOTIFICATIONS);
+      for (let i = notifs.length - 1; i >= 0; i--) {
+        if (!username || String(notifs[i].username || '').toLowerCase() === username) {
+          deleteRow(SHEETS.NOTIFICATIONS, i + 2);
+        }
+      }
+      return jsonResponse({ success: true, message: 'Notifications cleared from Google Sheets' });
+    }
+
     case 'logEvent': {
       const log = body.log || body;
       const logEntry = {
