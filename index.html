@@ -1019,6 +1019,13 @@ html.dark .pc-car-svg {
 
     <!-- DASHBOARD STATS WITH SKELETON LOADING -->
     <div class="mt-6 grid grid-cols-3 gap-3" id="dashboard-lot-stats"></div>
+    <div id="dashboard-show-more-lots-wrap" class="mt-3 hidden text-center">
+      <button type="button" onclick="showView('user-spots-list')" class="interactive-btn inline-flex items-center gap-2 rounded-xl bg-white dark:bg-[#161729] px-4 py-2 text-xs font-bold text-[#96A4DD] dark:text-[#c4b5fd] shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]">
+        <i data-lucide="layout-grid" class="h-3.5 w-3.5"></i>
+        <span id="dashboard-show-more-text" data-i18n="show_all_lots_btn">ดูทั้งหมด</span>
+        <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
+      </button>
+    </div>
 
     <div class="mt-6 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
       <p class="text-sm font-bold" data-i18n="overview_map_title">แผนที่ลานจอดรถโดยรวม</p>
@@ -1035,6 +1042,56 @@ html.dark .pc-car-svg {
 
     <p class="mt-8 text-center text-xs text-[#5a627a] dark:text-[#9da7c5]">Developed by ให้รถในวงเวียนไปก่อน</p>
   </main>
+  <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white/95 dark:bg-[#161729]/95 py-2 backdrop-blur-md">
+    <button type="button" onclick="showView('user-dashboard')" class="nav-item active flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="home" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
+    <button type="button" onclick="showView('user-search')" class="nav-item flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
+    <button type="button" onclick="showView('user-favorites')" class="nav-item flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
+    <button type="button" onclick="showView('user-profile')" class="nav-item flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
+  </nav>
+</section>
+
+<!-- DEDICATED PARKING SPOTS DIRECTORY (S1.5) -->
+<section id="user-spots-list" class="app-view bg-[#f7f9fd] dark:bg-[#0e0f1a]">
+  <div class="mx-auto max-w-3xl px-5 pb-28 pt-6">
+    <button type="button" onclick="showView('user-dashboard')" class="mb-5 inline-flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd] interactive-btn">
+      <i data-lucide="arrow-left" class="h-5 w-5"></i>
+      <span data-i18n="back_home">กลับหน้าหลัก</span>
+    </button>
+    
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div>
+        <h1 class="text-2xl font-extrabold text-[#262447] dark:text-[#c4b5fd]" data-i18n="spots_list_title">ลานจอดรถทั้งหมด</h1>
+        <p class="mt-1 text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="spots_list_sub">สถานะความพร้อมและจำนวนที่จอดรถว่างแบบเรียลไทม์</p>
+      </div>
+      <span id="spots-total-badge" class="self-start sm:self-auto inline-flex items-center gap-1.5 rounded-full bg-[#96A4DD]/15 dark:bg-[#252347] px-3.5 py-1.5 text-xs font-bold text-[#96A4DD] dark:text-[#c4b5fd]">
+        <i data-lucide="parking-circle" class="h-4 w-4"></i>
+        <span id="spots-count-text">0 ลานจอด</span>
+      </span>
+    </div>
+
+    <!-- Search & Filter Controls -->
+    <div class="mt-5 space-y-3">
+      <div class="relative">
+        <i data-lucide="search" class="absolute left-4 top-3.5 h-5 w-5 text-[#8f9bb3]"></i>
+        <input type="text" id="spots-search-input" oninput="handleSpotsFilterChange()" class="w-full rounded-2xl bg-white dark:bg-[#161729] py-3.5 pl-12 pr-4 text-sm text-[#262447] dark:text-[#c4b5fd] placeholder-[#8f9bb3] shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845] focus:outline-none focus:ring-2 focus:ring-[#96A4DD]" placeholder="ค้นหาตามชื่อลานจอดหรืออาคารใกล้เคียง...">
+      </div>
+
+      <!-- Filter Chips -->
+      <div class="flex flex-wrap gap-2" id="spots-filter-chips">
+        <button type="button" onclick="setSpotsStatusFilter('all')" class="chip active" id="chip-spot-all" data-i18n="filter_all">ทั้งหมด</button>
+        <button type="button" onclick="setSpotsStatusFilter('available')" class="chip" id="chip-spot-available" data-i18n="status_available">มีที่ว่าง</button>
+        <button type="button" onclick="setSpotsStatusFilter('near_full')" class="chip" id="chip-spot-near-full" data-i18n="status_near_full">เกือบเต็ม</button>
+        <button type="button" onclick="setSpotsStatusFilter('full')" class="chip" id="chip-spot-full" data-i18n="status_full">เต็ม</button>
+      </div>
+    </div>
+
+    <!-- Parking Spots List Container -->
+    <div class="mt-6 space-y-3" id="spots-directory-container"></div>
+
+    <p class="mt-8 text-center text-xs text-[#5a627a] dark:text-[#9da7c5]">Developed by ให้รถในวงเวียนไปก่อน</p>
+  </div>
+
+  <!-- Bottom Navigation -->
   <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white/95 dark:bg-[#161729]/95 py-2 backdrop-blur-md">
     <button type="button" onclick="showView('user-dashboard')" class="nav-item active flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="home" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
     <button type="button" onclick="showView('user-search')" class="nav-item flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
@@ -1941,6 +1998,17 @@ const i18n = {
     already_parked_title: "คุณมีรถที่จอดอยู่แล้ว",
     already_parked_desc: "คุณได้บันทึกการจอดรถไว้แล้ว กรุณาเช็คเอาท์ก่อนเข้าจอดรอบใหม่",
     dest_active_parking_title: "การจอดรถที่กำลังใช้งานอยู่",
+    dest_active_parking_desc: "คุณกำลังจอดรถอยู่ที่ {lot name} ขอให้มีความสุขกับจุดหมายปลายทางของคุณ!",
+    spots_list_title: "ลานจอดรถทั้งหมด",
+    spots_list_sub: "สถานะความพร้อมและจำนวนที่จอดรถว่างแบบเรียลไทม์",
+    show_all_lots_btn: "ดูทั้งหมด ({count} ลานจอด)",
+    status_available: "มีที่ว่าง",
+    status_near_full: "เกือบเต็ม",
+    status_full: "เต็ม",
+    spots_search_placeholder: "ค้นหาตามชื่อลานจอดหรืออาคารใกล้เคียง...",
+    no_matching_spots: "ไม่พบลานจอดรถที่ตรงกับเงื่อนไข",
+    db_status_reconnecting: "กำลังเชื่อมต่อใหม่...",
+    filter_all: "ทั้งหมด",
     crop_avatar_title: "ปรับแต่งและครอบตัดรูปโปรไฟล์",
     crop_apply_btn: "ครอบตัด & ใช้งานรูปนี้",
     crop_cancel_btn: "ยกเลิก",
@@ -2278,6 +2346,17 @@ const i18n = {
     already_parked_title: "Already Parked",
     already_parked_desc: "You already have an active parking session. Please check out before parking again.",
     dest_active_parking_title: "Active Parking Session",
+    dest_active_parking_desc: "You're currenly parking your car in {lot name}, have fun with your destination!",
+    spots_list_title: "All Parking Spots",
+    spots_list_sub: "Real-time availability and live capacity of all parking spots",
+    show_all_lots_btn: "Show all ({count} spots)",
+    status_available: "Available",
+    status_near_full: "Almost Full",
+    status_full: "Full",
+    spots_search_placeholder: "Search by lot name or nearby building...",
+    no_matching_spots: "No parking spots match your criteria",
+    db_status_reconnecting: "Reconnecting...",
+    filter_all: "All",
     crop_avatar_title: "Crop & Adjust Profile Picture",
     crop_apply_btn: "Crop & Apply",
     crop_cancel_btn: "Cancel",
@@ -2341,8 +2420,15 @@ const i18n = {
 function t(key, params = {}) {
   const lang = state.settings && state.settings.lang ? state.settings.lang : 'th';
   let text = (i18n[lang] && i18n[lang][key]) || (i18n.th && i18n.th[key]) || key;
-  Object.keys(params).forEach(k => {
-    text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), params[k]);
+  const effectiveParams = { ...params };
+  if (effectiveParams.lot !== undefined && effectiveParams['lot name'] === undefined) {
+    effectiveParams['lot name'] = effectiveParams.lot;
+  }
+  if (effectiveParams['lot name'] !== undefined && effectiveParams.lot === undefined) {
+    effectiveParams.lot = effectiveParams['lot name'];
+  }
+  Object.keys(effectiveParams).forEach(k => {
+    text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), effectiveParams[k]);
   });
   return text;
 }
@@ -2827,81 +2913,116 @@ const SheetsDB = {
     return u.length > 15 && u.startsWith('http');
   },
 
+  _consecutiveFailures: 0,
+
   async request(method, params = {}, body = null) {
     const url = this.getUrl();
     if (!this.isConfigured()) {
       return { success: false, fallback: true, error: 'No Google Sheets API configured' };
     }
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 25000);
-
     const action = params.action || (body && body.action) || 'ping';
     const mergedPayload = Object.assign({}, params, body || {});
+    const maxRetries = 3;
+    const baseDelay = 500;
 
-    try {
-      // Strategy 1: URL query string (action + payload) + POST body for 100% redirect preservation
-      const qsParams = { action };
-      if (Object.keys(mergedPayload).length > 0) {
-        qsParams.payload = JSON.stringify(mergedPayload);
-      }
-      const qs = new URLSearchParams(qsParams).toString();
-      const targetUrl = url + (url.includes('?') ? '&' : '?') + qs;
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      const controller = new AbortController();
+      const timeoutMs = 25000 + (attempt * 5000);
+      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-      const fetchOptions = {
-        method: method,
-        signal: controller.signal,
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8'
+      try {
+        // Strategy 1: URL query string (action + payload) + POST body for 100% redirect preservation
+        const qsParams = { action };
+        if (Object.keys(mergedPayload).length > 0) {
+          qsParams.payload = JSON.stringify(mergedPayload);
         }
-      };
+        const qs = new URLSearchParams(qsParams).toString();
+        const targetUrl = url + (url.includes('?') ? '&' : '?') + qs;
 
-      if (method === 'POST' && body) {
-        fetchOptions.body = JSON.stringify(body);
-      }
-
-      const res = await fetch(targetUrl, fetchOptions);
-      clearTimeout(timeoutId);
-
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status} ${res.statusText}`);
-      }
-
-      const data = await res.json();
-      return data;
-    } catch (primaryErr) {
-      clearTimeout(timeoutId);
-      console.warn('[SheetsDB] Primary request failed, retrying with GET fallback:', primaryErr.message);
-
-      // Strategy 2: Fallback GET request if POST was blocked or dropped
-      if (method === 'POST') {
-        try {
-          const fallbackController = new AbortController();
-          const fbTimeout = setTimeout(() => fallbackController.abort(), 20000);
-
-          const fbQs = new URLSearchParams({
-            action: action,
-            payload: JSON.stringify(mergedPayload)
-          }).toString();
-
-          const fbUrl = url + (url.includes('?') ? '&' : '?') + fbQs;
-          const fbRes = await fetch(fbUrl, {
-            method: 'GET',
-            signal: fallbackController.signal,
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-          });
-          clearTimeout(fbTimeout);
-
-          if (fbRes.ok) {
-            const fbData = await fbRes.json();
-            return fbData;
+        const fetchOptions = {
+          method: method,
+          signal: controller.signal,
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
           }
-        } catch (fbErr) {
-          console.warn('[SheetsDB] GET fallback also failed:', fbErr.message);
+        };
+
+        if (method === 'POST' && body) {
+          fetchOptions.body = JSON.stringify(body);
+        }
+
+        const res = await fetch(targetUrl, fetchOptions);
+        clearTimeout(timeoutId);
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status} ${res.statusText}`);
+        }
+
+        const rawText = await res.text();
+        // Catch HTML responses from Google server contention / rate-limit pages
+        if (rawText.trim().startsWith('<') || rawText.includes('<!DOCTYPE') || rawText.includes('<html>')) {
+          throw new Error('Transient HTML error page returned by Google Sheets server');
+        }
+
+        let data;
+        try {
+          data = JSON.parse(rawText);
+        } catch (parseErr) {
+          throw new Error('Malformed JSON response from Sheets API: ' + rawText.slice(0, 80));
+        }
+
+        // If backend reports server_busy flag under heavy lock contention, retry with backoff
+        if (data && data.server_busy && attempt < maxRetries) {
+          const delay = Math.round(baseDelay * Math.pow(2, attempt) + Math.random() * 400);
+          console.warn(`[SheetsDB] Server busy on action "${action}", retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})...`);
+          await new Promise(r => setTimeout(r, delay));
+          continue;
+        }
+
+        return data;
+      } catch (primaryErr) {
+        clearTimeout(timeoutId);
+        console.warn(`[SheetsDB] Request attempt ${attempt + 1} for action "${action}" failed:`, primaryErr.message);
+
+        // Fallback GET request if POST was blocked or dropped
+        if (method === 'POST' && attempt === maxRetries) {
+          try {
+            const fallbackController = new AbortController();
+            const fbTimeout = setTimeout(() => fallbackController.abort(), 20000);
+
+            const fbQs = new URLSearchParams({
+              action: action,
+              payload: JSON.stringify(mergedPayload)
+            }).toString();
+
+            const fbUrl = url + (url.includes('?') ? '&' : '?') + fbQs;
+            const fbRes = await fetch(fbUrl, {
+              method: 'GET',
+              signal: fallbackController.signal,
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+            });
+            clearTimeout(fbTimeout);
+
+            if (fbRes.ok) {
+              const fbText = await fbRes.text();
+              if (!fbText.trim().startsWith('<')) {
+                return JSON.parse(fbText);
+              }
+            }
+          } catch (fbErr) {
+            console.warn('[SheetsDB] GET fallback also failed:', fbErr.message);
+          }
+        }
+
+        if (attempt < maxRetries) {
+          const delay = Math.round(baseDelay * Math.pow(2, attempt) + Math.random() * 400);
+          console.warn(`[SheetsDB] Retrying in ${delay}ms...`);
+          await new Promise(r => setTimeout(r, delay));
+        } else {
+          return { success: false, error: primaryErr.message };
         }
       }
-
-      return { success: false, error: primaryErr.message };
     }
   },
 
@@ -3461,6 +3582,14 @@ async function syncWithSheets(userTriggered = false) {
 function updateDbStatusUI(pingRes) {
   const isOnline = pingRes && pingRes.success;
   const latency = (pingRes && pingRes.latency) ? pingRes.latency : 240;
+
+  if (isOnline) {
+    SheetsDB._consecutiveFailures = 0;
+  } else {
+    SheetsDB._consecutiveFailures = (SheetsDB._consecutiveFailures || 0) + 1;
+  }
+  const isReconnecting = !isOnline && SheetsDB._consecutiveFailures === 1;
+
   const badge = document.getElementById('db-status-badge');
   const statusText = document.getElementById('db-status-text');
   const latInfo = document.getElementById('db-latency-info');
@@ -3473,6 +3602,9 @@ function updateDbStatusUI(pingRes) {
     if (isOnline) {
       badge.className = 'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300';
       statusText.textContent = t('db_connected_with_latency', { latency });
+    } else if (isReconnecting) {
+      badge.className = 'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300';
+      statusText.textContent = t('db_status_reconnecting');
     } else {
       badge.className = 'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300';
       statusText.textContent = t('db_status_offline');
@@ -3484,6 +3616,10 @@ function updateDbStatusUI(pingRes) {
       cloudBadge.className = 'interactive-btn flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 shadow-sm transition hover:opacity-90';
       cloudDot.className = 'h-2 w-2 rounded-full bg-emerald-500 pulse-dot';
       cloudText.textContent = `Google Sheets Live (${latency}ms)`;
+    } else if (isReconnecting) {
+      cloudBadge.className = 'interactive-btn flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800 shadow-sm transition hover:opacity-90';
+      cloudDot.className = 'h-2 w-2 rounded-full bg-amber-500 animate-pulse';
+      cloudText.textContent = t('db_status_reconnecting');
     } else {
       cloudBadge.className = 'interactive-btn flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800 shadow-sm transition hover:opacity-90';
       cloudDot.className = 'h-2 w-2 rounded-full bg-amber-500';
@@ -3496,7 +3632,7 @@ function updateDbStatusUI(pingRes) {
   }
 
   if (profileStatus) {
-    profileStatus.textContent = isOnline ? t('db_status_connected') : t('db_status_offline');
+    profileStatus.textContent = isOnline ? t('db_status_connected') : (isReconnecting ? t('db_status_reconnecting') : t('db_status_offline'));
   }
 }
 
@@ -3995,6 +4131,7 @@ function renderAll() {
   updateLanguageUI();
   renderLanding();
   renderDashboard();
+  renderSpotsList();
   renderSearchChips();
   renderSearchResults();
   renderFavorites();
@@ -4195,12 +4332,27 @@ function renderDashboard() {
         ${t('no_lots_in_system')}
       </div>`;
   } else {
-    statsBox.innerHTML = validLots.map(l => `
+    const displayLots = validLots.slice(0, 6);
+    statsBox.innerHTML = displayLots.map(l => `
       <div class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 text-center shadow-sm stat-card-anim">
         <p class="text-xs text-[#5a627a] dark:text-[#9da7c5] truncate font-medium">${lName(l)}</p>
         <p class="mt-2 text-2xl font-extrabold text-[#96A4DD] dark:text-[#c4b5fd]">${l.available}</p>
         <p class="text-[10px] text-[#8f9bb3] dark:text-[#6d7796]">${t('from_total', { cap: l.capacity })}</p>
       </div>`).join('');
+  }
+
+  // Toggle "Show More" button wrapper when more than 6 parking spots exist
+  const showMoreWrap = document.getElementById('dashboard-show-more-lots-wrap');
+  const showMoreText = document.getElementById('dashboard-show-more-text');
+  if (showMoreWrap) {
+    if (validLots.length > 6) {
+      showMoreWrap.classList.remove('hidden');
+      if (showMoreText) {
+        showMoreText.textContent = t('show_all_lots_btn', { count: validLots.length });
+      }
+    } else {
+      showMoreWrap.classList.add('hidden');
+    }
   }
 
   // Recommend the nearest parking lot right now based on true proximity
@@ -4230,6 +4382,134 @@ function renderDashboard() {
   } else {
     box.innerHTML = `<p class="text-sm text-[#5a627a] dark:text-[#9da7c5]">${t('no_lots_in_system')}</p>`;
   }
+}
+
+function setSpotsStatusFilter(status) {
+  state.ui.spotsStatusFilter = status;
+  const chipMap = {
+    'all': 'chip-spot-all',
+    'available': 'chip-spot-available',
+    'near_full': 'chip-spot-near-full',
+    'full': 'chip-spot-full'
+  };
+  Object.keys(chipMap).forEach(k => {
+    const chip = document.getElementById(chipMap[k]);
+    if (chip) chip.classList.toggle('active', k === status);
+  });
+  renderSpotsList();
+}
+
+function handleSpotsFilterChange() {
+  renderSpotsList();
+}
+
+function renderSpotsList() {
+  const container = document.getElementById('spots-directory-container');
+  if (!container) return;
+
+  const validLots = (state.lots || []).filter(l => l && l.id && l.id !== 'undefined' && (l.name || l.nameEn));
+  const query = (document.getElementById('spots-search-input')?.value || '').trim().toLowerCase();
+  const currentFilter = state.ui.spotsStatusFilter || 'all';
+
+  const filtered = validLots.filter(l => {
+    const b = buildingById(l.buildingId);
+    const nameMatch = !query ||
+      (l.name && l.name.toLowerCase().includes(query)) ||
+      (l.nameEn && l.nameEn.toLowerCase().includes(query)) ||
+      (b && b.name && b.name.toLowerCase().includes(query)) ||
+      (b && b.nameEn && b.nameEn.toLowerCase().includes(query));
+    if (!nameMatch) return false;
+
+    const avail = Number(l.available) || 0;
+    const cap = Number(l.capacity) || 1;
+    const ratio = avail / cap;
+
+    let lotStatus = 'available';
+    if (avail === 0) {
+      lotStatus = 'full';
+    } else if (ratio <= 0.2 || avail <= 3) {
+      lotStatus = 'near_full';
+    }
+
+    if (currentFilter === 'all') return true;
+    return lotStatus === currentFilter;
+  });
+
+  const countBadge = document.getElementById('spots-count-text');
+  if (countBadge) {
+    countBadge.textContent = `${filtered.length} ${state.settings?.lang === 'en' ? 'spots' : 'ลานจอด'}`;
+  }
+
+  if (!filtered.length) {
+    container.innerHTML = `
+      <div class="rounded-2xl bg-white dark:bg-[#161729] p-8 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">
+        <i data-lucide="parking-circle" class="h-8 w-8 mx-auto text-[#8f9bb3] mb-2"></i>
+        <p class="font-bold text-sm">${t('no_matching_spots')}</p>
+      </div>`;
+    if (window.lucide) lucide.createIcons();
+    return;
+  }
+
+  container.innerHTML = filtered.map(l => {
+    const b = buildingById(l.buildingId);
+    const isFav = state.favorites.includes(l.id);
+    const avail = Number(l.available) || 0;
+    const cap = Number(l.capacity) || 1;
+    const occupancy = Math.min(100, Math.max(0, Math.round(((cap - avail) / cap) * 100)));
+
+    let statusText = t('status_available');
+    let badgeClass = 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 ring-1 ring-emerald-200 dark:ring-emerald-800/40';
+    let progressColor = 'bg-emerald-500';
+
+    if (avail === 0) {
+      statusText = t('status_full');
+      badgeClass = 'bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300 ring-1 ring-red-200 dark:ring-red-800/40';
+      progressColor = 'bg-red-500';
+    } else if ((avail / cap) <= 0.2 || avail <= 3) {
+      statusText = t('status_near_full');
+      badgeClass = 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 ring-1 ring-amber-200 dark:ring-amber-800/40';
+      progressColor = 'bg-amber-500';
+    }
+
+    return `
+      <div class="parking-card rounded-2xl bg-white dark:bg-[#161729] p-4 shadow-sm ring-1 ring-[#e2e8f4] dark:ring-[#262845] transition hover:shadow-md">
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h3 class="font-bold text-base text-[#262447] dark:text-[#c4b5fd] truncate">${lName(l)}</h3>
+              <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-extrabold ${badgeClass}">
+                ${statusText}
+              </span>
+            </div>
+            <p class="mt-1 text-xs text-[#5a627a] dark:text-[#9da7c5] truncate">
+              ${b ? t('near_prefix', { building: bName(b) }) : ''}
+            </p>
+          </div>
+          <div class="flex items-center gap-1 shrink-0">
+            <button type="button" onclick="toggleFavorite('${l.id}')" class="interactive-btn rounded-xl p-2.5 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" title="Favorite">
+              <i data-lucide="heart" class="h-4 w-4 ${isFav ? 'fill-[#BF87C9] text-[#BF87C9]' : ''}"></i>
+            </button>
+            <button type="button" onclick="goToLot('${l.id}', 'user-spots-list')" class="interactive-btn inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] px-3 py-2 text-xs font-bold text-[#181b2e] dark:text-[#0e0f1a] shadow-sm hover:opacity-95">
+              <i data-lucide="navigation" class="h-3.5 w-3.5"></i>
+              <span>${state.settings?.lang === 'en' ? 'Navigate' : 'นำทาง'}</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-3.5">
+          <div class="flex items-center justify-between text-xs font-semibold text-[#5a627a] dark:text-[#9da7c5] mb-1.5">
+            <span>${t('slots_left_prefix', { avail: l.available, cap: l.capacity })}</span>
+            <span>${occupancy}%</span>
+          </div>
+          <div class="h-2 w-full overflow-hidden rounded-full bg-[#f0f4fc] dark:bg-[#20223b]">
+            <div class="h-full rounded-full ${progressColor} transition-all duration-500" style="width: ${occupancy}%"></div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  if (window.lucide) lucide.createIcons();
 }
 
 function categoryLabel(c) {
@@ -4386,7 +4666,7 @@ function renderRoute() {
       const lotTitle = lot ? lName(lot) : '-';
       const timerEl = document.getElementById('dest-parking-timer');
       const nameEl = document.getElementById('dest-parking-lot-name');
-      if (nameEl) nameEl.textContent = t('dest_active_parking_desc', { lot: lotTitle });
+      if (nameEl) nameEl.textContent = t('dest_active_parking_desc', { lot: lotTitle, 'lot name': lotTitle });
       if (timerEl) timerEl.textContent = formatDuration(state.activeParking.startTime);
     }
     if (finishRouteBtn) finishRouteBtn.classList.add('hidden');
@@ -5864,7 +6144,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Automatic periodic background sync every 45 seconds for global live data
   setInterval(() => {
     if (SheetsDB.isConfigured()) {
-      syncWithSheets(false);
+      const jitterMs = Math.floor(Math.random() * 4000);
+      setTimeout(() => syncWithSheets(false), jitterMs);
     }
   }, 45000);
 

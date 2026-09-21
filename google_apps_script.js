@@ -137,20 +137,54 @@ function doPost(e) {
   }
 }
 
+const WRITE_ACTIONS = new Set([
+  'init', 'testWrite', 'cleanupDatabase',
+  'saveBuilding', 'deleteBuilding',
+  'saveLot', 'deleteLot', 'adjustLotAvailability',
+  'register', 'login', 'updateProfile', 'deleteUser',
+  'recordParking', 'recordCheckOut',
+  'saveSearch', 'toggleFavorite',
+  'saveReview', 'saveNotification', 'updateNotification',
+  'markAllNotificationsRead', 'deleteNotification', 'clearNotifications',
+  'logEvent', 'logEvents'
+]);
+
 /**
- * Central Action Dispatcher
+ * Central Action Dispatcher with Concurrency Locking
  */
 function handleAction(action, body) {
-  switch (action) {
-    case 'ping':
-      return jsonResponse({
-        success: true,
-        status: 'online',
-        message: 'Parking-A-Lot Google Sheets API is connected and active!',
-        spreadsheetName: getSpreadsheet().getName(),
-        sheets: getSpreadsheet().getSheets().map(s => s.getName()),
-        timestamp: new Date().toISOString()
-      });
+  const isWrite = WRITE_ACTIONS.has(action);
+  let lock = null;
+  let lockAcquired = false;
+
+  if (isWrite) {
+    try {
+      lock = LockService.getScriptLock();
+      lockAcquired = lock.tryLock(15000); // Wait up to 15 seconds for concurrent writes
+      if (!lockAcquired) {
+        return jsonResponse({
+          success: false,
+          server_busy: true,
+          error: 'Spreadsheet database is currently busy processing concurrent operations. Please retry shortly.',
+          code: 503
+        });
+      }
+    } catch (lockErr) {
+      // If LockService is unavailable or throws, log and proceed with safe execution
+    }
+  }
+
+  try {
+    switch (action) {
+      case 'ping':
+        return jsonResponse({
+          success: true,
+          status: 'online',
+          message: 'Parking-A-Lot Google Sheets API is connected and active!',
+          spreadsheetName: getSpreadsheet().getName(),
+          sheets: getSpreadsheet().getSheets().map(s => s.getName()),
+          timestamp: new Date().toISOString()
+        });
 
     case 'init':
       initializeDatabase(true);
@@ -668,6 +702,13 @@ function handleAction(action, body) {
 
     default:
       return errorResponse('Unknown action: ' + action, 400);
+    }
+  } finally {
+    if (lockAcquired && lock) {
+      try {
+        lock.releaseLock();
+      } catch (relErr) {}
+    }
   }
 }
 
@@ -680,21 +721,39 @@ function jsonResponse(obj) {
 }
 
 /**
- * Send error response
+ * Send error response with concurrency resilience indicators
  */
 function errorResponse(msg, code) {
+  const isBusy = (code === 503) || 
+    (typeof msg === 'string' && (
+      msg.includes('busy') || 
+      msg.includes('contention') || 
+      msg.includes('failed while accessing document') ||
+      msg.includes('Service Spreadsheets failed')
+    ));
+
   return ContentService.createTextOutput(JSON.stringify({
     success: false,
     error: msg,
-    code: code || 400,
+    server_busy: isBusy,
+    code: code || (isBusy ? 503 : 400),
     timestamp: Date.now()
   })).setMimeType(ContentService.MimeType.JSON);
 }
 
 /**
- * Initialize all database sheets and default seed data
+ * Initialize all database sheets and default seed data (Optimized with ScriptCache)
  */
 function initializeDatabase(forceRefresh) {
+  if (!forceRefresh) {
+    try {
+      const cache = CacheService.getScriptCache();
+      if (cache && cache.get('db_initialized_v2')) {
+        return;
+      }
+    } catch(e) {}
+  }
+
   const ss = getSpreadsheet();
   const sheetKeys = Object.keys(SCHEMAS);
 
@@ -790,6 +849,10 @@ function initializeDatabase(forceRefresh) {
   } catch(e) {}
 
   SpreadsheetApp.flush();
+  try {
+    const cache = CacheService.getScriptCache();
+    if (cache) cache.put('db_initialized_v2', 'true', 21600); // 6 hours
+  } catch(e) {}
 }
 
 /**
