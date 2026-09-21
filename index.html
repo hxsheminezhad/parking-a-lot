@@ -40,6 +40,8 @@
   }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..72,100..1000&family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
@@ -184,6 +186,24 @@ body, section.app-view, header, nav, main, footer, .parking-card, .interactive-c
 .grid-map{background-color:var(--grid-bg);background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:26px 26px}
 .route-line{stroke-dasharray:8 9;animation:dash 2s linear infinite}
 @keyframes dash{to{stroke-dashoffset:-34}}
+
+.leaflet-container {
+  font-family: inherit !important;
+  background-color: var(--grid-bg) !important;
+}
+.dark .leaflet-tile {
+  filter: brightness(0.7) invert(1) contrast(2.6) hue-rotate(200deg) saturate(0.3) brightness(0.85);
+}
+.leaflet-popup-content-wrapper {
+  background: var(--card-bg) !important;
+  color: var(--ink) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid var(--card-border) !important;
+}
+.leaflet-popup-tip {
+  background: var(--card-bg) !important;
+}
 
 .nav-item{
   color:var(--ink-secondary);
@@ -837,9 +857,18 @@ html.dark .hero-highlight-gradient {
     <div class="mt-6 grid grid-cols-3 gap-3" id="dashboard-lot-stats"></div>
 
     <div class="mt-6 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
-      <p class="text-sm font-bold" data-i18n="overview_map_title">แผนที่ลานจอดรถโดยรวม</p>
-      <p class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="overview_map_sub">ตำแหน่งลานจอดรถเทียบกับอาคารทั้งหมด</p>
-      <svg id="overview-map" viewBox="0 0 100 100" class="mt-3 h-48 w-full rounded-2xl grid-map"></svg>
+      <div class="flex items-center justify-between mb-3">
+        <div>
+          <p class="text-sm font-bold" data-i18n="overview_map_title">แผนที่ลานจอดรถโดยรวม</p>
+          <p class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="overview_map_sub">ตำแหน่งลานจอดรถเทียบกับอาคารทั้งหมด</p>
+        </div>
+        <a href="https://www.google.com/maps/place/Khon+Kaen+University/@16.4744103,102.819444,17z/data=!3m1!4b1!4m6!3m5!1s0x31228a8eb01c96f3:0xf6a47b89e419df87!8m2!3d16.4744103!4d102.8220243!16zL20vMGJzMGd3?authuser=0&entry=ttu" target="_blank" rel="noopener noreferrer" class="interactive-btn inline-flex items-center gap-1.5 rounded-xl bg-[#f7f9fd] dark:bg-[#20223b] px-3 py-1.5 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] border border-[#e2e8f4] dark:border-[#2f3357] hover:bg-[#eef3fb] dark:hover:bg-[#282a4a]">
+          <i data-lucide="map" class="h-3.5 w-3.5 text-[#96A4DD] dark:text-[#D9B1E6]"></i>
+          <span data-i18n="kku_campus_map">แผนที่มหาวิทยาลัยขอนแก่น</span>
+        </a>
+      </div>
+      <div id="overview-leaflet-map" class="h-56 w-full rounded-2xl overflow-hidden border border-[#e2e8f4] dark:border-[#262845] z-0"></div>
+      <svg id="overview-map" viewBox="0 0 100 100" class="hidden mt-3 h-48 w-full rounded-2xl grid-map"></svg>
     </div>
 
     <div class="mt-6 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
@@ -892,7 +921,22 @@ html.dark .hero-highlight-gradient {
       <button type="button" onclick="setRouteType('fast')" id="route-type-fast" class="chip active flex-1" data-i18n="route_fast">เส้นทางที่ใกล้ที่สุด</button>
       <button type="button" onclick="setRouteType('safe')" id="route-type-safe" class="chip flex-1" data-i18n="route_safe">เส้นทางที่ปลอดภัยที่สุด</button>
     </div>
-    <svg id="route-map" viewBox="0 0 100 100" class="mt-4 h-56 w-full rounded-2xl grid-map border border-[#e2e8f4] dark:border-[#262845]"></svg>
+    
+    <!-- KKU CAMPUS ROUTE MAP CONTAINER -->
+    <div class="relative mt-4 overflow-hidden rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] shadow-sm">
+      <div class="flex items-center justify-between border-b border-[#e2e8f4] dark:border-[#262845] px-4 py-2.5 bg-[#f7f9fd] dark:bg-[#191830]">
+        <div class="flex items-center gap-2">
+          <i data-lucide="map-pin" class="h-4 w-4 text-[#96A4DD] dark:text-[#D9B1E6]"></i>
+          <span class="text-xs font-bold text-[#262447] dark:text-[#c4b5fd]" data-i18n="kku_campus_map">แผนที่มหาวิทยาลัยขอนแก่น</span>
+        </div>
+        <a id="btn-open-google-maps" href="https://www.google.com/maps/place/Khon+Kaen+University/@16.4744103,102.819444,17z/data=!3m1!4b1!4m6!3m5!1s0x31228a8eb01c96f3:0xf6a47b89e419df87!8m2!3d16.4744103!4d102.8220243!16zL20vMGJzMGd3?authuser=0&entry=ttu" target="_blank" rel="noopener noreferrer" class="interactive-btn inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-[#262845] px-2.5 py-1 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] shadow-sm border border-[#e2e8f4] dark:border-[#383b5e] hover:bg-[#eef3fb] dark:hover:bg-[#2f3254]">
+          <i data-lucide="external-link" class="h-3.5 w-3.5 text-[#96A4DD] dark:text-[#D9B1E6]"></i>
+          <span data-i18n="open_google_maps">เปิดใน Google Maps</span>
+        </a>
+      </div>
+      <div id="route-leaflet-map" class="h-64 w-full z-0"></div>
+      <svg id="route-map" viewBox="0 0 100 100" class="hidden h-64 w-full grid-map border border-[#e2e8f4] dark:border-[#262845]"></svg>
+    </div>
     <div class="mt-4 grid grid-cols-3 divide-x divide-[#e2e8f4] dark:divide-[#262845] rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] text-center shadow-sm">
       <div class="p-4"><b id="route-time" class="block text-xl text-[#262447] dark:text-[#c4b5fd]">-</b><span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="walk_minutes">นาที่ที่ใช้เดินทาง</span></div>
       <div class="p-4"><b id="route-distance" class="block text-xl text-[#262447] dark:text-[#c4b5fd]">-</b><span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="meters_unit">เมตร</span></div>
@@ -1318,10 +1362,10 @@ html.dark .hero-highlight-gradient {
           </select>
         </div>
         <div>
-          <label class="mb-1 block text-sm font-bold" data-i18n="bldg_lat_lng">ตำแหน่งบนแผนที่ (Lat, Lng: 5-95)</label>
+          <label class="mb-1 block text-sm font-bold" data-i18n="bldg_lat_lng">พิกัดบนแผนที่ (Latitude, Longitude)</label>
           <div class="grid grid-cols-2 gap-2">
-            <input id="new-bldg-lat" type="number" min="5" max="95" value="50" placeholder="Lat (5-95)" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
-            <input id="new-bldg-lng" type="number" min="5" max="95" value="50" placeholder="Lng (5-95)" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+            <input id="new-bldg-lat" type="number" step="any" min="-90" max="90" value="16.474410" placeholder="Latitude (เช่น 16.474410)" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+            <input id="new-bldg-lng" type="number" step="any" min="-180" max="180" value="102.822024" placeholder="Longitude (เช่น 102.822024)" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
           </div>
         </div>
       </div>
@@ -1738,7 +1782,11 @@ const i18n = {
     bldg_name_th: "ชื่ออาคาร (ไทย)",
     bldg_name_en: "ชื่ออาคาร (English)",
     bldg_category: "หมวดหมู่อาคาร",
-    bldg_lat_lng: "ตำแหน่งบนแผนที่ (Lat, Lng: 5-95)",
+    bldg_lat_lng: "พิกัดบนแผนที่ (Latitude, Longitude)",
+    kku_campus_map: "แผนที่มหาวิทยาลัยขอนแก่น",
+    open_google_maps: "เปิดใน Google Maps",
+    view_interactive_map: "แผนที่มหาวิทยาลัย",
+    view_google_map: "เปิดพิกัด Google Maps",
     add_bldg_btn: "เพิ่มอาคาร",
     confirm_delete_bldg: 'ยืนยันการลบอาคาร "{name}" หรือไม่? ลานจอดรถที่ผูกกับอาคารนี้อาจได้รับผลกระทบ',
     toast_bldg_added: "เพิ่มอาคารสำเร็จและบันทึกลงระบบแล้ว",
@@ -2033,7 +2081,11 @@ const i18n = {
     bldg_name_th: "Building Name (Thai)",
     bldg_name_en: "Building Name (English)",
     bldg_category: "Building Category",
-    bldg_lat_lng: "Map Coordinates (Lat, Lng: 5-95)",
+    bldg_lat_lng: "Map Coordinates (Latitude, Longitude)",
+    kku_campus_map: "Khon Kaen University Map",
+    open_google_maps: "Open in Google Maps",
+    view_interactive_map: "Campus Map",
+    view_google_map: "Open Google Maps",
     add_bldg_btn: "Add Building",
     confirm_delete_bldg: 'Confirm deleting building "{name}"? Lots associated with this building may be affected.',
     toast_bldg_added: "Building added and saved to system",
@@ -2393,18 +2445,23 @@ function defaultState() {
       sheetsApiUrl: configuredSheets || DEFAULT_SHEETS_URL
     },
     buildings: [
-      {id:'b1', name:'อาคารเรียนรวม', nameEn:'Complex Lecture Building', category:'classroom', lat:40, lng:60},
-      {id:'b2', name:'คณะวิศวกรรมศาสตร์', nameEn:'Faculty of Engineering', category:'classroom', lat:78, lng:28},
-      {id:'b3', name:'หอสมุดกลาง', nameEn:'Central Library', category:'classroom', lat:18, lng:78},
-      {id:'b4', name:'อาคารสำนักงานอธิการบดี', nameEn:"President's Office Building", category:'office', lat:58, lng:12},
-      {id:'b5', name:'คณะเกษตรศาสตร์', nameEn:'Faculty of Agriculture', category:'classroom', lat:88, lng:70},
-      {id:'b6', name:'สำนักบริการวิชาการ', nameEn:'Academic Services Bureau', category:'office', lat:10, lng:38},
-      {id:'b7', name:'คณะนิติศาสตร์', nameEn:'Faculty of Law', category:'classroom', lat:60, lng:60}
+      {id:'b1', name:'อาคารเรียนรวม', nameEn:'Complex Lecture Building', category:'classroom', lat:16.477709, lng:102.823193},
+      {id:'b2', name:'คณะวิศวกรรมศาสตร์', nameEn:'Faculty of Engineering', category:'classroom', lat:16.472547, lng:102.822909},
+      {id:'b3', name:'หอสมุดกลาง', nameEn:'Central Library', category:'classroom', lat:16.476550, lng:102.823233},
+      {id:'b4', name:'อาคารสำนักงานอธิการบดี', nameEn:"President's Office Building", category:'office', lat:16.470774, lng:102.815123},
+      {id:'b5', name:'คณะเกษตรศาสตร์', nameEn:'Faculty of Agriculture', category:'classroom', lat:16.476408, lng:102.821869},
+      {id:'b6', name:'สำนักบริการวิชาการ', nameEn:'Academic Services Bureau', category:'office', lat:16.474176, lng:102.827053},
+      {id:'b7', name:'คณะนิติศาสตร์', nameEn:'Faculty of Law', category:'classroom', lat:16.450197, lng:102.815270}
     ],
     lots: [
-      {id:'lot-1788616909712', name:'ลานจอดรถคณะวิศวกรรมศาสตร์', nameEn:'Faculty of Engineering Parking Lot', buildingId:'b2', capacity:200, available:200, lat:76.44, lng:28.90},
-      {id:'lot-1788618155580', name:'ลานจอดรถคณะนิติศาสตร์ - ลาน A', nameEn:'Faculty of Law - Lot A', buildingId:'b7', capacity:300, available:300, lat:86.16, lng:68.39},
-      {id:'lot-1788618208479', name:'ลานจอดรถคณะนิติศาสตร์ - ลาน B', nameEn:'Faculty of Law - Lot B', buildingId:'b7', capacity:300, available:300, lat:89.68, lng:68.62}
+      {id:'lot-1788616909712', name:'ลานจอดรถคณะวิศวกรรมศาสตร์', nameEn:'Faculty of Engineering Parking Lot', buildingId:'b2', capacity:200, available:200, lat:16.472900, lng:102.823400},
+      {id:'lot-1788618155580', name:'ลานจอดรถคณะนิติศาสตร์ - ลาน A', nameEn:'Faculty of Law - Lot A', buildingId:'b7', capacity:300, available:300, lat:16.450600, lng:102.815600},
+      {id:'lot-1788618208479', name:'ลานจอดรถคณะนิติศาสตร์ - ลาน B', nameEn:'Faculty of Law - Lot B', buildingId:'b7', capacity:300, available:300, lat:16.449800, lng:102.815000},
+      {id:'lot-complex', name:'ลานจอดรถศูนย์อาหารคอมเพล็กซ์', nameEn:'KKU Complex Parking Lot', buildingId:'b1', capacity:150, available:150, lat:16.477950, lng:102.823600},
+      {id:'lot-library', name:'ลานจอดรถสำนักหอสมุดกลาง', nameEn:'Central Library Parking Lot', buildingId:'b3', capacity:120, available:120, lat:16.476850, lng:102.823500},
+      {id:'lot-president', name:'ลานจอดรถสำนักงานอธิการบดี อาคารสิริคุณากร', nameEn:'President Office Sirikunakorn Parking Lot', buildingId:'b4', capacity:180, available:180, lat:16.471050, lng:102.815400},
+      {id:'lot-agri', name:'ลานจอดรถคณะเกษตรศาสตร์', nameEn:'Faculty of Agriculture Parking Lot', buildingId:'b5', capacity:100, available:100, lat:16.476700, lng:102.822200},
+      {id:'lot-academic', name:'ลานจอดรถสำนักบริการวิชาการ อาคารพิมล กลกิจ', nameEn:'Academic Services Parking Lot', buildingId:'b6', capacity:150, available:150, lat:16.474450, lng:102.827350}
     ],
     users: getStoredUsers(),
     currentUser: null,
@@ -2474,6 +2531,45 @@ function loadState() {
 
   if (Array.isArray(s.buildings)) {
     s.buildings = s.buildings.filter(b => b && String(b.id || '').trim() && String(b.id || '').trim() !== 'undefined' && String(b.id || '').trim() !== 'null' && String(b.name || '').trim() && String(b.name || '').trim() !== 'undefined');
+  }
+
+  // Migrate legacy coordinates to authentic Khon Kaen University coordinates
+  const KKU_DEFAULT_BLDGS = {
+    'b1': { lat: 16.477709, lng: 102.823193 },
+    'b2': { lat: 16.472547, lng: 102.822909 },
+    'b3': { lat: 16.476550, lng: 102.823233 },
+    'b4': { lat: 16.470774, lng: 102.815123 },
+    'b5': { lat: 16.476408, lng: 102.821869 },
+    'b6': { lat: 16.474176, lng: 102.827053 },
+    'b7': { lat: 16.450197, lng: 102.815270 }
+  };
+  const KKU_DEFAULT_LOTS = {
+    'lot-1788616909712': { lat: 16.472900, lng: 102.823400 },
+    'lot-1788618155580': { lat: 16.450600, lng: 102.815600 },
+    'lot-1788618208479': { lat: 16.449800, lng: 102.815000 }
+  };
+
+  if (Array.isArray(s.buildings)) {
+    s.buildings.forEach(b => {
+      if (b && KKU_DEFAULT_BLDGS[b.id] && (b.lat < 15 || b.lat > 18 || b.lng < 100 || b.lng > 105)) {
+        b.lat = KKU_DEFAULT_BLDGS[b.id].lat;
+        b.lng = KKU_DEFAULT_BLDGS[b.id].lng;
+      }
+    });
+  }
+  if (Array.isArray(s.lots)) {
+    s.lots.forEach(l => {
+      if (l && KKU_DEFAULT_LOTS[l.id] && (l.lat < 15 || l.lat > 18 || l.lng < 100 || l.lng > 105)) {
+        l.lat = KKU_DEFAULT_LOTS[l.id].lat;
+        l.lng = KKU_DEFAULT_LOTS[l.id].lng;
+      }
+    });
+    const existingLotIds = new Set(s.lots.map(l => l.id));
+    defaultState().lots.forEach(defLot => {
+      if (!existingLotIds.has(defLot.id)) {
+        s.lots.push(defLot);
+      }
+    });
   }
 
   return s;
@@ -3373,8 +3469,27 @@ function lName(l) {
 }
 
 function distanceMeters(a, b) {
-  const dx = a.lat - b.lat, dy = a.lng - b.lng;
-  return Math.round(Math.sqrt(dx * dx + dy * dy) * 14);
+  if (!a || !b) return 0;
+  const lat1 = parseFloat(a.lat) || 0;
+  const lon1 = parseFloat(a.lng) || 0;
+  const lat2 = parseFloat(b.lat) || 0;
+  const lon2 = parseFloat(b.lng) || 0;
+
+  // Fallback for legacy 0-100 grid coordinates
+  if (lat1 < 10 && lat2 < 10) {
+    const dx = lat1 - lat2, dy = lon1 - lon2;
+    return Math.max(10, Math.round(Math.sqrt(dx * dx + dy * dy) * 14));
+  }
+
+  // Authentic GPS Haversine calculation
+  const R = 6371000; // Earth radius in meters
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const sa = Math.sin(dLat / 2);
+  const so = Math.sin(dLon / 2);
+  const aVal = sa * sa + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * so * so;
+  const c = 2 * Math.atan2(Math.sqrt(aVal), Math.sqrt(1 - aVal));
+  return Math.max(10, Math.round(R * c));
 }
 function walkMinutes(m) { return Math.max(1, Math.round(m / 75)); }
 function lotById(id) {
@@ -3637,12 +3752,16 @@ function renderAll() {
 
 function drawAllMaps() {
   drawMap('overview-map', null);
+  renderLeafletOverview();
   const view = document.getElementById('user-map');
   if (view && view.classList.contains('active')) {
     const building = buildingById(state.ui.destinationBuilding) || state.buildings[0];
     if (building) {
       const best = nearestLot(building);
-      if (best) drawMap('route-map', { lot: best.lot, building, safe: state.ui.routeType === 'safe' });
+      if (best) {
+        drawMap('route-map', { lot: best.lot, building, safe: state.ui.routeType === 'safe' });
+        renderLeafletRoute({ lot: best.lot, building, safe: state.ui.routeType === 'safe' });
+      }
     }
   }
 }
@@ -3934,6 +4053,7 @@ function renderRoute() {
     document.getElementById('route-finished').classList.add('hidden');
   }
   drawMap('route-map', { lot: best.lot, building, safe: state.ui.routeType === 'safe' });
+  renderLeafletRoute({ lot: best.lot, building, safe: state.ui.routeType === 'safe' });
   if (window.lucide) lucide.createIcons();
 }
 
@@ -4030,6 +4150,20 @@ function showActiveParkingMap() {
   }
 }
 
+function projectCoordsToSvg(lat, lng) {
+  const pLat = parseFloat(lat) || 0;
+  const pLng = parseFloat(lng) || 0;
+  if (pLat <= 100 && pLng <= 100 && pLat < 15) {
+    return { x: pLat, y: pLng };
+  }
+  // KKU Bounding box
+  const minLat = 16.445, maxLat = 16.485;
+  const minLng = 102.810, maxLng = 102.835;
+  const x = Math.max(6, Math.min(94, ((pLng - minLng) / (maxLng - minLng)) * 80 + 10));
+  const y = Math.max(6, Math.min(94, 100 - (((pLat - minLat) / (maxLat - minLat)) * 80 + 10)));
+  return { x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10 };
+}
+
 function drawMap(svgId, route) {
   const svg = document.getElementById(svgId);
   if (!svg) return;
@@ -4040,23 +4174,178 @@ function drawMap(svgId, route) {
   const routeLineStroke = isDark ? '#D9B1E6' : '#BF87C9';
 
   let markers = '';
-  state.buildings.forEach(b => {
+  (state.buildings || []).forEach(b => {
+    const pt = projectCoordsToSvg(b.lat, b.lng);
     const name = bName(b);
-    markers += `<circle cx="${b.lat}" cy="${b.lng}" r="2.4" fill="${bldgDotFill}"></circle><text x="${b.lat + 3}" y="${b.lng + 1}" font-size="3.2" font-weight="600" fill="${bldgTextFill}">${name.length > 10 ? name.slice(0, 9) + '…' : name}</text>`;
+    markers += `<circle cx="${pt.x}" cy="${pt.y}" r="2.4" fill="${bldgDotFill}"></circle><text x="${pt.x + 3}" y="${pt.y + 1}" font-size="3.2" font-weight="600" fill="${bldgTextFill}">${name.length > 10 ? name.slice(0, 9) + '…' : name}</text>`;
   });
-  state.lots.forEach(l => {
-    markers += `<circle cx="${l.lat}" cy="${l.lng}" r="2.8" fill="${lotDotFill}"></circle>`;
+  (state.lots || []).forEach(l => {
+    const pt = projectCoordsToSvg(l.lat, l.lng);
+    markers += `<circle cx="${pt.x}" cy="${pt.y}" r="2.8" fill="${lotDotFill}"></circle>`;
   });
   let line = '';
-  if (route) {
-    const mid = route.safe ? `${(route.lot.lat + route.building.lat) / 2 + 8},${(route.lot.lng + route.building.lng) / 2 - 8}` : '';
+  if (route && route.building && route.lot) {
+    const bPt = projectCoordsToSvg(route.building.lat, route.building.lng);
+    const lPt = projectCoordsToSvg(route.lot.lat, route.lot.lng);
+    const mid = route.safe ? `${(lPt.x + bPt.x) / 2 + 8},${(lPt.y + bPt.y) / 2 - 8}` : '';
     const path = route.safe
-      ? `M${route.lot.lat},${route.lot.lng} Q${mid} ${route.building.lat},${route.building.lng}`
-      : `M${route.lot.lat},${route.lot.lng} L${route.building.lat},${route.building.lng}`;
+      ? `M${lPt.x},${lPt.y} Q${mid} ${bPt.x},${bPt.y}`
+      : `M${lPt.x},${lPt.y} L${bPt.x},${bPt.y}`;
     line = `<path d="${path}" fill="none" stroke="${routeLineStroke}" stroke-width="1.6" class="route-line"></path>
-      <circle cx="${route.building.lat}" cy="${route.building.lng}" r="3.4" fill="none" stroke="${routeLineStroke}" stroke-width="1.2"></circle>`;
+      <circle cx="${bPt.x}" cy="${bPt.y}" r="3.4" fill="none" stroke="${routeLineStroke}" stroke-width="1.2"></circle>`;
   }
   svg.innerHTML = line + markers;
+}
+
+let leafletOverviewMap = null;
+let leafletRouteMap = null;
+
+function renderLeafletOverview() {
+  const container = document.getElementById('overview-leaflet-map');
+  if (!container) return;
+  if (typeof L === 'undefined') {
+    container.classList.add('hidden');
+    const svg = document.getElementById('overview-map');
+    if (svg) { svg.classList.remove('hidden'); drawMap('overview-map', null); }
+    return;
+  }
+  container.classList.remove('hidden');
+
+  const center = [16.4744103, 102.8220243];
+  const isDark = getEffectiveTheme() === 'dark';
+  const tileUrl = isDark 
+    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+    : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+
+  if (!leafletOverviewMap) {
+    leafletOverviewMap = L.map('overview-leaflet-map', {
+      center: center,
+      zoom: 15,
+      zoomControl: true,
+      attributionControl: false
+    });
+    leafletOverviewMap._tileLayer = L.tileLayer(tileUrl, { maxZoom: 19 }).addTo(leafletOverviewMap);
+  } else {
+    if (leafletOverviewMap._tileLayer) leafletOverviewMap._tileLayer.setUrl(tileUrl);
+    setTimeout(() => { if (leafletOverviewMap) leafletOverviewMap.invalidateSize(); }, 60);
+  }
+
+  if (leafletOverviewMap._markerGroup) {
+    leafletOverviewMap.removeLayer(leafletOverviewMap._markerGroup);
+  }
+  const group = L.featureGroup();
+
+  (state.buildings || []).forEach(b => {
+    if (!b || isNaN(parseFloat(b.lat)) || isNaN(parseFloat(b.lng))) return;
+    const marker = L.circleMarker([parseFloat(b.lat), parseFloat(b.lng)], {
+      radius: 6,
+      fillColor: '#96A4DD',
+      color: '#262447',
+      weight: 2,
+      opacity: 1,
+      fillOpacity: 0.95
+    });
+    marker.bindPopup(`<b>${bName(b)}</b><br><small class="text-slate-500">${categoryLabel(b.category)}</small><br><button type="button" onclick="goToBuilding('${b.id}')" class="mt-2 inline-flex items-center gap-1 rounded bg-[#96A4DD] px-2.5 py-1 text-xs text-white font-bold">${t('select_destination')}</button>`);
+    group.addLayer(marker);
+  });
+
+  (state.lots || []).forEach(l => {
+    if (!l || isNaN(parseFloat(l.lat)) || isNaN(parseFloat(l.lng))) return;
+    const isAvail = (parseInt(l.available, 10) || 0) > 0;
+    const marker = L.circleMarker([parseFloat(l.lat), parseFloat(l.lng)], {
+      radius: 7,
+      fillColor: isAvail ? '#10b981' : '#ef4444',
+      color: '#ffffff',
+      weight: 2,
+      opacity: 1,
+      fillOpacity: 0.95
+    });
+    marker.bindPopup(`<b>${lName(l)}</b><br><span>ว่าง: <b class="${isAvail ? 'text-emerald-600' : 'text-red-600'}">${l.available}</b> / ${l.capacity}</span>`);
+    group.addLayer(marker);
+  });
+
+  group.addTo(leafletOverviewMap);
+  leafletOverviewMap._markerGroup = group;
+}
+
+function renderLeafletRoute(route) {
+  const container = document.getElementById('route-leaflet-map');
+  if (!container) return;
+  if (typeof L === 'undefined') {
+    container.classList.add('hidden');
+    const svg = document.getElementById('route-map');
+    if (svg) { svg.classList.remove('hidden'); drawMap('route-map', route); }
+    return;
+  }
+  container.classList.remove('hidden');
+
+  const center = [16.4744103, 102.8220243];
+  const isDark = getEffectiveTheme() === 'dark';
+  const tileUrl = isDark 
+    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+    : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+
+  if (!leafletRouteMap) {
+    leafletRouteMap = L.map('route-leaflet-map', {
+      center: center,
+      zoom: 16,
+      zoomControl: true,
+      attributionControl: false
+    });
+    leafletRouteMap._tileLayer = L.tileLayer(tileUrl, { maxZoom: 19 }).addTo(leafletRouteMap);
+  } else {
+    if (leafletRouteMap._tileLayer) leafletRouteMap._tileLayer.setUrl(tileUrl);
+    setTimeout(() => { if (leafletRouteMap) leafletRouteMap.invalidateSize(); }, 60);
+  }
+
+  if (leafletRouteMap._routeGroup) {
+    leafletRouteMap.removeLayer(leafletRouteMap._routeGroup);
+  }
+  const group = L.featureGroup();
+
+  if (route && route.building && route.lot) {
+    const bPos = [parseFloat(route.building.lat), parseFloat(route.building.lng)];
+    const lPos = [parseFloat(route.lot.lat), parseFloat(route.lot.lng)];
+
+    const bMarker = L.marker(bPos).bindPopup(`<b>${bName(route.building)}</b><br><small>${t('destination_label')}</small>`);
+    group.addLayer(bMarker);
+
+    const lMarker = L.circleMarker(lPos, {
+      radius: 9,
+      fillColor: '#10b981',
+      color: '#ffffff',
+      weight: 3,
+      fillOpacity: 1
+    }).bindPopup(`<b>${lName(route.lot)}</b><br><span>ว่าง: <b>${route.lot.available}</b> / ${route.lot.capacity}</span>`);
+    group.addLayer(lMarker);
+
+    const routeLine = L.polyline([lPos, bPos], {
+      color: '#96A4DD',
+      weight: 5,
+      opacity: 0.85,
+      dashArray: route.safe ? '8, 8' : undefined
+    });
+    group.addLayer(routeLine);
+
+    const gmapsBtn = document.getElementById('btn-open-google-maps');
+    if (gmapsBtn) {
+      gmapsBtn.href = `https://www.google.com/maps/dir/?api=1&origin=${route.lot.lat},${route.lot.lng}&destination=${route.building.lat},${route.building.lng}&travelmode=walking`;
+    }
+
+    group.addTo(leafletRouteMap);
+    leafletRouteMap._routeGroup = group;
+    setTimeout(() => {
+      if (leafletRouteMap) {
+        leafletRouteMap.invalidateSize();
+        try {
+          leafletRouteMap.fitBounds(group.getBounds(), { padding: [45, 45], maxZoom: 17 });
+        } catch(e) {}
+      }
+    }, 80);
+  } else {
+    group.addTo(leafletRouteMap);
+    leafletRouteMap._routeGroup = group;
+  }
 }
 
 async function toggleFavorite(lotId) {
@@ -5039,8 +5328,10 @@ async function addBuilding() {
   const name = (document.getElementById('new-bldg-name')?.value || '').trim();
   const nameEn = (document.getElementById('new-bldg-name-en')?.value || '').trim() || name;
   const category = document.getElementById('new-bldg-category')?.value || 'classroom';
-  const lat = Math.max(5, Math.min(95, parseFloat(document.getElementById('new-bldg-lat')?.value) || 50));
-  const lng = Math.max(5, Math.min(95, parseFloat(document.getElementById('new-bldg-lng')?.value) || 50));
+  const rawLat = parseFloat(document.getElementById('new-bldg-lat')?.value);
+  const rawLng = parseFloat(document.getElementById('new-bldg-lng')?.value);
+  const lat = !isNaN(rawLat) ? Math.max(-90, Math.min(90, rawLat)) : 16.474410;
+  const lng = !isNaN(rawLng) ? Math.max(-180, Math.min(180, rawLng)) : 102.822024;
   const msg = document.getElementById('admin-bldg-message');
   const btn = document.getElementById('btn-add-bldg');
   const btnText = document.getElementById('add-bldg-text');
@@ -5126,8 +5417,8 @@ async function addLot() {
     buildingId,
     capacity,
     available: capacity,
-    lat: b ? b.lat + (Math.random() * 4 - 2) : 50,
-    lng: b ? b.lng + (Math.random() * 4 - 2) : 50
+    lat: b ? (b.lat + (Math.random() * 0.0008 - 0.0004)) : 16.474410,
+    lng: b ? (b.lng + (Math.random() * 0.0008 - 0.0004)) : 102.822024
   };
 
   state.lots.push(newLot);
