@@ -205,6 +205,12 @@ body, section.app-view, header, nav, main, footer, .parking-card, .interactive-c
   background: var(--card-bg) !important;
 }
 
+#overview-leaflet-map, #route-leaflet-map, #overview-gmaps-iframe, #route-gmaps-iframe {
+  min-height: 250px !important;
+  height: 260px !important;
+  width: 100% !important;
+}
+
 .nav-item{
   color:var(--ink-secondary);
   transition:all .22s cubic-bezier(0.16,1,0.3,1);
@@ -572,6 +578,38 @@ html.dark .hero-highlight-gradient {
         </div>
       </div>
 
+      <!-- GOOGLE MAPS API KEY CONNECTOR -->
+      <div id="modal-gmaps-section" class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-[#f8fafd] dark:bg-[#1c1d33] p-4 space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i data-lucide="map-pin" class="h-4 w-4 text-[#96A4DD] dark:text-[#BF87C9]"></i>
+            <span class="text-xs font-bold uppercase tracking-wider text-[#262447] dark:text-[#c4b5fd]" data-i18n="gmaps_api_title">Google Maps API Key</span>
+          </div>
+          <span id="gmaps-status-badge" class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+            <span id="gmaps-status-text" data-i18n="gmaps_free_mode">ใช้งานฟรี (ไม่ต้องใช้คีย์)</span>
+          </span>
+        </div>
+
+        <p class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="gmaps_api_desc">ระบบแสดงแผนที่ มข. ได้ทันทีโดยไม่ต้องใช้ API Key หากต้องการใช้บริการเสริม Google Maps JavaScript API สามารถระบุ API Key ที่นี่</p>
+
+        <div class="space-y-1.5">
+          <label class="block text-[11px] font-semibold text-[#5a627a] dark:text-[#9da7c5]" data-i18n="gmaps_key_label">API Key (จาก Google Cloud Console)</label>
+          <input id="gmaps-api-key-input" type="text" placeholder="AIzaSy..." class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-3 py-2 text-xs font-mono">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" onclick="saveGoogleMapsApiKey()" id="btn-save-gmaps-key" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-2 text-xs font-extrabold text-[#181b2e] dark:text-[#0e0f1a] shadow-sm hover:opacity-95">
+            <i data-lucide="check" class="h-3.5 w-3.5"></i>
+            <span data-i18n="save_gmaps_key_btn">บันทึก API Key</span>
+          </button>
+          <button type="button" onclick="clearGoogleMapsApiKey()" id="btn-clear-gmaps-key" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-3 py-2 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]">
+            <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
+            <span data-i18n="clear_gmaps_key_btn">ใช้โหมดฟรี (ล้างคีย์)</span>
+          </button>
+        </div>
+      </div>
+
       <!-- LANGUAGE SELECTOR -->
       <div>
         <label class="block text-xs font-bold uppercase tracking-wider text-[#5a627a] dark:text-[#9da7c5] mb-2" data-i18n="language_label">ภาษา / Language</label>
@@ -857,17 +895,24 @@ html.dark .hero-highlight-gradient {
     <div class="mt-6 grid grid-cols-3 gap-3" id="dashboard-lot-stats"></div>
 
     <div class="mt-6 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
-      <div class="flex items-center justify-between mb-3">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
         <div>
           <p class="text-sm font-bold" data-i18n="overview_map_title">แผนที่ลานจอดรถโดยรวม</p>
           <p class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="overview_map_sub">ตำแหน่งลานจอดรถเทียบกับอาคารทั้งหมด</p>
         </div>
-        <a href="https://www.google.com/maps/place/Khon+Kaen+University/@16.4744103,102.819444,17z/data=!3m1!4b1!4m6!3m5!1s0x31228a8eb01c96f3:0xf6a47b89e419df87!8m2!3d16.4744103!4d102.8220243!16zL20vMGJzMGd3?authuser=0&entry=ttu" target="_blank" rel="noopener noreferrer" class="interactive-btn inline-flex items-center gap-1.5 rounded-xl bg-[#f7f9fd] dark:bg-[#20223b] px-3 py-1.5 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] border border-[#e2e8f4] dark:border-[#2f3357] hover:bg-[#eef3fb] dark:hover:bg-[#282a4a]">
-          <i data-lucide="map" class="h-3.5 w-3.5 text-[#96A4DD] dark:text-[#D9B1E6]"></i>
-          <span data-i18n="kku_campus_map">แผนที่มหาวิทยาลัยขอนแก่น</span>
-        </a>
+        <div class="flex items-center gap-2">
+          <div class="inline-flex rounded-xl bg-[#f0f4fc] dark:bg-[#20223b] p-1 text-[11px] font-bold border border-[#e2e8f4] dark:border-[#2f3357]">
+            <button type="button" id="btn-toggle-overview-interactive" onclick="switchOverviewMapMode('interactive')" class="rounded-lg px-2.5 py-1 bg-white dark:bg-[#2f3254] text-[#262447] dark:text-[#c4b5fd] shadow-sm transition" data-i18n="tab_map_interactive">แผนที่โต้ตอบ</button>
+            <button type="button" id="btn-toggle-overview-gmaps" onclick="switchOverviewMapMode('gmaps')" class="rounded-lg px-2.5 py-1 text-[#5a627a] dark:text-[#9da7c5] hover:text-[#262447] dark:hover:text-white transition" data-i18n="tab_map_google">Google Maps</button>
+          </div>
+          <a href="https://www.google.com/maps/place/Khon+Kaen+University/@16.4744103,102.819444,17z/data=!3m1!4b1!4m6!3m5!1s0x31228a8eb01c96f3:0xf6a47b89e419df87!8m2!3d16.4744103!4d102.8220243!16zL20vMGJzMGd3?authuser=0&entry=ttu" target="_blank" rel="noopener noreferrer" class="interactive-btn inline-flex items-center gap-1.5 rounded-xl bg-[#f7f9fd] dark:bg-[#20223b] px-3 py-1.5 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] border border-[#e2e8f4] dark:border-[#2f3357] hover:bg-[#eef3fb] dark:hover:bg-[#282a4a]">
+            <i data-lucide="map" class="h-3.5 w-3.5 text-[#96A4DD] dark:text-[#D9B1E6]"></i>
+            <span data-i18n="kku_campus_map">แผนที่มหาวิทยาลัยขอนแก่น</span>
+          </a>
+        </div>
       </div>
       <div id="overview-leaflet-map" class="h-56 w-full rounded-2xl overflow-hidden border border-[#e2e8f4] dark:border-[#262845] z-0"></div>
+      <iframe id="overview-gmaps-iframe" src="https://maps.google.com/maps?q=16.4744103,102.8220243&z=16&output=embed" class="hidden h-56 w-full rounded-2xl border border-[#e2e8f4] dark:border-[#262845]" title="Khon Kaen University Google Map"></iframe>
       <svg id="overview-map" viewBox="0 0 100 100" class="hidden mt-3 h-48 w-full rounded-2xl grid-map"></svg>
     </div>
 
@@ -924,17 +969,24 @@ html.dark .hero-highlight-gradient {
     
     <!-- KKU CAMPUS ROUTE MAP CONTAINER -->
     <div class="relative mt-4 overflow-hidden rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] shadow-sm">
-      <div class="flex items-center justify-between border-b border-[#e2e8f4] dark:border-[#262845] px-4 py-2.5 bg-[#f7f9fd] dark:bg-[#191830]">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#e2e8f4] dark:border-[#262845] px-4 py-2 bg-[#f7f9fd] dark:bg-[#191830]">
         <div class="flex items-center gap-2">
           <i data-lucide="map-pin" class="h-4 w-4 text-[#96A4DD] dark:text-[#D9B1E6]"></i>
           <span class="text-xs font-bold text-[#262447] dark:text-[#c4b5fd]" data-i18n="kku_campus_map">แผนที่มหาวิทยาลัยขอนแก่น</span>
         </div>
-        <a id="btn-open-google-maps" href="https://www.google.com/maps/place/Khon+Kaen+University/@16.4744103,102.819444,17z/data=!3m1!4b1!4m6!3m5!1s0x31228a8eb01c96f3:0xf6a47b89e419df87!8m2!3d16.4744103!4d102.8220243!16zL20vMGJzMGd3?authuser=0&entry=ttu" target="_blank" rel="noopener noreferrer" class="interactive-btn inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-[#262845] px-2.5 py-1 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] shadow-sm border border-[#e2e8f4] dark:border-[#383b5e] hover:bg-[#eef3fb] dark:hover:bg-[#2f3254]">
-          <i data-lucide="external-link" class="h-3.5 w-3.5 text-[#96A4DD] dark:text-[#D9B1E6]"></i>
-          <span data-i18n="open_google_maps">เปิดใน Google Maps</span>
-        </a>
+        <div class="flex items-center gap-1.5">
+          <div class="inline-flex rounded-xl bg-[#f0f4fc] dark:bg-[#20223b] p-1 text-[11px] font-bold border border-[#e2e8f4] dark:border-[#2f3357]">
+            <button type="button" id="btn-toggle-map-interactive" onclick="switchMapMode('interactive')" class="rounded-lg px-2.5 py-1 bg-white dark:bg-[#2f3254] text-[#262447] dark:text-[#c4b5fd] shadow-sm transition" data-i18n="tab_map_interactive">แผนที่โต้ตอบ</button>
+            <button type="button" id="btn-toggle-map-gmaps" onclick="switchMapMode('gmaps')" class="rounded-lg px-2.5 py-1 text-[#5a627a] dark:text-[#9da7c5] hover:text-[#262447] dark:hover:text-white transition" data-i18n="tab_map_google">Google Maps</button>
+          </div>
+          <a id="btn-open-google-maps" href="https://www.google.com/maps/place/Khon+Kaen+University/@16.4744103,102.819444,17z/data=!3m1!4b1!4m6!3m5!1s0x31228a8eb01c96f3:0xf6a47b89e419df87!8m2!3d16.4744103!4d102.8220243!16zL20vMGJzMGd3?authuser=0&entry=ttu" target="_blank" rel="noopener noreferrer" class="interactive-btn inline-flex items-center gap-1 rounded-lg bg-white dark:bg-[#262845] px-2.5 py-1 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] shadow-sm border border-[#e2e8f4] dark:border-[#383b5e] hover:bg-[#eef3fb] dark:hover:bg-[#2f3254]">
+            <i data-lucide="external-link" class="h-3.5 w-3.5 text-[#96A4DD] dark:text-[#D9B1E6]"></i>
+            <span data-i18n="open_google_maps">เปิดใน Google Maps</span>
+          </a>
+        </div>
       </div>
       <div id="route-leaflet-map" class="h-64 w-full z-0"></div>
+      <iframe id="route-gmaps-iframe" src="https://maps.google.com/maps?q=16.4744103,102.8220243&z=16&output=embed" class="hidden h-64 w-full border-0" title="KKU Navigation Google Map"></iframe>
       <svg id="route-map" viewBox="0 0 100 100" class="hidden h-64 w-full grid-map border border-[#e2e8f4] dark:border-[#262845]"></svg>
     </div>
     <div class="mt-4 grid grid-cols-3 divide-x divide-[#e2e8f4] dark:divide-[#262845] rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] text-center shadow-sm">
@@ -1787,6 +1839,17 @@ const i18n = {
     open_google_maps: "เปิดใน Google Maps",
     view_interactive_map: "แผนที่มหาวิทยาลัย",
     view_google_map: "เปิดพิกัด Google Maps",
+    gmaps_api_title: "Google Maps API Key",
+    gmaps_free_mode: "ใช้งานฟรี (ไม่ต้องใช้คีย์)",
+    gmaps_connected_mode: "เชื่อมต่อ API Key แล้ว",
+    gmaps_api_desc: "ระบบแสดงแผนที่ มข. ได้ทันทีโดยไม่ต้องใช้ API Key หากต้องการใช้บริการเสริม Google Maps JavaScript API สามารถระบุ API Key ที่นี่",
+    gmaps_key_label: "API Key (จาก Google Cloud Console)",
+    save_gmaps_key_btn: "บันทึก API Key",
+    clear_gmaps_key_btn: "ใช้โหมดฟรี (ล้างคีย์)",
+    toast_gmaps_saved: "บันทึก Google Maps API Key สำเร็จแล้ว",
+    toast_gmaps_cleared: "เปลี่ยนกลับมาใช้งานแผนที่โหมดฟรีแล้ว",
+    tab_map_interactive: "แผนที่โต้ตอบ",
+    tab_map_google: "Google Maps",
     add_bldg_btn: "เพิ่มอาคาร",
     confirm_delete_bldg: 'ยืนยันการลบอาคาร "{name}" หรือไม่? ลานจอดรถที่ผูกกับอาคารนี้อาจได้รับผลกระทบ',
     toast_bldg_added: "เพิ่มอาคารสำเร็จและบันทึกลงระบบแล้ว",
@@ -2086,6 +2149,17 @@ const i18n = {
     open_google_maps: "Open in Google Maps",
     view_interactive_map: "Campus Map",
     view_google_map: "Open Google Maps",
+    gmaps_api_title: "Google Maps API Key",
+    gmaps_free_mode: "Free Mode (No Key Needed)",
+    gmaps_connected_mode: "API Key Connected",
+    gmaps_api_desc: "KKU map is visible immediately without any API key. If you wish to use Google Maps JavaScript API, you can specify your API key here.",
+    gmaps_key_label: "API Key (from Google Cloud Console)",
+    save_gmaps_key_btn: "Save API Key",
+    clear_gmaps_key_btn: "Use Free Mode (Clear Key)",
+    toast_gmaps_saved: "Google Maps API Key saved successfully",
+    toast_gmaps_cleared: "Switched back to Free Map mode",
+    tab_map_interactive: "Interactive",
+    tab_map_google: "Google Maps",
     add_bldg_btn: "Add Building",
     confirm_delete_bldg: 'Confirm deleting building "{name}"? Lots associated with this building may be affected.',
     toast_bldg_added: "Building added and saved to system",
@@ -2438,11 +2512,13 @@ function saveStoredUsers(usersList) {
 
 function defaultState() {
   const configuredSheets = (localStorage.getItem(SHEETS_CONFIG_KEY) || '').trim();
+  const configuredGmapsKey = (localStorage.getItem('parking_gmaps_api_key') || '').trim();
   return {
     settings: {
       lang: 'th',
       theme: 'system',
-      sheetsApiUrl: configuredSheets || DEFAULT_SHEETS_URL
+      sheetsApiUrl: configuredSheets || DEFAULT_SHEETS_URL,
+      googleMapsApiKey: configuredGmapsKey
     },
     buildings: [
       {id:'b1', name:'อาคารเรียนรวม', nameEn:'Complex Lecture Building', category:'classroom', lat:16.477709, lng:102.823193},
@@ -2492,6 +2568,7 @@ function loadState() {
     if (raw) {
       const parsed = JSON.parse(raw);
       const configuredUrl = (localStorage.getItem(SHEETS_CONFIG_KEY) || parsed.settings?.sheetsApiUrl || '').trim();
+      const configuredGmapsKey = (localStorage.getItem('parking_gmaps_api_key') || parsed.settings?.googleMapsApiKey || '').trim();
       s = {
         ...s,
         ...parsed,
@@ -2499,7 +2576,8 @@ function loadState() {
         settings: {
           ...s.settings,
           ...(parsed.settings || {}),
-          sheetsApiUrl: configuredUrl || DEFAULT_SHEETS_URL
+          sheetsApiUrl: configuredUrl || DEFAULT_SHEETS_URL,
+          googleMapsApiKey: configuredGmapsKey
         },
         ui: { ...s.ui, ...(parsed.ui || {}), isLoading: false, isSyncing: false }
       };
@@ -3422,6 +3500,7 @@ function toggleQuickSettings(show) {
     }
 
     updateThemeUI();
+    updateGoogleMapsKeyUI();
     SheetsDB.ping().then(res => updateDbStatusUI(res));
   }
 }
@@ -3445,6 +3524,20 @@ function showView(id) {
     if (target) target.classList.add('active');
     renderAll();
     window.scrollTo({ top: 0, behavior: 'instant' });
+
+    // Robust map invalidation when showing map-containing views
+    if (id === 'user-dashboard' || id === 'user-map') {
+      [50, 150, 350, 600].forEach(delay => {
+        setTimeout(() => {
+          if (id === 'user-dashboard' && leafletOverviewMap) {
+            leafletOverviewMap.invalidateSize();
+          }
+          if (id === 'user-map' && leafletRouteMap) {
+            leafletRouteMap.invalidateSize();
+          }
+        }, delay);
+      });
+    }
   };
 
   if (document.startViewTransition) {
@@ -4199,6 +4292,139 @@ function drawMap(svgId, route) {
 
 let leafletOverviewMap = null;
 let leafletRouteMap = null;
+let lastRouteData = null;
+let overviewMapMode = 'interactive';
+let routeMapMode = 'interactive';
+
+function switchOverviewMapMode(mode) {
+  overviewMapMode = mode;
+  const leafletEl = document.getElementById('overview-leaflet-map');
+  const gmapsEl = document.getElementById('overview-gmaps-iframe');
+  const btnInteractive = document.getElementById('btn-toggle-overview-interactive');
+  const btnGmaps = document.getElementById('btn-toggle-overview-gmaps');
+
+  if (mode === 'gmaps') {
+    if (leafletEl) leafletEl.classList.add('hidden');
+    if (gmapsEl) gmapsEl.classList.remove('hidden');
+    if (btnInteractive) {
+      btnInteractive.className = 'rounded-lg px-2.5 py-1 text-[#5a627a] dark:text-[#9da7c5] hover:text-[#262447] dark:hover:text-white transition';
+    }
+    if (btnGmaps) {
+      btnGmaps.className = 'rounded-lg px-2.5 py-1 bg-white dark:bg-[#2f3254] text-[#262447] dark:text-[#c4b5fd] shadow-sm transition';
+    }
+  } else {
+    if (leafletEl) leafletEl.classList.remove('hidden');
+    if (gmapsEl) gmapsEl.classList.add('hidden');
+    if (btnInteractive) {
+      btnInteractive.className = 'rounded-lg px-2.5 py-1 bg-white dark:bg-[#2f3254] text-[#262447] dark:text-[#c4b5fd] shadow-sm transition';
+    }
+    if (btnGmaps) {
+      btnGmaps.className = 'rounded-lg px-2.5 py-1 text-[#5a627a] dark:text-[#9da7c5] hover:text-[#262447] dark:hover:text-white transition';
+    }
+    renderLeafletOverview();
+    setTimeout(() => {
+      if (leafletOverviewMap) leafletOverviewMap.invalidateSize();
+    }, 50);
+  }
+}
+
+function switchMapMode(mode) {
+  routeMapMode = mode;
+  const leafletEl = document.getElementById('route-leaflet-map');
+  const gmapsEl = document.getElementById('route-gmaps-iframe');
+  const btnInteractive = document.getElementById('btn-toggle-map-interactive');
+  const btnGmaps = document.getElementById('btn-toggle-map-gmaps');
+
+  if (mode === 'gmaps') {
+    if (leafletEl) leafletEl.classList.add('hidden');
+    if (gmapsEl) gmapsEl.classList.remove('hidden');
+    if (btnInteractive) {
+      btnInteractive.className = 'rounded-lg px-2.5 py-1 text-[#5a627a] dark:text-[#9da7c5] hover:text-[#262447] dark:hover:text-white transition';
+    }
+    if (btnGmaps) {
+      btnGmaps.className = 'rounded-lg px-2.5 py-1 bg-white dark:bg-[#2f3254] text-[#262447] dark:text-[#c4b5fd] shadow-sm transition';
+    }
+  } else {
+    if (leafletEl) leafletEl.classList.remove('hidden');
+    if (gmapsEl) gmapsEl.classList.add('hidden');
+    if (btnInteractive) {
+      btnInteractive.className = 'rounded-lg px-2.5 py-1 bg-white dark:bg-[#2f3254] text-[#262447] dark:text-[#c4b5fd] shadow-sm transition';
+    }
+    if (btnGmaps) {
+      btnGmaps.className = 'rounded-lg px-2.5 py-1 text-[#5a627a] dark:text-[#9da7c5] hover:text-[#262447] dark:hover:text-white transition';
+    }
+    if (lastRouteData) {
+      renderLeafletRoute(lastRouteData);
+    }
+    setTimeout(() => {
+      if (leafletRouteMap) leafletRouteMap.invalidateSize();
+    }, 50);
+  }
+}
+
+let googleMapsScriptLoaded = false;
+function loadGoogleMapsScript(key) {
+  if (!key || googleMapsScriptLoaded || document.getElementById('google-maps-api-script')) return;
+  googleMapsScriptLoaded = true;
+  const script = document.createElement('script');
+  script.id = 'google-maps-api-script';
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}`;
+  script.async = true;
+  script.defer = true;
+  script.onload = () => {
+    console.log('Google Maps JavaScript API loaded successfully');
+  };
+  script.onerror = () => {
+    console.warn('Failed to load Google Maps JavaScript API with provided key');
+  };
+  document.head.appendChild(script);
+}
+
+function updateGoogleMapsKeyUI() {
+  const key = (state.settings?.googleMapsApiKey || localStorage.getItem('parking_gmaps_api_key') || '').trim();
+  const input = document.getElementById('gmaps-api-key-input');
+  if (input && input.value !== key && document.activeElement !== input) {
+    input.value = key;
+  }
+  const badge = document.getElementById('gmaps-status-badge');
+  const text = document.getElementById('gmaps-status-text');
+  if (badge && text) {
+    if (key) {
+      badge.className = 'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-800';
+      text.textContent = t('gmaps_connected_mode');
+    } else {
+      badge.className = 'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800';
+      text.textContent = t('gmaps_free_mode');
+    }
+  }
+}
+
+function saveGoogleMapsApiKey() {
+  const input = document.getElementById('gmaps-api-key-input');
+  const key = (input ? input.value : '').trim();
+  localStorage.setItem('parking_gmaps_api_key', key);
+  if (!state.settings) state.settings = {};
+  state.settings.googleMapsApiKey = key;
+  saveState();
+  updateGoogleMapsKeyUI();
+  if (key) {
+    loadGoogleMapsScript(key);
+    showToast(t('toast_gmaps_saved'), t('gmaps_connected_mode'), 'success');
+  } else {
+    showToast(t('toast_gmaps_cleared'), t('gmaps_free_mode'), 'info');
+  }
+}
+
+function clearGoogleMapsApiKey() {
+  localStorage.removeItem('parking_gmaps_api_key');
+  if (!state.settings) state.settings = {};
+  state.settings.googleMapsApiKey = '';
+  saveState();
+  const input = document.getElementById('gmaps-api-key-input');
+  if (input) input.value = '';
+  updateGoogleMapsKeyUI();
+  showToast(t('toast_gmaps_cleared'), t('gmaps_free_mode'), 'info');
+}
 
 function renderLeafletOverview() {
   const container = document.getElementById('overview-leaflet-map');
@@ -4209,7 +4435,16 @@ function renderLeafletOverview() {
     if (svg) { svg.classList.remove('hidden'); drawMap('overview-map', null); }
     return;
   }
-  container.classList.remove('hidden');
+  if (overviewMapMode === 'gmaps') {
+    container.classList.add('hidden');
+    const gmapsIframe = document.getElementById('overview-gmaps-iframe');
+    if (gmapsIframe) gmapsIframe.classList.remove('hidden');
+    return;
+  } else {
+    container.classList.remove('hidden');
+    const gmapsIframe = document.getElementById('overview-gmaps-iframe');
+    if (gmapsIframe) gmapsIframe.classList.add('hidden');
+  }
 
   const center = [16.4744103, 102.8220243];
   const isDark = getEffectiveTheme() === 'dark';
@@ -4269,6 +4504,7 @@ function renderLeafletOverview() {
 }
 
 function renderLeafletRoute(route) {
+  lastRouteData = route;
   const container = document.getElementById('route-leaflet-map');
   if (!container) return;
   if (typeof L === 'undefined') {
@@ -4277,7 +4513,23 @@ function renderLeafletRoute(route) {
     if (svg) { svg.classList.remove('hidden'); drawMap('route-map', route); }
     return;
   }
-  container.classList.remove('hidden');
+  if (routeMapMode === 'gmaps') {
+    container.classList.add('hidden');
+    const gmapsIframe = document.getElementById('route-gmaps-iframe');
+    if (gmapsIframe) gmapsIframe.classList.remove('hidden');
+  } else {
+    container.classList.remove('hidden');
+    const gmapsIframe = document.getElementById('route-gmaps-iframe');
+    if (gmapsIframe) gmapsIframe.classList.add('hidden');
+  }
+
+  // Update route iframe src if route exists
+  if (route && route.lot) {
+    const routeGmapsIframe = document.getElementById('route-gmaps-iframe');
+    if (routeGmapsIframe) {
+      routeGmapsIframe.src = `https://maps.google.com/maps?q=${route.lot.lat},${route.lot.lng}&z=16&output=embed`;
+    }
+  }
 
   const center = [16.4744103, 102.8220243];
   const isDark = getEffectiveTheme() === 'dark';
@@ -5493,6 +5745,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (typeof AppLogger !== 'undefined') AppLogger.init();
   applyTheme();
   updateLanguageUI();
+  updateGoogleMapsKeyUI();
+  if (state.settings?.googleMapsApiKey) {
+    loadGoogleMapsScript(state.settings.googleMapsApiKey);
+  }
   if (!state.ui.destinationBuilding && state.buildings.length) {
     state.ui.destinationBuilding = state.buildings[0].id;
   }
