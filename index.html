@@ -40,8 +40,6 @@
   }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..72,100..1000&family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
@@ -186,30 +184,6 @@ body, section.app-view, header, nav, main, footer, .parking-card, .interactive-c
 .grid-map{background-color:var(--grid-bg);background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:26px 26px}
 .route-line{stroke-dasharray:8 9;animation:dash 2s linear infinite}
 @keyframes dash{to{stroke-dashoffset:-34}}
-
-.leaflet-container {
-  font-family: inherit !important;
-  background-color: var(--grid-bg) !important;
-}
-.dark .leaflet-tile {
-  filter: brightness(0.7) invert(1) contrast(2.6) hue-rotate(200deg) saturate(0.3) brightness(0.85);
-}
-.leaflet-popup-content-wrapper {
-  background: var(--card-bg) !important;
-  color: var(--ink) !important;
-  border-radius: 1rem !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15) !important;
-  border: 1px solid var(--card-border) !important;
-}
-.leaflet-popup-tip {
-  background: var(--card-bg) !important;
-}
-
-#overview-leaflet-map, #route-leaflet-map, #overview-gmaps-iframe, #route-gmaps-iframe {
-  min-height: 250px !important;
-  height: 260px !important;
-  width: 100% !important;
-}
 
 .nav-item{
   color:var(--ink-secondary);
@@ -366,6 +340,38 @@ html.dark .stat-card-anim:hover { box-shadow: 0 12px 24px -6px rgba(0,0,0,0.5); 
 details summary { transition: color 0.2s ease; }
 details[open] > div { animation: heroFadeUp 0.3s cubic-bezier(0.16,1,0.3,1) both; }
 
+/* KKU Map Pins & Anti-Jitter Interactive Styling */
+.kku-pin-interactive {
+  transform-box: fill-box;
+  transform-origin: center center;
+  transition: transform 0.18s cubic-bezier(0.2, 0, 0, 1), filter 0.18s ease-out;
+  cursor: pointer;
+}
+.kku-pin-interactive:hover {
+  transform: scale(1.15);
+  filter: brightness(1.12) drop-shadow(0 2px 5px rgba(0, 0, 0, 0.35));
+}
+.kku-pin-interactive * {
+  pointer-events: none;
+}
+.kku-pin-interactive .pin-hitbox {
+  pointer-events: all;
+  cursor: pointer;
+}
+.route-line-animated {
+  stroke-dasharray: 2.5 1.5;
+  animation: routeDash 1.2s linear infinite;
+}
+@keyframes routeDash {
+  to { stroke-dashoffset: -8; }
+}
+.bldg-shape {
+  transition: fill 0.25s ease, stroke 0.25s ease, filter 0.25s ease;
+}
+.bldg-shape:hover {
+  filter: brightness(1.08);
+}
+
 /* ==========================================================================
    LANDING AMBIENT MOVING GRADIENTS (Cozy, Calm, Decisive, Theme-Adaptive)
    ========================================================================== */
@@ -485,9 +491,161 @@ html.dark .hero-highlight-gradient {
     transform: none !important;
   }
 }
+
+/* ==========================================================================
+   PC EASTER EGG: CUTE WHITE CAR FOLLOWER CURSOR (Google Design Inspired)
+   ========================================================================== */
+@media (hover: hover) and (pointer: fine) {
+  html.pc-car-active,
+  html.pc-car-active body,
+  html.pc-car-active button,
+  html.pc-car-active a,
+  html.pc-car-active input,
+  html.pc-car-active select,
+  html.pc-car-active textarea,
+  html.pc-car-active label,
+  html.pc-car-active [role="button"],
+  html.pc-car-active .interactive-btn,
+  html.pc-car-active .cursor-pointer {
+    cursor: none !important;
+  }
+}
+
+#pc-car-pointer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 48px;
+  height: 48px;
+  margin-top: -24px;
+  margin-left: -24px;
+  pointer-events: none !important;
+  user-select: none !important;
+  z-index: 9999999;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  will-change: transform, opacity;
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  #pc-car-pointer {
+    display: block;
+  }
+}
+
+.pc-car-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center center;
+  transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.pc-car-svg {
+  width: 46px;
+  height: 28px;
+  overflow: visible;
+  filter: drop-shadow(0 3px 6px rgba(18, 19, 36, 0.22));
+}
+
+html.dark .pc-car-svg {
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 6px rgba(150, 164, 221, 0.25));
+}
+
+.pc-car-headlight-beam {
+  opacity: 0.32;
+  transition: opacity 0.2s ease, filter 0.2s ease;
+}
+
+#pc-car-pointer.is-hovering .pc-car-inner {
+  transform: scale(1.18);
+}
+
+#pc-car-pointer.is-hovering .pc-car-headlight-beam {
+  opacity: 0.95;
+  filter: drop-shadow(0 0 8px #ffe066);
+}
+
+#pc-car-pointer.is-hovering .pc-car-headlight-core {
+  fill: #fffdf0;
+  filter: drop-shadow(0 0 4px #ffe066);
+}
+
+#pc-car-pointer.is-pressed .pc-car-inner {
+  transform: scale(0.88, 0.82);
+  transition: transform 0.08s ease;
+}
+
+#pc-car-pointer.is-pressed .pc-car-taillight {
+  fill: #ff2222;
+  filter: drop-shadow(0 0 6px rgba(255, 34, 34, 0.85));
+}
 </style>
 </head>
 <body class="w-full bg-[#f7f9fd] dark:bg-[#0e0f1a] text-[#181b2e] dark:text-[#f1f3fc]">
+
+<!-- PC EASTER EGG: CUTE WHITE CAR FOLLOWER CURSOR (Google Design Inspired) -->
+<div id="pc-car-pointer" aria-hidden="true">
+  <div class="pc-car-inner">
+    <svg class="pc-car-svg" viewBox="0 0 54 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="pc-car-beam-grad" x1="0%" y1="50%" x2="100%" y2="50%">
+          <stop offset="0%" stop-color="#fff8cc" stop-opacity="0.85"/>
+          <stop offset="60%" stop-color="#ffe066" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="#ffe066" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="pc-car-roof-shine" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#e8eef8" stop-opacity="0.2"/>
+        </linearGradient>
+      </defs>
+      
+      <!-- Dynamic Headlight Cones -->
+      <g class="pc-car-headlight-beam">
+        <polygon points="37,8 53,2 53,13 37,9.5" fill="url(#pc-car-beam-grad)"/>
+        <polygon points="37,18.5 53,15 53,26 37,20" fill="url(#pc-car-beam-grad)"/>
+      </g>
+
+      <!-- Wheels (4 tires) -->
+      <rect x="27" y="2" width="7" height="3.2" rx="1.6" fill="#1e203b"/>
+      <rect x="9" y="2" width="7" height="3.2" rx="1.6" fill="#1e203b"/>
+      <rect x="27" y="22.8" width="7" height="3.2" rx="1.6" fill="#1e203b"/>
+      <rect x="9" y="22.8" width="7" height="3.2" rx="1.6" fill="#1e203b"/>
+
+      <!-- Side Mirrors -->
+      <ellipse cx="25.5" cy="3.5" rx="2" ry="1.2" fill="#ffffff" stroke="#cbd5e1" stroke-width="0.7"/>
+      <ellipse cx="25.5" cy="24.5" rx="2" ry="1.2" fill="#ffffff" stroke="#cbd5e1" stroke-width="0.7"/>
+
+      <!-- Car Body Chassis -->
+      <rect x="6" y="4" width="32" height="20" rx="7" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.1"/>
+      <rect x="7" y="5" width="30" height="9" rx="4.5" fill="url(#pc-car-roof-shine)"/>
+
+      <!-- Moonroof / Panoramic Sunroof -->
+      <rect x="13.5" y="8" width="6" height="12" rx="2" fill="#D9B1E6" fill-opacity="0.35" stroke="#BF87C9" stroke-width="0.6"/>
+
+      <!-- Front Windshield -->
+      <path d="M 23.5,6.5 C 27.5,6.5 28.5,10 28.5,14 C 28.5,18 27.5,21.5 23.5,21.5 C 21.5,21.5 20.8,18 20.8,14 C 20.8,10 21.5,6.5 23.5,6.5 Z" fill="#95BBE6" fill-opacity="0.85" stroke="#7584bd" stroke-width="0.6"/>
+      <path d="M 23,8 C 25.5,8 26.2,10.5 26.2,13.5 L 24.8,13.5 C 24.8,11.2 24,9.2 22.8,8.8 Z" fill="#ffffff" fill-opacity="0.7"/>
+
+      <!-- Rear Window -->
+      <path d="M 10.5,7.5 C 8.5,7.5 8,10.5 8,14 C 8,17.5 8.5,20.5 10.5,20.5 C 11.5,20.5 12,18 12,14 C 12,10 11.5,7.5 10.5,7.5 Z" fill="#95BBE6" fill-opacity="0.8" stroke="#7584bd" stroke-width="0.5"/>
+
+      <!-- Cute Front Bumper Smile -->
+      <path d="M 38,12 Q 39,14 38,16" stroke="#96A4DD" stroke-width="0.9" stroke-linecap="round" fill="none"/>
+
+      <!-- Headlights -->
+      <circle cx="36.5" cy="8" r="2" fill="#fff9db" stroke="#ffe066" stroke-width="0.8" class="pc-car-headlight-core"/>
+      <circle cx="36.5" cy="20" r="2" fill="#fff9db" stroke="#ffe066" stroke-width="0.8" class="pc-car-headlight-core"/>
+
+      <!-- Taillights -->
+      <rect x="5.4" y="6.5" width="1.8" height="3.5" rx="0.9" fill="#ef4444" class="pc-car-taillight"/>
+      <rect x="5.4" y="18" width="1.8" height="3.5" rx="0.9" fill="#ef4444" class="pc-car-taillight"/>
+    </svg>
+  </div>
+</div>
 
 <!-- GLOBAL NOTIFICATION TOAST / ERROR BANNER -->
 <div id="toast-banner" class="rounded-2xl p-4 shadow-2xl backdrop-blur-md border">
@@ -575,38 +733,6 @@ html.dark .hero-highlight-gradient {
               <span data-i18n="init_sheets_btn">สร้างตาราง 8 ชีต</span>
             </button>
           </div>
-        </div>
-      </div>
-
-      <!-- GOOGLE MAPS API KEY CONNECTOR -->
-      <div id="modal-gmaps-section" class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-[#f8fafd] dark:bg-[#1c1d33] p-4 space-y-3">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <i data-lucide="map-pin" class="h-4 w-4 text-[#96A4DD] dark:text-[#BF87C9]"></i>
-            <span class="text-xs font-bold uppercase tracking-wider text-[#262447] dark:text-[#c4b5fd]" data-i18n="gmaps_api_title">Google Maps API Key</span>
-          </div>
-          <span id="gmaps-status-badge" class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
-            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-            <span id="gmaps-status-text" data-i18n="gmaps_free_mode">ใช้งานฟรี (ไม่ต้องใช้คีย์)</span>
-          </span>
-        </div>
-
-        <p class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="gmaps_api_desc">ระบบแสดงแผนที่ มข. ได้ทันทีโดยไม่ต้องใช้ API Key หากต้องการใช้บริการเสริม Google Maps JavaScript API สามารถระบุ API Key ที่นี่</p>
-
-        <div class="space-y-1.5">
-          <label class="block text-[11px] font-semibold text-[#5a627a] dark:text-[#9da7c5]" data-i18n="gmaps_key_label">API Key (จาก Google Cloud Console)</label>
-          <input id="gmaps-api-key-input" type="text" placeholder="AIzaSy..." class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-3 py-2 text-xs font-mono">
-        </div>
-
-        <div class="grid grid-cols-2 gap-2">
-          <button type="button" onclick="saveGoogleMapsApiKey()" id="btn-save-gmaps-key" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-2 text-xs font-extrabold text-[#181b2e] dark:text-[#0e0f1a] shadow-sm hover:opacity-95">
-            <i data-lucide="check" class="h-3.5 w-3.5"></i>
-            <span data-i18n="save_gmaps_key_btn">บันทึก API Key</span>
-          </button>
-          <button type="button" onclick="clearGoogleMapsApiKey()" id="btn-clear-gmaps-key" class="interactive-btn flex items-center justify-center gap-1.5 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-3 py-2 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]">
-            <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
-            <span data-i18n="clear_gmaps_key_btn">ใช้โหมดฟรี (ล้างคีย์)</span>
-          </button>
         </div>
       </div>
 
@@ -895,25 +1021,9 @@ html.dark .hero-highlight-gradient {
     <div class="mt-6 grid grid-cols-3 gap-3" id="dashboard-lot-stats"></div>
 
     <div class="mt-6 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
-      <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-        <div>
-          <p class="text-sm font-bold" data-i18n="overview_map_title">แผนที่ลานจอดรถโดยรวม</p>
-          <p class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="overview_map_sub">ตำแหน่งลานจอดรถเทียบกับอาคารทั้งหมด</p>
-        </div>
-        <div class="flex items-center gap-2">
-          <div class="inline-flex rounded-xl bg-[#f0f4fc] dark:bg-[#20223b] p-1 text-[11px] font-bold border border-[#e2e8f4] dark:border-[#2f3357]">
-            <button type="button" id="btn-toggle-overview-interactive" onclick="switchOverviewMapMode('interactive')" class="rounded-lg px-2.5 py-1 bg-white dark:bg-[#2f3254] text-[#262447] dark:text-[#c4b5fd] shadow-sm transition" data-i18n="tab_map_interactive">แผนที่โต้ตอบ</button>
-            <button type="button" id="btn-toggle-overview-gmaps" onclick="switchOverviewMapMode('gmaps')" class="rounded-lg px-2.5 py-1 text-[#5a627a] dark:text-[#9da7c5] hover:text-[#262447] dark:hover:text-white transition" data-i18n="tab_map_google">Google Maps</button>
-          </div>
-          <a href="https://www.google.com/maps/place/Khon+Kaen+University/@16.4744103,102.819444,17z/data=!3m1!4b1!4m6!3m5!1s0x31228a8eb01c96f3:0xf6a47b89e419df87!8m2!3d16.4744103!4d102.8220243!16zL20vMGJzMGd3?authuser=0&entry=ttu" target="_blank" rel="noopener noreferrer" class="interactive-btn inline-flex items-center gap-1.5 rounded-xl bg-[#f7f9fd] dark:bg-[#20223b] px-3 py-1.5 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] border border-[#e2e8f4] dark:border-[#2f3357] hover:bg-[#eef3fb] dark:hover:bg-[#282a4a]">
-            <i data-lucide="map" class="h-3.5 w-3.5 text-[#96A4DD] dark:text-[#D9B1E6]"></i>
-            <span data-i18n="kku_campus_map">แผนที่มหาวิทยาลัยขอนแก่น</span>
-          </a>
-        </div>
-      </div>
-      <div id="overview-leaflet-map" class="h-56 w-full rounded-2xl overflow-hidden border border-[#e2e8f4] dark:border-[#262845] z-0"></div>
-      <iframe id="overview-gmaps-iframe" src="https://maps.google.com/maps?q=16.4744103,102.8220243&z=16&output=embed" class="hidden h-56 w-full rounded-2xl border border-[#e2e8f4] dark:border-[#262845]" title="Khon Kaen University Google Map"></iframe>
-      <svg id="overview-map" viewBox="0 0 100 100" class="hidden mt-3 h-48 w-full rounded-2xl grid-map"></svg>
+      <p class="text-sm font-bold" data-i18n="overview_map_title">แผนที่ลานจอดรถโดยรวม</p>
+      <p class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="overview_map_sub">ตำแหน่งลานจอดรถเทียบกับอาคารทั้งหมด</p>
+      <svg id="overview-map" viewBox="0 0 100 100" class="mt-3 h-48 w-full rounded-2xl grid-map"></svg>
     </div>
 
     <div class="mt-6 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
@@ -926,10 +1036,10 @@ html.dark .hero-highlight-gradient {
     <p class="mt-8 text-center text-xs text-[#5a627a] dark:text-[#9da7c5]">Developed by ให้รถในวงเวียนไปก่อน</p>
   </main>
   <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white/95 dark:bg-[#161729]/95 py-2 backdrop-blur-md">
-    <button type="button" onclick="showView('user-dashboard')" class="nav-item active flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="home" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
-    <button type="button" onclick="showView('user-search')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
-    <button type="button" onclick="showView('user-favorites')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
-    <button type="button" onclick="showView('user-profile')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
+    <button type="button" onclick="showView('user-dashboard')" class="nav-item active flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="home" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
+    <button type="button" onclick="showView('user-search')" class="nav-item flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
+    <button type="button" onclick="showView('user-favorites')" class="nav-item flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
+    <button type="button" onclick="showView('user-profile')" class="nav-item flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
   </nav>
 </section>
 
@@ -943,13 +1053,13 @@ html.dark .hero-highlight-gradient {
       <input id="search-input" type="search" placeholder="ค้นหาชื่ออาคาร หรือ ลานจอดรถ" data-i18n-placeholder="search_placeholder" oninput="renderSearchResults()" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] py-4 pl-12 pr-4 shadow-sm">
     </div>
     <div class="mt-4 flex flex-wrap gap-2" id="search-chips"></div>
-    <div id="search-results" class="mt-6 space-y-3"></div>
+    <div id="search-results" class="mt-4 space-y-3"></div>
   </div>
   <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white/95 dark:bg-[#161729]/95 py-2 backdrop-blur-md">
-    <button type="button" onclick="showView('user-dashboard')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="home" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
-    <button type="button" onclick="showView('user-search')" class="nav-item active flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
-    <button type="button" onclick="showView('user-favorites')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
-    <button type="button" onclick="showView('user-profile')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
+    <button type="button" onclick="showView('user-dashboard')" class="nav-item flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="home" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
+    <button type="button" onclick="showView('user-search')" class="nav-item active flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
+    <button type="button" onclick="showView('user-favorites')" class="nav-item flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
+    <button type="button" onclick="showView('user-profile')" class="nav-item flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
   </nav>
 </section>
 
@@ -966,29 +1076,7 @@ html.dark .hero-highlight-gradient {
       <button type="button" onclick="setRouteType('fast')" id="route-type-fast" class="chip active flex-1" data-i18n="route_fast">เส้นทางที่ใกล้ที่สุด</button>
       <button type="button" onclick="setRouteType('safe')" id="route-type-safe" class="chip flex-1" data-i18n="route_safe">เส้นทางที่ปลอดภัยที่สุด</button>
     </div>
-    
-    <!-- KKU CAMPUS ROUTE MAP CONTAINER -->
-    <div class="relative mt-4 overflow-hidden rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] shadow-sm">
-      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#e2e8f4] dark:border-[#262845] px-4 py-2 bg-[#f7f9fd] dark:bg-[#191830]">
-        <div class="flex items-center gap-2">
-          <i data-lucide="map-pin" class="h-4 w-4 text-[#96A4DD] dark:text-[#D9B1E6]"></i>
-          <span class="text-xs font-bold text-[#262447] dark:text-[#c4b5fd]" data-i18n="kku_campus_map">แผนที่มหาวิทยาลัยขอนแก่น</span>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <div class="inline-flex rounded-xl bg-[#f0f4fc] dark:bg-[#20223b] p-1 text-[11px] font-bold border border-[#e2e8f4] dark:border-[#2f3357]">
-            <button type="button" id="btn-toggle-map-interactive" onclick="switchMapMode('interactive')" class="rounded-lg px-2.5 py-1 bg-white dark:bg-[#2f3254] text-[#262447] dark:text-[#c4b5fd] shadow-sm transition" data-i18n="tab_map_interactive">แผนที่โต้ตอบ</button>
-            <button type="button" id="btn-toggle-map-gmaps" onclick="switchMapMode('gmaps')" class="rounded-lg px-2.5 py-1 text-[#5a627a] dark:text-[#9da7c5] hover:text-[#262447] dark:hover:text-white transition" data-i18n="tab_map_google">Google Maps</button>
-          </div>
-          <a id="btn-open-google-maps" href="https://www.google.com/maps/place/Khon+Kaen+University/@16.4744103,102.819444,17z/data=!3m1!4b1!4m6!3m5!1s0x31228a8eb01c96f3:0xf6a47b89e419df87!8m2!3d16.4744103!4d102.8220243!16zL20vMGJzMGd3?authuser=0&entry=ttu" target="_blank" rel="noopener noreferrer" class="interactive-btn inline-flex items-center gap-1 rounded-lg bg-white dark:bg-[#262845] px-2.5 py-1 text-xs font-bold text-[#262447] dark:text-[#c4b5fd] shadow-sm border border-[#e2e8f4] dark:border-[#383b5e] hover:bg-[#eef3fb] dark:hover:bg-[#2f3254]">
-            <i data-lucide="external-link" class="h-3.5 w-3.5 text-[#96A4DD] dark:text-[#D9B1E6]"></i>
-            <span data-i18n="open_google_maps">เปิดใน Google Maps</span>
-          </a>
-        </div>
-      </div>
-      <div id="route-leaflet-map" class="h-64 w-full z-0"></div>
-      <iframe id="route-gmaps-iframe" src="https://maps.google.com/maps?q=16.4744103,102.8220243&z=16&output=embed" class="hidden h-64 w-full border-0" title="KKU Navigation Google Map"></iframe>
-      <svg id="route-map" viewBox="0 0 100 100" class="hidden h-64 w-full grid-map border border-[#e2e8f4] dark:border-[#262845]"></svg>
-    </div>
+    <svg id="route-map" viewBox="0 0 100 100" class="mt-4 h-56 w-full rounded-2xl grid-map border border-[#e2e8f4] dark:border-[#262845]"></svg>
     <div class="mt-4 grid grid-cols-3 divide-x divide-[#e2e8f4] dark:divide-[#262845] rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] text-center shadow-sm">
       <div class="p-4"><b id="route-time" class="block text-xl text-[#262447] dark:text-[#c4b5fd]">-</b><span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="walk_minutes">นาที่ที่ใช้เดินทาง</span></div>
       <div class="p-4"><b id="route-distance" class="block text-xl text-[#262447] dark:text-[#c4b5fd]">-</b><span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="meters_unit">เมตร</span></div>
@@ -1037,10 +1125,10 @@ html.dark .hero-highlight-gradient {
     <div id="favorites-list" class="mt-6 space-y-3"></div>
   </div>
   <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white/95 dark:bg-[#161729]/95 py-2 backdrop-blur-md">
-    <button type="button" onclick="showView('user-dashboard')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="home" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
-    <button type="button" onclick="showView('user-search')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
-    <button type="button" onclick="showView('user-favorites')" class="nav-item active flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
-    <button type="button" onclick="showView('user-profile')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
+    <button type="button" onclick="showView('user-dashboard')" class="nav-item flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="home" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
+    <button type="button" onclick="showView('user-search')" class="nav-item flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
+    <button type="button" onclick="showView('user-favorites')" class="nav-item active flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
+    <button type="button" onclick="showView('user-profile')" class="nav-item flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
   </nav>
 </section>
 
@@ -1221,10 +1309,10 @@ html.dark .hero-highlight-gradient {
     <p class="pt-4 text-center text-xs text-[#5a627a] dark:text-[#9da7c5]">Developed by ให้รถในวงเวียนไปก่อน</p>
   </div>
   <nav class="fixed bottom-0 left-0 right-0 z-20 flex justify-around border-t border-[#e2e8f4] dark:border-[#262845] bg-white/95 dark:bg-[#161729]/95 py-2 backdrop-blur-md">
-    <button type="button" onclick="showView('user-dashboard')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="home" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
-    <button type="button" onclick="showView('user-search')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
-    <button type="button" onclick="showView('user-favorites')" class="nav-item flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
-    <button type="button" onclick="showView('user-profile')" class="nav-item active flex flex-col items-center rounded-xl px-4 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
+    <button type="button" onclick="showView('user-dashboard')" class="nav-item flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="home" class="h-5 w-5"></i><span data-i18n="nav_home">หน้าหลัก</span></button>
+    <button type="button" onclick="showView('user-search')" class="nav-item flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="search" class="h-5 w-5"></i><span data-i18n="nav_search">ค้นหา</span></button>
+    <button type="button" onclick="showView('user-favorites')" class="nav-item flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="heart" class="h-5 w-5"></i><span data-i18n="nav_favorites">รายการโปรด</span></button>
+    <button type="button" onclick="showView('user-profile')" class="nav-item active flex flex-col items-center rounded-xl px-2.5 py-1 text-xs"><i data-lucide="user" class="h-5 w-5"></i><span data-i18n="nav_profile">โปรไฟล์</span></button>
   </nav>
 </section>
 
@@ -1414,10 +1502,10 @@ html.dark .hero-highlight-gradient {
           </select>
         </div>
         <div>
-          <label class="mb-1 block text-sm font-bold" data-i18n="bldg_lat_lng">พิกัดบนแผนที่ (Latitude, Longitude)</label>
+          <label class="mb-1 block text-sm font-bold" data-i18n="bldg_lat_lng">ตำแหน่งบนแผนที่ (Lat, Lng: 5-95)</label>
           <div class="grid grid-cols-2 gap-2">
-            <input id="new-bldg-lat" type="number" step="any" min="-90" max="90" value="16.474410" placeholder="Latitude (เช่น 16.474410)" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
-            <input id="new-bldg-lng" type="number" step="any" min="-180" max="180" value="102.822024" placeholder="Longitude (เช่น 102.822024)" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+            <input id="new-bldg-lat" type="number" min="5" max="95" value="50" placeholder="Lat (5-95)" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+            <input id="new-bldg-lng" type="number" min="5" max="95" value="50" placeholder="Lng (5-95)" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
           </div>
         </div>
       </div>
@@ -1834,22 +1922,7 @@ const i18n = {
     bldg_name_th: "ชื่ออาคาร (ไทย)",
     bldg_name_en: "ชื่ออาคาร (English)",
     bldg_category: "หมวดหมู่อาคาร",
-    bldg_lat_lng: "พิกัดบนแผนที่ (Latitude, Longitude)",
-    kku_campus_map: "แผนที่มหาวิทยาลัยขอนแก่น",
-    open_google_maps: "เปิดใน Google Maps",
-    view_interactive_map: "แผนที่มหาวิทยาลัย",
-    view_google_map: "เปิดพิกัด Google Maps",
-    gmaps_api_title: "Google Maps API Key",
-    gmaps_free_mode: "ใช้งานฟรี (ไม่ต้องใช้คีย์)",
-    gmaps_connected_mode: "เชื่อมต่อ API Key แล้ว",
-    gmaps_api_desc: "ระบบแสดงแผนที่ มข. ได้ทันทีโดยไม่ต้องใช้ API Key หากต้องการใช้บริการเสริม Google Maps JavaScript API สามารถระบุ API Key ที่นี่",
-    gmaps_key_label: "API Key (จาก Google Cloud Console)",
-    save_gmaps_key_btn: "บันทึก API Key",
-    clear_gmaps_key_btn: "ใช้โหมดฟรี (ล้างคีย์)",
-    toast_gmaps_saved: "บันทึก Google Maps API Key สำเร็จแล้ว",
-    toast_gmaps_cleared: "เปลี่ยนกลับมาใช้งานแผนที่โหมดฟรีแล้ว",
-    tab_map_interactive: "แผนที่โต้ตอบ",
-    tab_map_google: "Google Maps",
+    bldg_lat_lng: "ตำแหน่งบนแผนที่ (Lat, Lng: 5-95)",
     add_bldg_btn: "เพิ่มอาคาร",
     confirm_delete_bldg: 'ยืนยันการลบอาคาร "{name}" หรือไม่? ลานจอดรถที่ผูกกับอาคารนี้อาจได้รับผลกระทบ',
     toast_bldg_added: "เพิ่มอาคารสำเร็จและบันทึกลงระบบแล้ว",
@@ -1882,7 +1955,49 @@ const i18n = {
     toast_err_username_exists_desc: "ชื่อผู้ใช้ @{username} มีผู้ใช้งานแล้ว กรุณาเลือกชื่ออื่น",
     toast_err_username_invalid_title: "ชื่อผู้ใช้ไม่ถูกต้อง",
     toast_err_username_invalid_desc: "ชื่อผู้ใช้ต้องมีความยาวอย่างน้อย 3 ตัวอักษร และประกอบด้วยตัวอักษร ตัวเลข ขีดล่าง หรือขีดกลางเท่านั้น",
-    username_change_hint: "สามารถเปลี่ยนชื่อผู้ใช้เพื่อเข้าสู่ระบบได้"
+    username_change_hint: "สามารถเปลี่ยนชื่อผู้ใช้เพื่อเข้าสู่ระบบได้",
+    kku_map_title: "แผนที่มหาวิทยาลัยขอนแก่น",
+    kku_map_subtitle: "ข้อมูลอาคารและสถานที่จาก คณะวิศวกรรมศาสตร์ มข.",
+    explore_kku_map_btn: "สำรวจแผนที่มหาวิทยาลัยขอนแก่น (KKU Map)",
+    explore_kku_map_desc: "56 อาคาร, 20 โซน ผังแม่บท และ Google Maps",
+    search_on_kku_map: "ค้นหาบนแผนที่มหาวิทยาลัยขอนแก่น (56 อาคาร / 20 โซน)",
+    nav_kku_map: "แผนที่ มข.",
+    kku_tab_interactive: "แผนที่โต้ตอบ",
+    kku_tab_masterplan: "ผังแม่บท มข.",
+    kku_tab_googlemap: "Google Maps",
+    kku_tab_buildings: "อาคาร 1–56",
+    kku_tab_zones: "โซน/พื้นที่ K1–K20",
+    kku_search_placeholder: "ค้นหาชื่ออาคาร, หมายเลข (เช่น 36, 50) หรือรหัสโซน (K1-K20)...",
+    kku_filter_all: "ทั้งหมด",
+    kku_filter_faculties: "คณะ/วิชาการ",
+    kku_filter_medical: "การแพทย์/สาธารณสุข",
+    kku_filter_services: "สำนักงาน/บริการ",
+    kku_filter_sports: "กีฬา",
+    kku_filter_dorms: "หอพัก/ที่พัก",
+    kku_filter_cafeteria: "อาหารและเครื่องดื่ม",
+    kku_filter_culture: "ศิลปวัฒนธรรม",
+    kku_filter_nature: "สวนและธรรมชาติ",
+    kku_set_dest_btn: "เลือกเป็นปลายทาง / หาที่จอดรถ",
+    kku_focus_map_btn: "ดูตำแหน่งบนแผนที่",
+    kku_open_gmaps_btn: "เปิดใน Google Maps",
+    kku_open_highres: "เปิดภาพต้นฉบับความละเอียดสูง (80x120 ซม.)",
+    kku_contact_title: "ข้อมูลติดต่อมหาวิทยาลัยขอนแก่น",
+    kku_contact_address: "ที่อยู่: มหาวิทยาลัยขอนแก่น 123 หมู่ 16 ถ.มิตรภาพ ต.ในเมือง อ.เมือง จ.ขอนแก่น 40002",
+    kku_contact_tel: "โทรศัพท์: (+66) 4300 9700, (+66) 4300 2539",
+    kku_contact_fax: "โทรสาร: (+66) 4320 2216",
+    kku_contact_email: "อีเมล: info@kku.ac.th",
+    kku_source_attribution: "แหล่งข้อมูลอ้างอิง: คณะวิศวกรรมศาสตร์ มหาวิทยาลัยขอนแก่น (eng.kku.ac.th/about/map)",
+    kku_zoom_in: "ซูมเข้า",
+    kku_zoom_out: "ซูมออก",
+    kku_reset_view: "รีเซ็ตมุมมอง",
+    kku_no_places_found: "ไม่พบสถานที่ที่ตรงกับการค้นหา",
+    kku_legend_title: "สารบัญอาคารและสถานที่ทั้งหมด",
+    kku_selected_place: "สถานที่ที่เลือก",
+    kku_stat_buildings: "56 อาคาร",
+    kku_stat_zones: "20 โซน",
+    kku_official_map_notice: "ภาพผังแม่บทมหาวิทยาลัยขอนแก่นจากเว็บไซต์ทางการ สามารถเลื่อนและซูมดูรายละเอียดอาคารได้",
+    kku_gmaps_notice: "แผนที่ดาวเทียมและข้อมูลการจราจรแบบเรียลไทม์จาก Google Maps",
+    kku_drag_hint: "ลากเพื่อเลื่อนแผนที่ • ใช้ปุ่ม +/- เพื่อซูม"
   },
   en: {
     quick_settings_title: "System Settings",
@@ -2144,22 +2259,7 @@ const i18n = {
     bldg_name_th: "Building Name (Thai)",
     bldg_name_en: "Building Name (English)",
     bldg_category: "Building Category",
-    bldg_lat_lng: "Map Coordinates (Latitude, Longitude)",
-    kku_campus_map: "Khon Kaen University Map",
-    open_google_maps: "Open in Google Maps",
-    view_interactive_map: "Campus Map",
-    view_google_map: "Open Google Maps",
-    gmaps_api_title: "Google Maps API Key",
-    gmaps_free_mode: "Free Mode (No Key Needed)",
-    gmaps_connected_mode: "API Key Connected",
-    gmaps_api_desc: "KKU map is visible immediately without any API key. If you wish to use Google Maps JavaScript API, you can specify your API key here.",
-    gmaps_key_label: "API Key (from Google Cloud Console)",
-    save_gmaps_key_btn: "Save API Key",
-    clear_gmaps_key_btn: "Use Free Mode (Clear Key)",
-    toast_gmaps_saved: "Google Maps API Key saved successfully",
-    toast_gmaps_cleared: "Switched back to Free Map mode",
-    tab_map_interactive: "Interactive",
-    tab_map_google: "Google Maps",
+    bldg_lat_lng: "Map Coordinates (Lat, Lng: 5-95)",
     add_bldg_btn: "Add Building",
     confirm_delete_bldg: 'Confirm deleting building "{name}"? Lots associated with this building may be affected.',
     toast_bldg_added: "Building added and saved to system",
@@ -2192,7 +2292,49 @@ const i18n = {
     toast_err_username_exists_desc: "Username @{username} is already in use. Please choose another.",
     toast_err_username_invalid_title: "Invalid Username",
     toast_err_username_invalid_desc: "Username must be at least 3 characters and contain only letters, numbers, underscores, or hyphens.",
-    username_change_hint: "You can change your login username here"
+    username_change_hint: "You can change your login username here",
+    kku_map_title: "Khon Kaen University Map",
+    kku_map_subtitle: "Campus buildings & locations from Faculty of Engineering KKU",
+    explore_kku_map_btn: "Explore KKU Campus Map",
+    explore_kku_map_desc: "56 Buildings, 20 Zones, Master Plan & Google Maps",
+    search_on_kku_map: "Explore on KKU Campus Map (56 Buildings / 20 Zones)",
+    nav_kku_map: "KKU Map",
+    kku_tab_interactive: "Interactive Map",
+    kku_tab_masterplan: "Official Master Plan",
+    kku_tab_googlemap: "Google Maps",
+    kku_tab_buildings: "Buildings 1–56",
+    kku_tab_zones: "Zones K1–K20",
+    kku_search_placeholder: "Search building name, number (e.g. 36, 50) or zone (K1-K20)...",
+    kku_filter_all: "All",
+    kku_filter_faculties: "Faculties & Academics",
+    kku_filter_medical: "Medical & Health",
+    kku_filter_services: "Offices & Services",
+    kku_filter_sports: "Sports & Recreation",
+    kku_filter_dorms: "Dormitories & Housing",
+    kku_filter_cafeteria: "Food & Dining",
+    kku_filter_culture: "Arts & Culture",
+    kku_filter_nature: "Parks & Nature",
+    kku_set_dest_btn: "Set Destination / Find Parking",
+    kku_focus_map_btn: "Focus on Map",
+    kku_open_gmaps_btn: "Open in Google Maps",
+    kku_open_highres: "Open Ultra High-Res Original Master Plan (80x120 cm)",
+    kku_contact_title: "KKU Contact Information",
+    kku_contact_address: "Address: Khon Kaen University 123 Village No. 16 Mittraphap Rd., Nai-Muang, Muang District, Khon Kaen 40002",
+    kku_contact_tel: "Tel: (+66) 4300 9700, (+66) 4300 2539",
+    kku_contact_fax: "Fax: (+66) 4320 2216",
+    kku_contact_email: "Email: info@kku.ac.th",
+    kku_source_attribution: "Official Source: Faculty of Engineering, Khon Kaen University (eng.kku.ac.th/about/map)",
+    kku_zoom_in: "Zoom In",
+    kku_zoom_out: "Zoom Out",
+    kku_reset_view: "Reset View",
+    kku_no_places_found: "No places found matching your search",
+    kku_legend_title: "Directory of All Buildings & Locations",
+    kku_selected_place: "Selected Location",
+    kku_stat_buildings: "56 Buildings",
+    kku_stat_zones: "20 Zones",
+    kku_official_map_notice: "Official Khon Kaen University master plan map. Drag and zoom to view details.",
+    kku_gmaps_notice: "Satellite map and real-time navigation view powered by Google Maps",
+    kku_drag_hint: "Drag to pan map • Use +/- buttons to zoom"
   }
 };
 
@@ -2512,32 +2654,27 @@ function saveStoredUsers(usersList) {
 
 function defaultState() {
   const configuredSheets = (localStorage.getItem(SHEETS_CONFIG_KEY) || '').trim();
-  const configuredGmapsKey = (localStorage.getItem('parking_gmaps_api_key') || '').trim();
   return {
     settings: {
       lang: 'th',
       theme: 'system',
-      sheetsApiUrl: configuredSheets || DEFAULT_SHEETS_URL,
-      googleMapsApiKey: configuredGmapsKey
+      sheetsApiUrl: configuredSheets || DEFAULT_SHEETS_URL
     },
     buildings: [
-      {id:'b1', name:'อาคารเรียนรวม', nameEn:'Complex Lecture Building', category:'classroom', lat:16.477709, lng:102.823193},
-      {id:'b2', name:'คณะวิศวกรรมศาสตร์', nameEn:'Faculty of Engineering', category:'classroom', lat:16.472547, lng:102.822909},
-      {id:'b3', name:'หอสมุดกลาง', nameEn:'Central Library', category:'classroom', lat:16.476550, lng:102.823233},
-      {id:'b4', name:'อาคารสำนักงานอธิการบดี', nameEn:"President's Office Building", category:'office', lat:16.470774, lng:102.815123},
-      {id:'b5', name:'คณะเกษตรศาสตร์', nameEn:'Faculty of Agriculture', category:'classroom', lat:16.476408, lng:102.821869},
-      {id:'b6', name:'สำนักบริการวิชาการ', nameEn:'Academic Services Bureau', category:'office', lat:16.474176, lng:102.827053},
-      {id:'b7', name:'คณะนิติศาสตร์', nameEn:'Faculty of Law', category:'classroom', lat:16.450197, lng:102.815270}
+      {id:'b1', name:'อาคารเรียนรวม', nameEn:'Complex Lecture Building', category:'classroom', lat:16.4735, lng:102.8240, x:50, y:48},
+      {id:'b2', name:'คณะวิศวกรรมศาสตร์', nameEn:'Faculty of Engineering', category:'classroom', lat:16.4743, lng:102.8236, x:48, y:37},
+      {id:'b3', name:'หอสมุดกลาง', nameEn:'Central Library', category:'classroom', lat:16.4722, lng:102.8232, x:47, y:44},
+      {id:'b4', name:'อาคารสำนักงานอธิการบดี', nameEn:"President's Office Building", category:'office', lat:16.4678, lng:102.8245, x:52, y:59},
+      {id:'b5', name:'คณะเกษตรศาสตร์', nameEn:'Faculty of Agriculture', category:'classroom', lat:16.4760, lng:102.8250, x:60, y:31},
+      {id:'b6', name:'สำนักบริการวิชาการ', nameEn:'Academic Services Bureau', category:'office', lat:16.4650, lng:102.8310, x:79, y:69},
+      {id:'b7', name:'คณะนิติศาสตร์', nameEn:'Faculty of Law', category:'classroom', lat:16.4632, lng:102.8275, x:65, y:75},
+      {id:'srinagarind', name:'โรงพยาบาลศรีนครินทร์', nameEn:'Srinagarind Hospital', category:'hospital', lat:16.4817, lng:102.8300, x:46.5, y:11.5}
     ],
     lots: [
-      {id:'lot-1788616909712', name:'ลานจอดรถคณะวิศวกรรมศาสตร์', nameEn:'Faculty of Engineering Parking Lot', buildingId:'b2', capacity:200, available:200, lat:16.472900, lng:102.823400},
-      {id:'lot-1788618155580', name:'ลานจอดรถคณะนิติศาสตร์ - ลาน A', nameEn:'Faculty of Law - Lot A', buildingId:'b7', capacity:300, available:300, lat:16.450600, lng:102.815600},
-      {id:'lot-1788618208479', name:'ลานจอดรถคณะนิติศาสตร์ - ลาน B', nameEn:'Faculty of Law - Lot B', buildingId:'b7', capacity:300, available:300, lat:16.449800, lng:102.815000},
-      {id:'lot-complex', name:'ลานจอดรถศูนย์อาหารคอมเพล็กซ์', nameEn:'KKU Complex Parking Lot', buildingId:'b1', capacity:150, available:150, lat:16.477950, lng:102.823600},
-      {id:'lot-library', name:'ลานจอดรถสำนักหอสมุดกลาง', nameEn:'Central Library Parking Lot', buildingId:'b3', capacity:120, available:120, lat:16.476850, lng:102.823500},
-      {id:'lot-president', name:'ลานจอดรถสำนักงานอธิการบดี อาคารสิริคุณากร', nameEn:'President Office Sirikunakorn Parking Lot', buildingId:'b4', capacity:180, available:180, lat:16.471050, lng:102.815400},
-      {id:'lot-agri', name:'ลานจอดรถคณะเกษตรศาสตร์', nameEn:'Faculty of Agriculture Parking Lot', buildingId:'b5', capacity:100, available:100, lat:16.476700, lng:102.822200},
-      {id:'lot-academic', name:'ลานจอดรถสำนักบริการวิชาการ อาคารพิมล กลกิจ', nameEn:'Academic Services Parking Lot', buildingId:'b6', capacity:150, available:150, lat:16.474450, lng:102.827350}
+      {id:'lot-1788616909712', name:'ลานจอดรถคณะวิศวกรรมศาสตร์', nameEn:'Faculty of Engineering Parking Lot', buildingId:'b2', capacity:200, available:200, lat:16.4746, lng:102.8239, x:50, y:36},
+      {id:'lot-1788618155580', name:'ลานจอดรถคณะนิติศาสตร์ - ลาน A', nameEn:'Faculty of Law - Lot A', buildingId:'b7', capacity:300, available:300, lat:16.4635, lng:102.8278, x:66, y:74},
+      {id:'lot-1788618208479', name:'ลานจอดรถคณะนิติศาสตร์ - ลาน B', nameEn:'Faculty of Law - Lot B', buildingId:'b7', capacity:300, available:300, lat:16.4630, lng:102.8272, x:64, y:76},
+      {id:'lot-srinagarind', name:'ลานจอดรถโรงพยาบาลศรีนครินทร์', nameEn:'Srinagarind Hospital Parking Lot', buildingId:'srinagarind', capacity:350, available:350, lat:16.4820, lng:102.8305, x:48, y:12}
     ],
     users: getStoredUsers(),
     currentUser: null,
@@ -2550,6 +2687,7 @@ function defaultState() {
     ui: {
       routeType:'fast',
       destinationBuilding:null,
+      selectedLotId:null,
       historyTab:'nav',
       reviewStars:5,
       searchCategory:'all',
@@ -2568,7 +2706,6 @@ function loadState() {
     if (raw) {
       const parsed = JSON.parse(raw);
       const configuredUrl = (localStorage.getItem(SHEETS_CONFIG_KEY) || parsed.settings?.sheetsApiUrl || '').trim();
-      const configuredGmapsKey = (localStorage.getItem('parking_gmaps_api_key') || parsed.settings?.googleMapsApiKey || '').trim();
       s = {
         ...s,
         ...parsed,
@@ -2576,8 +2713,7 @@ function loadState() {
         settings: {
           ...s.settings,
           ...(parsed.settings || {}),
-          sheetsApiUrl: configuredUrl || DEFAULT_SHEETS_URL,
-          googleMapsApiKey: configuredGmapsKey
+          sheetsApiUrl: configuredUrl || DEFAULT_SHEETS_URL
         },
         ui: { ...s.ui, ...(parsed.ui || {}), isLoading: false, isSyncing: false }
       };
@@ -2597,7 +2733,6 @@ function loadState() {
     });
   }
   s.users = Array.from(map.values());
-  saveStoredUsers(s.users);
 
   if (Array.isArray(s.reviews)) {
     s.reviews = deduplicateReviews(s.reviews);
@@ -2605,47 +2740,34 @@ function loadState() {
 
   if (Array.isArray(s.lots)) {
     s.lots = s.lots.filter(l => l && String(l.id || '').trim() && String(l.id || '').trim() !== 'undefined' && String(l.id || '').trim() !== 'null' && String(l.name || '').trim() && String(l.name || '').trim() !== 'undefined');
+    const defLots = defaultState().lots;
+    defLots.forEach(dl => {
+      if (!s.lots.some(l => l.id === dl.id)) s.lots.push(dl);
+    });
+    s.lots.forEach(l => {
+      const def = defLots.find(dl => dl.id === l.id);
+      if (def && (!l.lat || l.lat < 16.0 || l.lat > 17.0)) {
+        l.lat = def.lat;
+        l.lng = def.lng;
+        l.x = def.x;
+        l.y = def.y;
+      }
+    });
   }
 
   if (Array.isArray(s.buildings)) {
     s.buildings = s.buildings.filter(b => b && String(b.id || '').trim() && String(b.id || '').trim() !== 'undefined' && String(b.id || '').trim() !== 'null' && String(b.name || '').trim() && String(b.name || '').trim() !== 'undefined');
-  }
-
-  // Migrate legacy coordinates to authentic Khon Kaen University coordinates
-  const KKU_DEFAULT_BLDGS = {
-    'b1': { lat: 16.477709, lng: 102.823193 },
-    'b2': { lat: 16.472547, lng: 102.822909 },
-    'b3': { lat: 16.476550, lng: 102.823233 },
-    'b4': { lat: 16.470774, lng: 102.815123 },
-    'b5': { lat: 16.476408, lng: 102.821869 },
-    'b6': { lat: 16.474176, lng: 102.827053 },
-    'b7': { lat: 16.450197, lng: 102.815270 }
-  };
-  const KKU_DEFAULT_LOTS = {
-    'lot-1788616909712': { lat: 16.472900, lng: 102.823400 },
-    'lot-1788618155580': { lat: 16.450600, lng: 102.815600 },
-    'lot-1788618208479': { lat: 16.449800, lng: 102.815000 }
-  };
-
-  if (Array.isArray(s.buildings)) {
+    const defBuildings = defaultState().buildings;
+    defBuildings.forEach(db => {
+      if (!s.buildings.some(b => b.id === db.id)) s.buildings.push(db);
+    });
     s.buildings.forEach(b => {
-      if (b && KKU_DEFAULT_BLDGS[b.id] && (b.lat < 15 || b.lat > 18 || b.lng < 100 || b.lng > 105)) {
-        b.lat = KKU_DEFAULT_BLDGS[b.id].lat;
-        b.lng = KKU_DEFAULT_BLDGS[b.id].lng;
-      }
-    });
-  }
-  if (Array.isArray(s.lots)) {
-    s.lots.forEach(l => {
-      if (l && KKU_DEFAULT_LOTS[l.id] && (l.lat < 15 || l.lat > 18 || l.lng < 100 || l.lng > 105)) {
-        l.lat = KKU_DEFAULT_LOTS[l.id].lat;
-        l.lng = KKU_DEFAULT_LOTS[l.id].lng;
-      }
-    });
-    const existingLotIds = new Set(s.lots.map(l => l.id));
-    defaultState().lots.forEach(defLot => {
-      if (!existingLotIds.has(defLot.id)) {
-        s.lots.push(defLot);
+      const def = defBuildings.find(db => db.id === b.id);
+      if (def && (!b.lat || b.lat < 16.0 || b.lat > 17.0)) {
+        b.lat = def.lat;
+        b.lng = def.lng;
+        b.x = def.x;
+        b.y = def.y;
       }
     });
   }
@@ -3500,7 +3622,6 @@ function toggleQuickSettings(show) {
     }
 
     updateThemeUI();
-    updateGoogleMapsKeyUI();
     SheetsDB.ping().then(res => updateDbStatusUI(res));
   }
 }
@@ -3524,20 +3645,6 @@ function showView(id) {
     if (target) target.classList.add('active');
     renderAll();
     window.scrollTo({ top: 0, behavior: 'instant' });
-
-    // Robust map invalidation when showing map-containing views
-    if (id === 'user-dashboard' || id === 'user-map') {
-      [50, 150, 350, 600].forEach(delay => {
-        setTimeout(() => {
-          if (id === 'user-dashboard' && leafletOverviewMap) {
-            leafletOverviewMap.invalidateSize();
-          }
-          if (id === 'user-map' && leafletRouteMap) {
-            leafletRouteMap.invalidateSize();
-          }
-        }, delay);
-      });
-    }
   };
 
   if (document.startViewTransition) {
@@ -3561,28 +3668,58 @@ function lName(l) {
   return name;
 }
 
+function getMapCoords(entity) {
+  if (!entity) return { x: 50, y: 50 };
+  if (typeof entity.x === 'number' && typeof entity.y === 'number') {
+    return { x: entity.x, y: entity.y };
+  }
+  const lat = Number(entity.lat);
+  const lng = Number(entity.lng);
+  // Official KKU geographic boundary projection to 0-100 SVG space
+  if (!isNaN(lat) && !isNaN(lng) && lat > 16.0 && lat < 17.0 && lng > 102.0 && lng < 103.5) {
+    const minLat = 16.4560, maxLat = 16.4850;
+    const minLng = 102.8120, maxLng = 102.8360;
+    const x = Math.max(5, Math.min(95, ((lng - minLng) / (maxLng - minLng)) * 100));
+    const y = Math.max(5, Math.min(95, ((maxLat - lat) / (maxLat - minLat)) * 100));
+    return { x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10 };
+  }
+  return { x: !isNaN(lat) ? lat : 50, y: !isNaN(lng) ? lng : 50 };
+}
+
+function getNormalizedGps(entity) {
+  if (!entity) return { lat: 16.4740, lng: 102.8240 };
+  let lat = Number(entity.lat);
+  let lng = Number(entity.lng);
+  if (!isNaN(lat) && !isNaN(lng) && lat > 16.0 && lat < 17.0 && lng > 102.0 && lng < 103.5) {
+    return { lat, lng };
+  }
+  let x = typeof entity.x === 'number' ? entity.x : Number(entity.x);
+  let y = typeof entity.y === 'number' ? entity.y : Number(entity.y);
+  if (isNaN(x) || isNaN(y)) {
+    if (!isNaN(lat) && !isNaN(lng) && lat >= 0 && lat <= 100 && lng >= 0 && lng <= 100) {
+      x = lat;
+      y = lng;
+    }
+  }
+  if (!isNaN(x) && !isNaN(y)) {
+    const minLat = 16.4560, maxLat = 16.4850;
+    const minLng = 102.8120, maxLng = 102.8360;
+    const pLat = maxLat - (y / 100) * (maxLat - minLat);
+    const pLng = minLng + (x / 100) * (maxLng - minLng);
+    return { lat: pLat, lng: pLng };
+  }
+  return { lat: 16.4740, lng: 102.8240 };
+}
+
 function distanceMeters(a, b) {
   if (!a || !b) return 0;
-  const lat1 = parseFloat(a.lat) || 0;
-  const lon1 = parseFloat(a.lng) || 0;
-  const lat2 = parseFloat(b.lat) || 0;
-  const lon2 = parseFloat(b.lng) || 0;
-
-  // Fallback for legacy 0-100 grid coordinates
-  if (lat1 < 10 && lat2 < 10) {
-    const dx = lat1 - lat2, dy = lon1 - lon2;
-    return Math.max(10, Math.round(Math.sqrt(dx * dx + dy * dy) * 14));
-  }
-
-  // Authentic GPS Haversine calculation
-  const R = 6371000; // Earth radius in meters
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const sa = Math.sin(dLat / 2);
-  const so = Math.sin(dLon / 2);
-  const aVal = sa * sa + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * so * so;
-  const c = 2 * Math.atan2(Math.sqrt(aVal), Math.sqrt(1 - aVal));
-  return Math.max(10, Math.round(R * c));
+  const aGps = getNormalizedGps(a);
+  const bGps = getNormalizedGps(b);
+  const aLat = aGps.lat, aLng = aGps.lng;
+  const bLat = bGps.lat, bLng = bGps.lng;
+  const latMeters = (aLat - bLat) * 111000;
+  const lngMeters = (aLng - bLng) * 106440;
+  return Math.max(25, Math.round(Math.hypot(latMeters, lngMeters)));
 }
 function walkMinutes(m) { return Math.max(1, Math.round(m / 75)); }
 function lotById(id) {
@@ -3593,12 +3730,40 @@ function buildingById(id) {
   if (!id || id === 'undefined' || id === 'null') return null;
   return (state.buildings || []).find(b => b && b.id === id && b.name && b.name !== 'undefined');
 }
+function nearestBuildingToLot(lot) {
+  if (!lot || !state.buildings || !state.buildings.length) return null;
+  const withDist = state.buildings.map(b => ({ b, dist: distanceMeters(lot, b) }));
+  withDist.sort((a, b) => a.dist - b.dist);
+  return withDist[0]?.b || null;
+}
 function nearestLot(building) {
   if (!building) return null;
   const validLots = (state.lots || []).filter(l => l && l.id && l.id !== 'undefined' && l.name && l.name !== 'undefined');
   if (!validLots.length) return null;
+
+  // 1. Direct association priority
+  const directLots = validLots.filter(l => String(l.buildingId || '').trim() === String(building.id || '').trim());
+  if (directLots.length) {
+    const withDirectDist = directLots.map(l => ({ lot: l, dist: distanceMeters(l, building) }));
+    withDirectDist.sort((a, b) => {
+      const aAvail = (a.lot.available > 0) ? 1 : 0;
+      const bAvail = (b.lot.available > 0) ? 1 : 0;
+      if (aAvail !== bAvail) return bAvail - aAvail;
+      return a.dist - b.dist;
+    });
+    if (withDirectDist[0].dist <= 450) {
+      return withDirectDist[0];
+    }
+  }
+
+  // 2. Physical distance proximity sorting
   const withDist = validLots.map(l => ({ lot: l, dist: distanceMeters(l, building) }));
-  withDist.sort((a, b) => a.dist - b.dist);
+  withDist.sort((a, b) => {
+    const aAvail = (a.lot.available > 0) ? 1 : 0;
+    const bAvail = (b.lot.available > 0) ? 1 : 0;
+    if (aAvail !== bAvail) return bAvail - aAvail;
+    return a.dist - b.dist;
+  });
   return withDist[0];
 }
 function fmtTime(ts) {
@@ -3845,19 +4010,89 @@ function renderAll() {
 
 function drawAllMaps() {
   drawMap('overview-map', null);
-  renderLeafletOverview();
   const view = document.getElementById('user-map');
   if (view && view.classList.contains('active')) {
     const building = buildingById(state.ui.destinationBuilding) || state.buildings[0];
     if (building) {
-      const best = nearestLot(building);
-      if (best) {
-        drawMap('route-map', { lot: best.lot, building, safe: state.ui.routeType === 'safe' });
-        renderLeafletRoute({ lot: best.lot, building, safe: state.ui.routeType === 'safe' });
+      let best = null;
+      if (state.ui.selectedLotId) {
+        const selLot = lotById(state.ui.selectedLotId);
+        if (selLot) best = { lot: selLot, dist: distanceMeters(selLot, building) };
       }
+      if (!best) best = nearestLot(building);
+      if (best) drawMap('route-map', { lot: best.lot, building, safe: state.ui.routeType === 'safe' });
     }
   }
 }
+
+
+/* ==========================================================================
+   KHON KAEN UNIVERSITY (KKU) CAMPUS MAP MODULE
+   Source: https://eng.kku.ac.th/about/map
+   56 Buildings, 20 Zones, Official Master Plan & Google Maps Integration
+   ========================================================================== */
+
+const KKU_BUILDING_SHAPES = [
+  // Faculty of Engineering (อาคาร 36 / อาคารเพียรวิจิตร & EN complex)
+  { id: 'b2', num: 36, name: 'คณะวิศวกรรมศาสตร์', nameEn: 'Faculty of Engineering', x: 44, y: 35, w: 9, h: 6, rx: 1.2, cat: 'classroom' },
+  { id: 'en-labs', num: 36, name: 'อาคารปฏิบัติการวิศวกรรม', nameEn: 'Engineering Labs', x: 43, y: 42, w: 5.5, h: 3.8, rx: 0.8, cat: 'classroom' },
+  { id: 'en-workshop', num: 36, name: 'โรงประลองวิศวกรรม', nameEn: 'Engineering Workshops', x: 50, y: 42, w: 5.5, h: 3.8, rx: 0.8, cat: 'classroom' },
+
+  // Complex / Central Cafeteria & Student Center (อาคาร 18 / 21)
+  { id: 'b1', num: 31, name: 'อาคารเรียนรวม (Complex)', nameEn: 'Complex Lecture Building', x: 47, y: 46.5, w: 8, h: 5.2, rx: 1.2, cat: 'classroom' },
+
+  // Central Library (สำนักวิทยบริการ / อาคาร 28)
+  { id: 'b3', num: 28, name: 'สำนักวิทยบริการ (หอสมุดกลาง)', nameEn: 'Central Library', x: 43.5, y: 51.5, w: 7, h: 4.8, rx: 1, cat: 'classroom' },
+
+  // Office of the President Complex (อาคาร 9-10 & อาคารสิริคุณากร 8)
+  { id: 'b4', num: 9, name: 'สำนักงานอธิการบดี 1', nameEn: "President's Office 1", x: 39.5, y: 65.5, w: 5.5, h: 3.8, rx: 0.8, cat: 'office' },
+  { id: 'pres-2', num: 10, name: 'สำนักงานอธิการบดี 2', nameEn: "President's Office 2", x: 45.5, y: 65.5, w: 5.5, h: 3.8, rx: 0.8, cat: 'office' },
+  { id: 'sirikunakorn', num: 8, name: 'อาคารสิริคุณากร', nameEn: 'Sirikunakorn Building', x: 38.5, y: 69.5, w: 6.5, h: 3.5, rx: 0.8, cat: 'office' },
+
+  // Faculty of Agriculture (อาคาร 26 / AG01)
+  { id: 'b5', num: 26, name: 'คณะเกษตรศาสตร์', nameEn: 'Faculty of Agriculture', x: 56.5, y: 28.5, w: 8.5, h: 5.5, rx: 1.2, cat: 'classroom' },
+
+  // Faculty of Law & Demonstration School (อาคาร 4, 5)
+  { id: 'b7', num: 4, name: 'คณะนิติศาสตร์', nameEn: 'Faculty of Law', x: 61.5, y: 72.5, w: 7.5, h: 4.8, rx: 1, cat: 'classroom' },
+  { id: 'sathit-ed', num: 5, name: 'รร.สาธิตศึกษาศาสตร์', nameEn: 'Demonstration School (Edu)', x: 45.5, y: 74.5, w: 8.5, h: 4.2, rx: 1, cat: 'classroom' },
+
+  // Bureau of Academic Service (อาคาร 39)
+  { id: 'b6', num: 39, name: 'สำนักบริการวิชาการ', nameEn: 'Bureau of Academic Service', x: 74.5, y: 67.5, w: 7, h: 4.5, rx: 1, cat: 'office' },
+
+  // Faculty of Science Complex (อาคาร 29)
+  { id: 'sci-fac', num: 29, name: 'คณะวิทยาศาสตร์', nameEn: 'Faculty of Sciences', x: 40.5, y: 48, w: 6, h: 4.5, rx: 1, cat: 'classroom' },
+
+  // Faculty of Humanities (อาคาร 30)
+  { id: 'human-fac', num: 30, name: 'คณะมนุษยศาสตร์ฯ', nameEn: 'Faculty of Humanities', x: 35, y: 48, w: 5, h: 4.5, rx: 1, cat: 'classroom' },
+
+  // Faculty of Management Sciences (อาคาร 34) & Education (อาคาร 35)
+  { id: 'fms-fac', num: 34, name: 'คณะวิทยาการจัดการ', nameEn: 'Faculty of Management Sciences', x: 54, y: 43.5, w: 6, h: 4, rx: 0.8, cat: 'classroom' },
+  { id: 'edu-fac', num: 35, name: 'คณะศึกษาศาสตร์', nameEn: 'Faculty of Education', x: 59, y: 45, w: 6, h: 4, rx: 0.8, cat: 'classroom' },
+
+  // Faculty of Technology (อาคาร 27)
+  { id: 'tech-fac', num: 27, name: 'คณะเทคโนโลยี', nameEn: 'Faculty of Technology', x: 69.5, y: 48.5, w: 6, h: 4, rx: 0.8, cat: 'classroom' },
+
+  // Srinagarind Hospital & Medical Sciences (อาคาร 50, 49, 44, 45, 51, 52)
+  { id: 'srinagarind', num: 50, name: 'รพ.ศรีนครินทร์', nameEn: 'Srinagarind Hospital', x: 46.5, y: 11.5, w: 9.5, h: 6.5, rx: 1.2, cat: 'hospital' },
+  { id: 'med-fac', num: 49, name: 'คณะแพทยศาสตร์', nameEn: 'Faculty of Medicine', x: 41, y: 14.5, w: 5, h: 4.2, rx: 0.8, cat: 'hospital' },
+  { id: 'heart-ctr', num: 52, name: 'ศูนย์หัวใจสิริกิติ์ฯ', nameEn: 'Queen Sirikit Heart Center', x: 49.5, y: 7.5, w: 6.5, h: 3.5, rx: 0.8, cat: 'hospital' },
+  { id: 'dent-fac', num: 51, name: 'คณะทันตแพทยศาสตร์', nameEn: 'Faculty of Dentistry', x: 55, y: 12.5, w: 5.5, h: 3.8, rx: 0.8, cat: 'hospital' },
+  { id: 'pharm-fac', num: 44, name: 'คณะเภสัชศาสตร์', nameEn: 'Faculty of Pharmacy', x: 37, y: 24.5, w: 5.5, h: 3.8, rx: 0.8, cat: 'hospital' },
+  { id: 'nurse-fac', num: 45, name: 'คณะพยาบาลศาสตร์', nameEn: 'Faculty of Nursing', x: 43, y: 22.5, w: 5.5, h: 3.8, rx: 0.8, cat: 'hospital' },
+
+  // Golden Jubilee Convention Center (อาคาร 3)
+  { id: 'golden-jubilee', num: 3, name: 'ศูนย์ประชุมกาญจนาภิเษกฯ', nameEn: 'Golden Jubilee Convention Hall', x: 35.5, y: 82.5, w: 8.5, h: 5.5, rx: 1.5, cat: 'office' },
+
+  // Arts and Culture Gallery (อาคาร 2) & Si Than
+  { id: 'arts-gallery', num: 2, name: 'หอศิลปวัฒนธรรม', nameEn: 'Arts & Cultural Gallery', x: 25.5, y: 82.5, w: 5.5, h: 3.8, rx: 0.8, cat: 'culture' },
+
+  // Sports Gymnasium & Main Stadium Complex (อาคาร 11, 16)
+  { id: 'gym-main', num: 11, name: 'อาคารพลศึกษา', nameEn: 'Gymnasium Complex', x: 69.5, y: 65, w: 7.5, h: 5, rx: 1, cat: 'sports' },
+
+  // Student Dormitories
+  { id: 'dorm-noparat', num: 1, name: 'หอพักนพรัตน์', nameEn: 'Noparat Dormitories', x: 65.5, y: 72.5, w: 5, h: 3.5, rx: 0.6, cat: 'dorm' },
+  { id: 'dorm-central', num: 5, name: 'หอพักนักศึกษา', nameEn: 'Student Dorms', x: 67.5, y: 58, w: 5.5, h: 3.5, rx: 0.6, cat: 'dorm' }
+];
 
 function totalAvailable() {
   const validLots = (state.lots || []).filter(l => l && String(l.id || '').trim() && String(l.id || '').trim() !== 'undefined' && String(l.name || '').trim() && String(l.name || '').trim() !== 'undefined');
@@ -3968,7 +4203,24 @@ function renderDashboard() {
       </div>`).join('');
   }
 
-  const best = validLots.slice().sort((a, b) => (b.available || 0) - (a.available || 0))[0];
+  // Recommend the nearest parking lot right now based on true proximity
+  let best = null;
+  const lotsWithAvail = validLots.filter(l => (l.available || 0) > 0);
+  const pool = lotsWithAvail.length ? lotsWithAvail : validLots;
+
+  if (state.ui.destinationBuilding) {
+    const destB = buildingById(state.ui.destinationBuilding);
+    if (destB) {
+      best = nearestLot(destB)?.lot || null;
+    }
+  }
+  if (!best && pool.length) {
+    const hub = buildingById('b1') || { lat: 16.4735, lng: 102.8240, x: 50, y: 48 };
+    const withHubDist = pool.map(l => ({ lot: l, dist: distanceMeters(l, hub) }));
+    withHubDist.sort((a, b) => a.dist - b.dist);
+    best = withHubDist[0]?.lot || pool[0];
+  }
+
   const box = document.getElementById('recommend-box');
   if (best) {
     const b = buildingById(best.buildingId);
@@ -4066,7 +4318,7 @@ function renderSearchResults() {
         <span><b class="text-[#262447] dark:text-[#c4b5fd]">${lName(l)}</b><small class="mt-1 block text-[#5a627a] dark:text-[#9da7c5]">${t('near_prefix', { building: bName(b) })} · ${t('slots_left_prefix', { avail: l.available, cap: l.capacity })}</small></span></span>
         <span class="flex items-center gap-1">
           <button type="button" onclick="toggleFavorite('${l.id}')" aria-label="Favorite" class="interactive-btn rounded-lg p-2 hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]"><i data-lucide="heart" class="h-5 w-5 ${state.favorites.includes(l.id) ? 'text-[#BF87C9] fill-[#BF87C9]' : 'text-[#9da7c5] dark:text-[#6d7796]'}"></i></button>
-          <button type="button" onclick="goToBuilding('${l.buildingId}')" class="interactive-btn rounded-lg p-2 text-[#96A4DD] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]"><i data-lucide="navigation" class="h-5 w-5"></i></button>
+          <button type="button" onclick="goToLot('${l.id}')" class="interactive-btn rounded-lg p-2 text-[#96A4DD] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]"><i data-lucide="navigation" class="h-5 w-5"></i></button>
         </span></div>`;
     }
   }).join('');
@@ -4074,12 +4326,27 @@ function renderSearchResults() {
 }
 
 function returnFromMap() {
+  state.ui.selectedLotId = null;
   const target = state.ui.mapReturnView || 'user-search';
   showView(target);
 }
 
 function goToBuilding(buildingId, originView) {
+  state.ui.selectedLotId = null;
   state.ui.destinationBuilding = buildingId;
+  state.ui.routeType = 'fast';
+  state.ui.mapReturnView = originView || (state.ui.currentView !== 'user-map' ? state.ui.currentView : 'user-search');
+  saveState();
+  showView('user-map');
+}
+
+function goToLot(lotId, originView) {
+  if (!lotId) return;
+  const lot = lotById(lotId);
+  if (!lot) return;
+  state.ui.selectedLotId = lotId;
+  const building = buildingById(lot.buildingId) || nearestBuildingToLot(lot) || state.buildings[0];
+  state.ui.destinationBuilding = building ? building.id : null;
   state.ui.routeType = 'fast';
   state.ui.mapReturnView = originView || (state.ui.currentView !== 'user-map' ? state.ui.currentView : 'user-search');
   saveState();
@@ -4097,7 +4364,14 @@ function renderRoute() {
   if (!view.classList.contains('active')) return;
   const building = buildingById(state.ui.destinationBuilding) || state.buildings[0];
   if (!building) return;
-  const best = nearestLot(building);
+  let best = null;
+  if (state.ui.selectedLotId) {
+    const selLot = lotById(state.ui.selectedLotId);
+    if (selLot) best = { lot: selLot, dist: distanceMeters(selLot, building) };
+  }
+  if (!best) {
+    best = nearestLot(building);
+  }
   document.getElementById('route-title').textContent = bName(building);
   document.getElementById('route-type-fast').classList.toggle('active', state.ui.routeType === 'fast');
   document.getElementById('route-type-safe').classList.toggle('active', state.ui.routeType === 'safe');
@@ -4146,7 +4420,6 @@ function renderRoute() {
     document.getElementById('route-finished').classList.add('hidden');
   }
   drawMap('route-map', { lot: best.lot, building, safe: state.ui.routeType === 'safe' });
-  renderLeafletRoute({ lot: best.lot, building, safe: state.ui.routeType === 'safe' });
   if (window.lucide) lucide.createIcons();
 }
 
@@ -4159,7 +4432,14 @@ async function finishRoute() {
   finishRoute._submitting = true;
 
   const building = buildingById(state.ui.destinationBuilding);
-  const best = building ? nearestLot(building) : null;
+  let best = null;
+  if (state.ui.selectedLotId) {
+    const selLot = lotById(state.ui.selectedLotId);
+    if (selLot && building) best = { lot: selLot, dist: distanceMeters(selLot, building) };
+  }
+  if (!best && building) {
+    best = nearestLot(building);
+  }
   const btn = document.getElementById('finish-route-btn');
   const btnText = document.getElementById('finish-btn-text');
 
@@ -4177,10 +4457,11 @@ async function finishRoute() {
 
     // Set active parking session
     state.activeParking = {
-      buildingId: building ? building.id : null,
+      buildingId: building ? building.id : (best ? best.lot.buildingId : null),
       lotId: best ? best.lot.id : null,
       startTime: Date.now()
     };
+    state.ui.selectedLotId = null;
 
     state.navHistory.unshift({ buildingId: building ? building.id : null, lotId: best ? best.lot.id : null, ts: Date.now() });
     saveState();
@@ -4232,7 +4513,15 @@ async function checkOutParking() {
 }
 
 function showActiveParkingMap() {
-  if (state.activeParking && state.activeParking.buildingId) {
+  if (state.activeParking && state.activeParking.lotId) {
+    state.ui.selectedLotId = state.activeParking.lotId;
+    state.ui.destinationBuilding = state.activeParking.buildingId || lotById(state.activeParking.lotId)?.buildingId;
+    state.ui.routeType = 'fast';
+    state.ui.mapReturnView = 'user-dashboard';
+    saveState();
+    showView('user-map');
+  } else if (state.activeParking && state.activeParking.buildingId) {
+    state.ui.selectedLotId = null;
     state.ui.destinationBuilding = state.activeParking.buildingId;
     state.ui.routeType = 'fast';
     state.ui.mapReturnView = 'user-dashboard';
@@ -4243,361 +4532,162 @@ function showActiveParkingMap() {
   }
 }
 
-function projectCoordsToSvg(lat, lng) {
-  const pLat = parseFloat(lat) || 0;
-  const pLng = parseFloat(lng) || 0;
-  if (pLat <= 100 && pLng <= 100 && pLat < 15) {
-    return { x: pLat, y: pLng };
-  }
-  // KKU Bounding box
-  const minLat = 16.445, maxLat = 16.485;
-  const minLng = 102.810, maxLng = 102.835;
-  const x = Math.max(6, Math.min(94, ((pLng - minLng) / (maxLng - minLng)) * 80 + 10));
-  const y = Math.max(6, Math.min(94, 100 - (((pLat - minLat) / (maxLat - minLat)) * 80 + 10)));
-  return { x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10 };
-}
-
 function drawMap(svgId, route) {
   const svg = document.getElementById(svgId);
   if (!svg) return;
   const isDark = getEffectiveTheme() === 'dark';
-  const bldgDotFill = isDark ? '#D9B1E6' : '#262447';
+
+  const roadStroke = isDark ? '#262845' : '#d1d9ea';
+  const mainRoadStroke = isDark ? '#32365c' : '#c3cee5';
+  const lakeFill = isDark ? '#1a334d' : '#bae6fd';
+  const lakeStroke = isDark ? '#38bdf8' : '#7dd3fc';
+  const parkFill = isDark ? '#132e29' : '#d1fae5';
+  const parkStroke = isDark ? '#059669' : '#a7f3d0';
+  const stadiumFill = isDark ? '#3b2518' : '#fed7aa';
+  const bldgShapeFill = isDark ? '#1d2038' : '#e2e8f0';
+  const bldgShapeStroke = isDark ? '#363b6b' : '#cbd5e1';
   const bldgTextFill = isDark ? '#9da7c5' : '#5a627a';
-  const lotDotFill = isDark ? '#95BBE6' : '#96A4DD';
-  const routeLineStroke = isDark ? '#D9B1E6' : '#BF87C9';
+  const routeLineStroke = isDark ? '#D9B1E6' : '#7c3aed';
 
-  let markers = '';
-  (state.buildings || []).forEach(b => {
-    const pt = projectCoordsToSvg(b.lat, b.lng);
-    const name = bName(b);
-    markers += `<circle cx="${pt.x}" cy="${pt.y}" r="2.4" fill="${bldgDotFill}"></circle><text x="${pt.x + 3}" y="${pt.y + 1}" font-size="3.2" font-weight="600" fill="${bldgTextFill}">${name.length > 10 ? name.slice(0, 9) + '…' : name}</text>`;
-  });
-  (state.lots || []).forEach(l => {
-    const pt = projectCoordsToSvg(l.lat, l.lng);
-    markers += `<circle cx="${pt.x}" cy="${pt.y}" r="2.8" fill="${lotDotFill}"></circle>`;
-  });
-  let line = '';
-  if (route && route.building && route.lot) {
-    const bPt = projectCoordsToSvg(route.building.lat, route.building.lng);
-    const lPt = projectCoordsToSvg(route.lot.lat, route.lot.lng);
-    const mid = route.safe ? `${(lPt.x + bPt.x) / 2 + 8},${(lPt.y + bPt.y) / 2 - 8}` : '';
-    const path = route.safe
-      ? `M${lPt.x},${lPt.y} Q${mid} ${bPt.x},${bPt.y}`
-      : `M${lPt.x},${lPt.y} L${bPt.x},${bPt.y}`;
-    line = `<path d="${path}" fill="none" stroke="${routeLineStroke}" stroke-width="1.6" class="route-line"></path>
-      <circle cx="${bPt.x}" cy="${bPt.y}" r="3.4" fill="none" stroke="${routeLineStroke}" stroke-width="1.2"></circle>`;
-  }
-  svg.innerHTML = line + markers;
-}
+  const destBuilding = route ? route.building : null;
+  const originLot = route ? route.lot : null;
 
-let leafletOverviewMap = null;
-let leafletRouteMap = null;
-let lastRouteData = null;
-let overviewMapMode = 'interactive';
-let routeMapMode = 'interactive';
+  let content = `
+    <defs>
+      <linearGradient id="${svgId}-lake-grad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="${lakeFill}" stop-opacity="0.8"/>
+        <stop offset="100%" stop-color="${lakeFill}" stop-opacity="0.4"/>
+      </linearGradient>
+      <filter id="${svgId}-shadow" x="-30%" y="-30%" width="160%" height="160%">
+        <feDropShadow dx="0" dy="0.8" stdDeviation="0.8" flood-opacity="${isDark ? '0.6' : '0.2'}"/>
+      </filter>
+    </defs>
 
-function switchOverviewMapMode(mode) {
-  overviewMapMode = mode;
-  const leafletEl = document.getElementById('overview-leaflet-map');
-  const gmapsEl = document.getElementById('overview-gmaps-iframe');
-  const btnInteractive = document.getElementById('btn-toggle-overview-interactive');
-  const btnGmaps = document.getElementById('btn-toggle-overview-gmaps');
+    <!-- CAMPUS BOUNDS & PARKS -->
+    <rect x="0" y="0" width="100" height="100" fill="transparent"/>
 
-  if (mode === 'gmaps') {
-    if (leafletEl) leafletEl.classList.add('hidden');
-    if (gmapsEl) gmapsEl.classList.remove('hidden');
-    if (btnInteractive) {
-      btnInteractive.className = 'rounded-lg px-2.5 py-1 text-[#5a627a] dark:text-[#9da7c5] hover:text-[#262447] dark:hover:text-white transition';
+    <!-- Greenery: Agricultural Tech Park (K13) -->
+    <rect x="74" y="32" width="14" height="12" rx="3" fill="${parkFill}" stroke="${parkStroke}" stroke-width="0.3" stroke-dasharray="1 1" opacity="0.6"/>
+    <text x="81" y="38" font-size="1.8" text-anchor="middle" fill="${isDark ? '#6ee7b7' : '#047857'}" font-weight="bold">Agricultural Park</text>
+
+    <!-- Greenery: Forestry Garden (K17) -->
+    <rect x="56" y="74" width="12" height="10" rx="3" fill="${parkFill}" stroke="${parkStroke}" stroke-width="0.3" stroke-dasharray="1 1" opacity="0.6"/>
+
+    <!-- Greenery: Romklao Park (K10) -->
+    <circle cx="32" cy="66" r="4.5" fill="${parkFill}" stroke="${parkStroke}" stroke-width="0.3" opacity="0.7"/>
+
+    <!-- Central Main Stadium (K9) Oval Track -->
+    <ellipse cx="82" cy="56" rx="5" ry="3.5" fill="${stadiumFill}" stroke="${isDark ? '#f97316' : '#ea580c'}" stroke-width="0.5"/>
+    <text x="82" y="56.5" font-size="1.6" text-anchor="middle" fill="${isDark ? '#fdba74' : '#c2410c'}" font-weight="bold">Stadium</text>
+
+    <!-- Bung Si Than Lake (บึงสีฐาน K20) -->
+    <path d="M 16,90 Q 22,86 28,90 T 30,95 Q 26,98 18,97 Z" fill="url(#${svgId}-lake-grad)" stroke="${lakeStroke}" stroke-width="0.6"/>
+    <text x="23" y="93" font-size="2" text-anchor="middle" fill="${isDark ? '#7dd3fc' : '#0284c7'}" font-weight="bold">บึงสีฐาน</text>
+
+    <!-- CAMPUS MAIN CORRIDORS & HIGHWAYS -->
+    <!-- Mittraphap Road (East) -->
+    <line x1="90" y1="0" x2="90" y2="100" stroke="${mainRoadStroke}" stroke-width="2.4"/>
+    <text x="92" y="15" font-size="1.8" fill="${isDark ? '#64748b' : '#94a3b8'}" transform="rotate(90 92 15)" font-weight="bold">Mittraphap Rd.</text>
+
+    <!-- Maliwan Road (South) -->
+    <line x1="0" y1="96" x2="100" y2="96" stroke="${mainRoadStroke}" stroke-width="2"/>
+    <text x="50" y="98.5" font-size="1.8" text-anchor="middle" fill="${isDark ? '#64748b' : '#94a3b8'}" font-weight="bold">Maliwan Rd. (ทางเข้าสีฐาน)</text>
+
+    <!-- Internal Ring Road Network -->
+    <path d="M 24,84 L 28,68 L 38,62 L 48,50 L 50,22 L 52,8" fill="none" stroke="${roadStroke}" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M 38,62 L 68,62 L 72,50 L 70,24" fill="none" stroke="${roadStroke}" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M 28,68 L 74,68" fill="none" stroke="${roadStroke}" stroke-width="1" stroke-linecap="round"/>
+    <path d="M 44,50 L 64,50" fill="none" stroke="${roadStroke}" stroke-width="1" stroke-linecap="round"/>
+    <path d="M 40,24 L 64,24" fill="none" stroke="${roadStroke}" stroke-width="1" stroke-linecap="round"/>
+  `;
+
+  // Draw Building Shapes / Footprints
+  KKU_BUILDING_SHAPES.forEach(bs => {
+    let isDest = false;
+    if (destBuilding) {
+      if (destBuilding.id === bs.id) isDest = true;
+      else if (destBuilding.name && bs.name && destBuilding.name.includes(bs.name)) isDest = true;
+      else if (destBuilding.nameEn && bs.nameEn && destBuilding.nameEn.toLowerCase() === bs.nameEn.toLowerCase()) isDest = true;
     }
-    if (btnGmaps) {
-      btnGmaps.className = 'rounded-lg px-2.5 py-1 bg-white dark:bg-[#2f3254] text-[#262447] dark:text-[#c4b5fd] shadow-sm transition';
-    }
-  } else {
-    if (leafletEl) leafletEl.classList.remove('hidden');
-    if (gmapsEl) gmapsEl.classList.add('hidden');
-    if (btnInteractive) {
-      btnInteractive.className = 'rounded-lg px-2.5 py-1 bg-white dark:bg-[#2f3254] text-[#262447] dark:text-[#c4b5fd] shadow-sm transition';
-    }
-    if (btnGmaps) {
-      btnGmaps.className = 'rounded-lg px-2.5 py-1 text-[#5a627a] dark:text-[#9da7c5] hover:text-[#262447] dark:hover:text-white transition';
-    }
-    renderLeafletOverview();
-    setTimeout(() => {
-      if (leafletOverviewMap) leafletOverviewMap.invalidateSize();
-    }, 50);
-  }
-}
+    const bFill = isDest ? (isDark ? '#3b2f5c' : '#ede9fe') : bldgShapeFill;
+    const bStroke = isDest ? (isDark ? '#D9B1E6' : '#7c3aed') : bldgShapeStroke;
+    const bWidth = isDest ? 1.2 : 0.35;
+    const bClass = isDest ? 'bldg-shape animate-pulse' : 'bldg-shape';
 
-function switchMapMode(mode) {
-  routeMapMode = mode;
-  const leafletEl = document.getElementById('route-leaflet-map');
-  const gmapsEl = document.getElementById('route-gmaps-iframe');
-  const btnInteractive = document.getElementById('btn-toggle-map-interactive');
-  const btnGmaps = document.getElementById('btn-toggle-map-gmaps');
-
-  if (mode === 'gmaps') {
-    if (leafletEl) leafletEl.classList.add('hidden');
-    if (gmapsEl) gmapsEl.classList.remove('hidden');
-    if (btnInteractive) {
-      btnInteractive.className = 'rounded-lg px-2.5 py-1 text-[#5a627a] dark:text-[#9da7c5] hover:text-[#262447] dark:hover:text-white transition';
-    }
-    if (btnGmaps) {
-      btnGmaps.className = 'rounded-lg px-2.5 py-1 bg-white dark:bg-[#2f3254] text-[#262447] dark:text-[#c4b5fd] shadow-sm transition';
-    }
-  } else {
-    if (leafletEl) leafletEl.classList.remove('hidden');
-    if (gmapsEl) gmapsEl.classList.add('hidden');
-    if (btnInteractive) {
-      btnInteractive.className = 'rounded-lg px-2.5 py-1 bg-white dark:bg-[#2f3254] text-[#262447] dark:text-[#c4b5fd] shadow-sm transition';
-    }
-    if (btnGmaps) {
-      btnGmaps.className = 'rounded-lg px-2.5 py-1 text-[#5a627a] dark:text-[#9da7c5] hover:text-[#262447] dark:hover:text-white transition';
-    }
-    if (lastRouteData) {
-      renderLeafletRoute(lastRouteData);
-    }
-    setTimeout(() => {
-      if (leafletRouteMap) leafletRouteMap.invalidateSize();
-    }, 50);
-  }
-}
-
-let googleMapsScriptLoaded = false;
-function loadGoogleMapsScript(key) {
-  if (!key || googleMapsScriptLoaded || document.getElementById('google-maps-api-script')) return;
-  googleMapsScriptLoaded = true;
-  const script = document.createElement('script');
-  script.id = 'google-maps-api-script';
-  script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}`;
-  script.async = true;
-  script.defer = true;
-  script.onload = () => {
-    console.log('Google Maps JavaScript API loaded successfully');
-  };
-  script.onerror = () => {
-    console.warn('Failed to load Google Maps JavaScript API with provided key');
-  };
-  document.head.appendChild(script);
-}
-
-function updateGoogleMapsKeyUI() {
-  const key = (state.settings?.googleMapsApiKey || localStorage.getItem('parking_gmaps_api_key') || '').trim();
-  const input = document.getElementById('gmaps-api-key-input');
-  if (input && input.value !== key && document.activeElement !== input) {
-    input.value = key;
-  }
-  const badge = document.getElementById('gmaps-status-badge');
-  const text = document.getElementById('gmaps-status-text');
-  if (badge && text) {
-    if (key) {
-      badge.className = 'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-800';
-      text.textContent = t('gmaps_connected_mode');
-    } else {
-      badge.className = 'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800';
-      text.textContent = t('gmaps_free_mode');
-    }
-  }
-}
-
-function saveGoogleMapsApiKey() {
-  const input = document.getElementById('gmaps-api-key-input');
-  const key = (input ? input.value : '').trim();
-  localStorage.setItem('parking_gmaps_api_key', key);
-  if (!state.settings) state.settings = {};
-  state.settings.googleMapsApiKey = key;
-  saveState();
-  updateGoogleMapsKeyUI();
-  if (key) {
-    loadGoogleMapsScript(key);
-    showToast(t('toast_gmaps_saved'), t('gmaps_connected_mode'), 'success');
-  } else {
-    showToast(t('toast_gmaps_cleared'), t('gmaps_free_mode'), 'info');
-  }
-}
-
-function clearGoogleMapsApiKey() {
-  localStorage.removeItem('parking_gmaps_api_key');
-  if (!state.settings) state.settings = {};
-  state.settings.googleMapsApiKey = '';
-  saveState();
-  const input = document.getElementById('gmaps-api-key-input');
-  if (input) input.value = '';
-  updateGoogleMapsKeyUI();
-  showToast(t('toast_gmaps_cleared'), t('gmaps_free_mode'), 'info');
-}
-
-function renderLeafletOverview() {
-  const container = document.getElementById('overview-leaflet-map');
-  if (!container) return;
-  if (typeof L === 'undefined') {
-    container.classList.add('hidden');
-    const svg = document.getElementById('overview-map');
-    if (svg) { svg.classList.remove('hidden'); drawMap('overview-map', null); }
-    return;
-  }
-  if (overviewMapMode === 'gmaps') {
-    container.classList.add('hidden');
-    const gmapsIframe = document.getElementById('overview-gmaps-iframe');
-    if (gmapsIframe) gmapsIframe.classList.remove('hidden');
-    return;
-  } else {
-    container.classList.remove('hidden');
-    const gmapsIframe = document.getElementById('overview-gmaps-iframe');
-    if (gmapsIframe) gmapsIframe.classList.add('hidden');
-  }
-
-  const center = [16.4744103, 102.8220243];
-  const isDark = getEffectiveTheme() === 'dark';
-  const tileUrl = isDark 
-    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-    : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-
-  if (!leafletOverviewMap) {
-    leafletOverviewMap = L.map('overview-leaflet-map', {
-      center: center,
-      zoom: 15,
-      zoomControl: true,
-      attributionControl: false
-    });
-    leafletOverviewMap._tileLayer = L.tileLayer(tileUrl, { maxZoom: 19 }).addTo(leafletOverviewMap);
-  } else {
-    if (leafletOverviewMap._tileLayer) leafletOverviewMap._tileLayer.setUrl(tileUrl);
-    setTimeout(() => { if (leafletOverviewMap) leafletOverviewMap.invalidateSize(); }, 60);
-  }
-
-  if (leafletOverviewMap._markerGroup) {
-    leafletOverviewMap.removeLayer(leafletOverviewMap._markerGroup);
-  }
-  const group = L.featureGroup();
-
-  (state.buildings || []).forEach(b => {
-    if (!b || isNaN(parseFloat(b.lat)) || isNaN(parseFloat(b.lng))) return;
-    const marker = L.circleMarker([parseFloat(b.lat), parseFloat(b.lng)], {
-      radius: 6,
-      fillColor: '#96A4DD',
-      color: '#262447',
-      weight: 2,
-      opacity: 1,
-      fillOpacity: 0.95
-    });
-    marker.bindPopup(`<b>${bName(b)}</b><br><small class="text-slate-500">${categoryLabel(b.category)}</small><br><button type="button" onclick="goToBuilding('${b.id}')" class="mt-2 inline-flex items-center gap-1 rounded bg-[#96A4DD] px-2.5 py-1 text-xs text-white font-bold">${t('select_destination')}</button>`);
-    group.addLayer(marker);
+    content += `
+      <g class="${bClass}">
+        <rect x="${bs.x}" y="${bs.y}" width="${bs.w}" height="${bs.h}" rx="${bs.rx}" fill="${bFill}" stroke="${bStroke}" stroke-width="${bWidth}"/>
+        <text x="${bs.x + bs.w / 2}" y="${bs.y + bs.h / 2 + 0.5}" font-size="1.5" font-weight="bold" fill="${isDest ? (isDark ? '#D9B1E6' : '#7c3aed') : (isDark ? '#9da7c5' : '#64748b')}" text-anchor="middle" pointer-events="none">${bs.num || ''}</text>
+      </g>
+    `;
   });
 
-  (state.lots || []).forEach(l => {
-    if (!l || isNaN(parseFloat(l.lat)) || isNaN(parseFloat(l.lng))) return;
-    const isAvail = (parseInt(l.available, 10) || 0) > 0;
-    const marker = L.circleMarker([parseFloat(l.lat), parseFloat(l.lng)], {
-      radius: 7,
-      fillColor: isAvail ? '#10b981' : '#ef4444',
-      color: '#ffffff',
-      weight: 2,
-      opacity: 1,
-      fillOpacity: 0.95
-    });
-    marker.bindPopup(`<b>${lName(l)}</b><br><span>ว่าง: <b class="${isAvail ? 'text-emerald-600' : 'text-red-600'}">${l.available}</b> / ${l.capacity}</span>`);
-    group.addLayer(marker);
-  });
+  // If Route Navigation Mode: Draw Route & Navigation Pins
+  if (route && destBuilding && originLot) {
+    const lotCoords = getMapCoords(originLot);
+    const bldgCoords = getMapCoords(destBuilding);
 
-  group.addTo(leafletOverviewMap);
-  leafletOverviewMap._markerGroup = group;
-}
+    const midX = route.safe ? (lotCoords.x + bldgCoords.x) / 2 + 7 : (lotCoords.x + bldgCoords.x) / 2;
+    const midY = route.safe ? (lotCoords.y + bldgCoords.y) / 2 - 7 : (lotCoords.y + bldgCoords.y) / 2;
+    const pathD = route.safe
+      ? `M ${lotCoords.x},${lotCoords.y} Q ${midX},${midY} ${bldgCoords.x},${bldgCoords.y}`
+      : `M ${lotCoords.x},${lotCoords.y} L ${bldgCoords.x},${bldgCoords.y}`;
 
-function renderLeafletRoute(route) {
-  lastRouteData = route;
-  const container = document.getElementById('route-leaflet-map');
-  if (!container) return;
-  if (typeof L === 'undefined') {
-    container.classList.add('hidden');
-    const svg = document.getElementById('route-map');
-    if (svg) { svg.classList.remove('hidden'); drawMap('route-map', route); }
-    return;
-  }
-  if (routeMapMode === 'gmaps') {
-    container.classList.add('hidden');
-    const gmapsIframe = document.getElementById('route-gmaps-iframe');
-    if (gmapsIframe) gmapsIframe.classList.remove('hidden');
+    content += `
+      <!-- Route Glow Line -->
+      <path d="${pathD}" fill="none" stroke="${isDark ? '#D9B1E6' : '#BF87C9'}" stroke-width="3.2" opacity="0.35" stroke-linecap="round"/>
+      <!-- Route Travel Line -->
+      <path d="${pathD}" fill="none" stroke="${routeLineStroke}" stroke-width="1.8" class="route-line route-line-animated" stroke-linecap="round"/>
+
+      <!-- Origin: Parking Lot Pin -->
+      <g transform="translate(${lotCoords.x}, ${lotCoords.y})" filter="url(#${svgId}-shadow)" class="kku-pin-interactive">
+        <circle r="3.2" fill="${isDark ? '#38bdf8' : '#0284c7'}" stroke="#ffffff" stroke-width="0.6"/>
+        <text y="1" font-size="2.4" font-weight="900" text-anchor="middle" fill="#ffffff" pointer-events="none">P</text>
+        <text y="4.5" font-size="1.8" font-weight="bold" text-anchor="middle" fill="${isDark ? '#95BBE6' : '#0284c7'}" pointer-events="none">${lName(originLot).slice(0, 8)}</text>
+      </g>
+
+      <!-- Destination: Building Pin -->
+      <g transform="translate(${bldgCoords.x}, ${bldgCoords.y})" filter="url(#${svgId}-shadow)" class="kku-pin-interactive">
+        <circle r="4.6" fill="none" stroke="${isDark ? '#D9B1E6' : '#7c3aed'}" stroke-width="0.9" class="animate-ping" opacity="0.8" pointer-events="none"/>
+        <circle r="3.4" fill="${isDark ? '#A680C2' : '#7c3aed'}" stroke="#ffffff" stroke-width="0.6"/>
+        <text y="0.8" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" pointer-events="none">★</text>
+        <text y="4.8" font-size="1.8" font-weight="bold" text-anchor="middle" fill="${isDark ? '#D9B1E6' : '#7c3aed'}" pointer-events="none">${bName(destBuilding).slice(0, 9)}</text>
+      </g>
+
+      <!-- Walking Route Badge -->
+      <g transform="translate(${midX}, ${midY})">
+        <rect x="-4.8" y="-2" width="9.6" height="4" rx="1.2" fill="${isDark ? '#161729' : '#ffffff'}" stroke="${isDark ? '#D9B1E6' : '#96A4DD'}" stroke-width="0.4" filter="url(#${svgId}-shadow)"/>
+        <text y="0.8" font-size="1.8" font-weight="bold" text-anchor="middle" fill="${isDark ? '#D9B1E6' : '#262447'}">${route.safe ? 'Safe' : 'Fast'}</text>
+      </g>
+    `;
   } else {
-    container.classList.remove('hidden');
-    const gmapsIframe = document.getElementById('route-gmaps-iframe');
-    if (gmapsIframe) gmapsIframe.classList.add('hidden');
-  }
-
-  // Update route iframe src if route exists
-  if (route && route.lot) {
-    const routeGmapsIframe = document.getElementById('route-gmaps-iframe');
-    if (routeGmapsIframe) {
-      routeGmapsIframe.src = `https://maps.google.com/maps?q=${route.lot.lat},${route.lot.lng}&z=16&output=embed`;
-    }
-  }
-
-  const center = [16.4744103, 102.8220243];
-  const isDark = getEffectiveTheme() === 'dark';
-  const tileUrl = isDark 
-    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-    : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-
-  if (!leafletRouteMap) {
-    leafletRouteMap = L.map('route-leaflet-map', {
-      center: center,
-      zoom: 16,
-      zoomControl: true,
-      attributionControl: false
+    // Overview Mode: Draw All Parking Lots and Buildings
+    state.buildings.forEach(b => {
+      const pos = getMapCoords(b);
+      const name = bName(b);
+      content += `
+        <g class="kku-pin-interactive" onclick="goToBuilding('${b.id}')">
+          <circle cx="${pos.x}" cy="${pos.y}" r="2.2" fill="${isDark ? '#D9B1E6' : '#262447'}"/>
+          <text x="${pos.x + 2.8}" y="${pos.y + 0.8}" font-size="2.1" font-weight="600" fill="${bldgTextFill}">${name.length > 9 ? name.slice(0, 8) + '…' : name}</text>
+        </g>
+      `;
     });
-    leafletRouteMap._tileLayer = L.tileLayer(tileUrl, { maxZoom: 19 }).addTo(leafletRouteMap);
-  } else {
-    if (leafletRouteMap._tileLayer) leafletRouteMap._tileLayer.setUrl(tileUrl);
-    setTimeout(() => { if (leafletRouteMap) leafletRouteMap.invalidateSize(); }, 60);
-  }
 
-  if (leafletRouteMap._routeGroup) {
-    leafletRouteMap.removeLayer(leafletRouteMap._routeGroup);
-  }
-  const group = L.featureGroup();
-
-  if (route && route.building && route.lot) {
-    const bPos = [parseFloat(route.building.lat), parseFloat(route.building.lng)];
-    const lPos = [parseFloat(route.lot.lat), parseFloat(route.lot.lng)];
-
-    const bMarker = L.marker(bPos).bindPopup(`<b>${bName(route.building)}</b><br><small>${t('destination_label')}</small>`);
-    group.addLayer(bMarker);
-
-    const lMarker = L.circleMarker(lPos, {
-      radius: 9,
-      fillColor: '#10b981',
-      color: '#ffffff',
-      weight: 3,
-      fillOpacity: 1
-    }).bindPopup(`<b>${lName(route.lot)}</b><br><span>ว่าง: <b>${route.lot.available}</b> / ${route.lot.capacity}</span>`);
-    group.addLayer(lMarker);
-
-    const routeLine = L.polyline([lPos, bPos], {
-      color: '#96A4DD',
-      weight: 5,
-      opacity: 0.85,
-      dashArray: route.safe ? '8, 8' : undefined
+    state.lots.forEach(l => {
+      const pos = getMapCoords(l);
+      const isAvail = l.available > 0;
+      const lotColor = isAvail ? (isDark ? '#38bdf8' : '#0284c7') : '#ef4444';
+      content += `
+        <g class="cursor-pointer kku-pin-interactive" onclick="goToLot('${l.id}')" title="${lName(l)} (${l.available}/${l.capacity})">
+          <circle cx="${pos.x}" cy="${pos.y}" r="3" fill="${lotColor}" stroke="#ffffff" stroke-width="0.6" filter="url(#${svgId}-shadow)"/>
+          <text x="${pos.x}" y="${pos.y + 0.9}" font-size="2.2" font-weight="900" fill="#ffffff" text-anchor="middle" pointer-events="none">P</text>
+          <text x="${pos.x}" y="${pos.y + 4.2}" font-size="1.8" font-weight="bold" fill="${isDark ? '#c4b5fd' : '#262447'}" text-anchor="middle" pointer-events="none">${lName(l).length > 9 ? lName(l).slice(0, 8) + '…' : lName(l)}</text>
+        </g>
+      `;
     });
-    group.addLayer(routeLine);
-
-    const gmapsBtn = document.getElementById('btn-open-google-maps');
-    if (gmapsBtn) {
-      gmapsBtn.href = `https://www.google.com/maps/dir/?api=1&origin=${route.lot.lat},${route.lot.lng}&destination=${route.building.lat},${route.building.lng}&travelmode=walking`;
-    }
-
-    group.addTo(leafletRouteMap);
-    leafletRouteMap._routeGroup = group;
-    setTimeout(() => {
-      if (leafletRouteMap) {
-        leafletRouteMap.invalidateSize();
-        try {
-          leafletRouteMap.fitBounds(group.getBounds(), { padding: [45, 45], maxZoom: 17 });
-        } catch(e) {}
-      }
-    }, 80);
-  } else {
-    group.addTo(leafletRouteMap);
-    leafletRouteMap._routeGroup = group;
   }
+
+  svg.innerHTML = content;
 }
 
 async function toggleFavorite(lotId) {
@@ -4645,7 +4735,7 @@ function renderFavorites() {
       <span><b class="text-[#262447] dark:text-[#c4b5fd]">${lName(l)}</b><small class="mt-1 block text-[#5a627a] dark:text-[#9da7c5]">${t('near_prefix', { building: bName(b) })} · ${t('slots_left_prefix', { avail: l.available, cap: l.capacity })}</small></span></span>
       <div class="flex items-center gap-1">
         <button type="button" onclick="toggleFavorite('${l.id}')" class="interactive-btn rounded-lg p-2 text-[#BF87C9] hover:bg-[#fff1f2] dark:hover:bg-[#251619]" title="นำออก"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
-        <button type="button" onclick="goToBuilding('${l.buildingId}')" class="interactive-btn rounded-lg p-2 text-[#96A4DD] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]"><i data-lucide="navigation" class="h-5 w-5"></i></button>
+        <button type="button" onclick="goToLot('${l.id}')" class="interactive-btn rounded-lg p-2 text-[#96A4DD] dark:text-[#c4b5fd] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]"><i data-lucide="navigation" class="h-5 w-5"></i></button>
       </div></div>`;
   }).join('');
   if (window.lucide) lucide.createIcons();
@@ -5582,8 +5672,22 @@ async function addBuilding() {
   const category = document.getElementById('new-bldg-category')?.value || 'classroom';
   const rawLat = parseFloat(document.getElementById('new-bldg-lat')?.value);
   const rawLng = parseFloat(document.getElementById('new-bldg-lng')?.value);
-  const lat = !isNaN(rawLat) ? Math.max(-90, Math.min(90, rawLat)) : 16.474410;
-  const lng = !isNaN(rawLng) ? Math.max(-180, Math.min(180, rawLng)) : 102.822024;
+  let lat = 16.4740, lng = 102.8240, x = 50, y = 50;
+  if (!isNaN(rawLat) && !isNaN(rawLng)) {
+    if (rawLat > 16.0 && rawLat < 17.0 && rawLng > 102.0 && rawLng < 103.5) {
+      lat = rawLat;
+      lng = rawLng;
+      const coords = getMapCoords({ lat, lng });
+      x = coords.x;
+      y = coords.y;
+    } else {
+      x = Math.max(5, Math.min(95, rawLat));
+      y = Math.max(5, Math.min(95, rawLng));
+      const gps = getNormalizedGps({ x, y });
+      lat = gps.lat;
+      lng = gps.lng;
+    }
+  }
   const msg = document.getElementById('admin-bldg-message');
   const btn = document.getElementById('btn-add-bldg');
   const btnText = document.getElementById('add-bldg-text');
@@ -5599,7 +5703,7 @@ async function addBuilding() {
   if (window.lucide) lucide.createIcons();
 
   const id = 'bldg-' + Date.now();
-  const newBuilding = { id, name, nameEn, category, lat, lng };
+  const newBuilding = { id, name, nameEn, category, lat, lng, x, y };
 
   state.buildings.push(newBuilding);
   saveState();
@@ -5662,6 +5766,8 @@ async function addLot() {
 
   const b = buildingById(buildingId);
   const id = 'lot-' + Date.now();
+  const bGps = b ? getNormalizedGps(b) : { lat: 16.4740, lng: 102.8240 };
+  const bCoords = b ? getMapCoords(b) : { x: 50, y: 50 };
   const newLot = {
     id,
     name,
@@ -5669,8 +5775,10 @@ async function addLot() {
     buildingId,
     capacity,
     available: capacity,
-    lat: b ? (b.lat + (Math.random() * 0.0008 - 0.0004)) : 16.474410,
-    lng: b ? (b.lng + (Math.random() * 0.0008 - 0.0004)) : 102.822024
+    lat: Math.round((bGps.lat + (Math.random() * 0.0006 - 0.0003)) * 10000) / 10000,
+    lng: Math.round((bGps.lng + (Math.random() * 0.0006 - 0.0003)) * 10000) / 10000,
+    x: Math.max(5, Math.min(95, Math.round(bCoords.x + (Math.random() * 4 - 2)))),
+    y: Math.max(5, Math.min(95, Math.round(bCoords.y + (Math.random() * 4 - 2))))
   };
 
   state.lots.push(newLot);
@@ -5745,10 +5853,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (typeof AppLogger !== 'undefined') AppLogger.init();
   applyTheme();
   updateLanguageUI();
-  updateGoogleMapsKeyUI();
-  if (state.settings?.googleMapsApiKey) {
-    loadGoogleMapsScript(state.settings.googleMapsApiKey);
-  }
   if (!state.ui.destinationBuilding && state.buildings.length) {
     state.ui.destinationBuilding = state.buildings[0].id;
   }
@@ -5789,6 +5893,107 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 });
+
+/* ==========================================================================
+   PC EASTER EGG: CUTE WHITE CAR FOLLOWER CURSOR ENGINE (Google Design Style)
+   ========================================================================== */
+function initPcCarEasterEgg() {
+  const isFinePointer = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (!isFinePointer) return;
+
+  const carPointer = document.getElementById('pc-car-pointer');
+  if (!carPointer) return;
+  const carInner = carPointer.querySelector('.pc-car-inner');
+  if (!carInner) return;
+
+  // Mark HTML root to enable custom cursor hiding for desktop users
+  document.documentElement.classList.add('pc-car-active');
+
+  let targetX = window.innerWidth / 2;
+  let targetY = window.innerHeight / 2;
+  let currentX = targetX;
+  let currentY = targetY;
+  let currentAngle = 0;
+  let isHovering = false;
+  let isPressed = false;
+  let isVisible = false;
+
+  const LERP_SPEED = 0.20; // Silky Google Design follower smoothing
+  const ROTATION_SMOOTH = 0.22;
+
+  function updateFollower() {
+    currentX += (targetX - currentX) * LERP_SPEED;
+    currentY += (targetY - currentY) * LERP_SPEED;
+
+    const dx = targetX - currentX;
+    const dy = targetY - currentY;
+    const dist = Math.hypot(dx, dy);
+
+    if (dist > 1.2) {
+      const targetAngle = Math.atan2(dy, dx) * (180 / Math.PI);
+      let diff = (targetAngle - currentAngle + 180) % 360 - 180;
+      if (diff < -180) diff += 360;
+      currentAngle += diff * ROTATION_SMOOTH;
+    }
+
+    carPointer.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+    carInner.style.transform = `rotate(${currentAngle}deg)`;
+
+    requestAnimationFrame(updateFollower);
+  }
+
+  window.addEventListener('mousemove', (e) => {
+    targetX = e.clientX;
+    targetY = e.clientY;
+
+    if (!isVisible) {
+      isVisible = true;
+      carPointer.style.opacity = '1';
+      currentX = targetX;
+      currentY = targetY;
+    }
+
+    const interactiveTarget = e.target && e.target.closest ?
+      e.target.closest('button, a, input, select, textarea, label, [role="button"], .interactive-btn, .cursor-pointer, .nav-item, .chip, .parking-card, .clickable') : null;
+
+    const shouldHover = Boolean(interactiveTarget);
+    if (shouldHover !== isHovering) {
+      isHovering = shouldHover;
+      carPointer.classList.toggle('is-hovering', isHovering);
+    }
+  }, { passive: true });
+
+  window.addEventListener('mousedown', (e) => {
+    if (e.button === 0) {
+      isPressed = true;
+      carPointer.classList.add('is-pressed');
+    }
+  });
+
+  window.addEventListener('mouseup', () => {
+    isPressed = false;
+    carPointer.classList.remove('is-pressed');
+  });
+
+  document.addEventListener('mouseleave', () => {
+    isVisible = false;
+    carPointer.style.opacity = '0';
+  });
+
+  document.addEventListener('mouseenter', () => {
+    isVisible = true;
+    carPointer.style.opacity = '1';
+  });
+
+  requestAnimationFrame(updateFollower);
+}
+
+// Initialize Easter Egg on load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initPcCarEasterEgg);
+} else {
+  initPcCarEasterEgg();
+}
 </script>
 </body>
 </html>
