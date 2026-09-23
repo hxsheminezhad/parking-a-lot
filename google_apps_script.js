@@ -777,12 +777,14 @@ function initializeDatabase(forceRefresh) {
   const bldgSheet = ss.getSheetByName(SHEETS.BUILDINGS);
   if (bldgSheet && bldgSheet.getLastRow() <= 1) {
     const defaultBuildings = [
-      ['b1', 'อาคารเรียนรวม', 'Complex Lecture Building', 'classroom', 40, 60, new Date().toISOString()],
-      ['b2', 'คณะวิศวกรรมศาสตร์', 'Faculty of Engineering', 'classroom', 78, 28, new Date().toISOString()],
-      ['b3', 'หอสมุดกลาง', 'Central Library', 'classroom', 18, 78, new Date().toISOString()],
-      ['b4', 'อาคารสำนักงานอธิการบดี', "President's Office Building", 'office', 58, 12, new Date().toISOString()],
-      ['b5', 'คณะเกษตรศาสตร์', 'Faculty of Agriculture', 'classroom', 88, 70, new Date().toISOString()],
-      ['b6', 'สำนักบริการวิชาการ', 'Academic Services Bureau', 'office', 10, 38, new Date().toISOString()]
+      ['b1', 'อาคารเรียนรวม', 'Complex Lecture Building', 'classroom', 16.4777, 102.8232, new Date().toISOString()],
+      ['b2', 'คณะวิศวกรรมศาสตร์', 'Faculty of Engineering', 'classroom', 16.4725, 102.8229, new Date().toISOString()],
+      ['b3', 'หอสมุดกลาง', 'Central Library', 'classroom', 16.4766, 102.8232, new Date().toISOString()],
+      ['b4', 'อาคารสำนักงานอธิการบดี', "President's Office Building", 'office', 16.4707, 102.8151, new Date().toISOString()],
+      ['b5', 'คณะเกษตรศาสตร์', 'Faculty of Agriculture', 'classroom', 16.4764, 102.8219, new Date().toISOString()],
+      ['b6', 'สำนักบริการวิชาการ', 'Academic Services Bureau', 'office', 16.4745, 102.8272, new Date().toISOString()],
+      ['b7', 'คณะนิติศาสตร์', 'Faculty of Law', 'classroom', 16.4502, 102.8153, new Date().toISOString()],
+      ['srinagarind', 'โรงพยาบาลศรีนครินทร์', 'Srinagarind Hospital', 'hospital', 16.4683, 102.8302, new Date().toISOString()]
     ];
     defaultBuildings.forEach(b => bldgSheet.appendRow(b));
   }
@@ -791,9 +793,13 @@ function initializeDatabase(forceRefresh) {
   const lotSheet = ss.getSheetByName(SHEETS.LOTS);
   if (lotSheet && lotSheet.getLastRow() <= 1) {
     const defaultLots = [
-      ['a', 'ลาน A หน้าอาคารเรียนรวม', 'Lot A - Lecture Complex', 'b1', 20, 15, 38, 58, new Date().toISOString()],
-      ['b', 'ลาน B ข้างวิศวกรรมศาสตร์', 'Lot B - Engineering Wing', 'b2', 20, 5, 75, 31, new Date().toISOString()],
-      ['d', 'ลาน D หลังหอสมุดกลาง', 'Lot D - Behind Library', 'b3', 20, 8, 21, 75, new Date().toISOString()]
+      ['a', 'ลาน A หน้าอาคารเรียนรวม', 'Lot A - Lecture Complex', 'b1', 20, 15, 16.4779, 102.8235, new Date().toISOString()],
+      ['b', 'ลาน B ข้างวิศวกรรมศาสตร์', 'Lot B - Engineering Wing', 'b2', 20, 5, 16.4728, 102.8233, new Date().toISOString()],
+      ['d', 'ลาน D หลังหอสมุดกลาง', 'Lot D - Behind Library', 'b3', 20, 8, 16.4768, 102.8236, new Date().toISOString()],
+      ['lot-1788616909712', 'ลานจอดรถคณะวิศวกรรมศาสตร์', 'Faculty of Engineering Parking Lot', 'b2', 200, 200, 16.4728, 102.8233, new Date().toISOString()],
+      ['lot-1788618155580', 'ลานจอดรถคณะนิติศาสตร์ - ลาน A', 'Faculty of Law - Lot A', 'b7', 300, 300, 16.4506, 102.8156, new Date().toISOString()],
+      ['lot-1788618208479', 'ลานจอดรถคณะนิติศาสตร์ - ลาน B', 'Faculty of Law - Lot B', 'b7', 300, 300, 16.4498, 102.8150, new Date().toISOString()],
+      ['lot-srinagarind', 'ลานจอดรถโรงพยาบาลศรีนครินทร์', 'Srinagarind Hospital Parking Lot', 'srinagarind', 350, 350, 16.4686, 102.8306, new Date().toISOString()]
     ];
     defaultLots.forEach(l => lotSheet.appendRow(l));
   }

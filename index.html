@@ -181,6 +181,41 @@ body, section.app-view, header, nav, main, footer, .parking-card, .interactive-c
   100% { transform: scale(1); opacity: 1; }
 }
 
+/* Scrollbar removal & styling */
+.no-scrollbar,
+.modal-panel,
+#gmaps-building-chips,
+#spots-filter-chips,
+.overflow-x-auto {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+.no-scrollbar::-webkit-scrollbar,
+.modal-panel::-webkit-scrollbar,
+#gmaps-building-chips::-webkit-scrollbar,
+#spots-filter-chips::-webkit-scrollbar,
+.overflow-x-auto::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(150, 164, 221, 0.28);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(166, 128, 194, 0.48);
+}
+
 .grid-map{background-color:var(--grid-bg);background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:26px 26px}
 .route-line{stroke-dasharray:8 9;animation:dash 2s linear infinite}
 @keyframes dash{to{stroke-dashoffset:-34}}
@@ -653,8 +688,8 @@ html.dark .pc-car-svg {
     <div id="toast-icon-wrap" class="mt-0.5 rounded-full p-1 text-white shadow-sm"></div>
     <div class="flex-1 min-w-0">
       <div class="flex items-center gap-2">
-        <h4 id="toast-title" class="font-bold text-sm">แจ้งเตือน</h4>
-        <span id="toast-badge" class="hidden text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#96A4DD]/20 text-[#262447] dark:text-[#D9B1E6]">เมื่อสักครู่</span>
+        <h4 id="toast-title" class="font-bold text-sm" data-i18n="toast_notification_fallback">แจ้งเตือน</h4>
+        <span id="toast-badge" class="hidden text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#96A4DD]/20 text-[#262447] dark:text-[#D9B1E6]" data-i18n="toast_just_now">เมื่อสักครู่</span>
       </div>
       <p id="toast-message" class="text-xs mt-0.5 leading-relaxed"></p>
       <div id="toast-actions" class="mt-2.5 hidden flex items-center gap-2">
@@ -670,7 +705,7 @@ html.dark .pc-car-svg {
 
 <!-- GOOGLE SHEETS & QUICK SETTINGS MODAL -->
 <div id="quick-controls-modal" class="modal-wrapper">
-  <div class="modal-panel w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
+  <div class="modal-panel no-scrollbar w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
     <div class="flex items-center justify-between pb-4 border-b border-[#edf1f8] dark:border-[#262845]">
       <div class="flex items-center gap-2">
         <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] text-[#181b2e] dark:text-[#0e0f1a] shadow-sm"><i data-lucide="sliders" class="h-4 w-4"></i></span>
@@ -812,7 +847,7 @@ html.dark .pc-car-svg {
     <div>
       <div class="hero-anim-1 mb-5 inline-flex items-center gap-2 rounded-full bg-white/80 dark:bg-[#222442]/80 backdrop-blur-md px-4 py-2 text-xs font-bold text-[#4c5aa6] dark:text-[#D9B1E6] shadow-sm border border-[#96A4DD]/30">
         <span class="h-2 w-2 rounded-full bg-[#96A4DD] dark:bg-[#D9B1E6] pulse-dot"></span>
-        <span data-i18n="beta_badge">เว็บแอพพลิเคชันนี้อยู่ในระหว่างการทดสอบเบต้า ไม่ใช่ผลิตภัณฑ์ที่ใช้งานจริงแต่อย่างใด</span>
+        <span data-i18n="beta_badge">เว็บแอปพลิเคชันนี้อยู่ระหว่างการปรับปรุงและบำรุงรักษา เพื่อมอบประสบการณ์ที่ดีและอบอุ่นแก่ผู้ใช้งานทุกคน</span>
       </div>
       <h1 class="hero-anim-2 max-w-xl text-4xl font-extrabold leading-[1.15] tracking-tight text-[#262447] dark:text-[#c4b5fd] md:text-5xl" data-i18n="hero_title">ค้นหาที่จอดรถในช่วงเวลาเร่งด่วน</h1>
       <p class="hero-anim-3 mt-6 max-w-lg text-lg leading-8 text-[#5a627a] dark:text-[#9da7c5]" data-i18n="hero_subtitle">ค้นหาลานจอดรถอย่างรวดเร็วทันใจ ด้วยระบบแนะนำลานจอดรถที่ใกล้ที่สุดพร้อมเส้นทางการเดินทางในทันที</p>
@@ -1027,10 +1062,63 @@ html.dark .pc-car-svg {
       </button>
     </div>
 
+    <!-- KHON KAEN UNIVERSITY GOOGLE MAP SECTION -->
     <div class="mt-6 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
-      <p class="text-sm font-bold" data-i18n="overview_map_title">แผนที่ลานจอดรถโดยรวม</p>
-      <p class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="overview_map_sub">ตำแหน่งลานจอดรถเทียบกับอาคารทั้งหมด</p>
-      <svg id="overview-map" viewBox="0 0 100 100" class="mt-3 h-48 w-full rounded-2xl grid-map"></svg>
+      <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-[#96A4DD]/20 text-[#6a5bdc] dark:text-[#c4b5fd]">
+              <i data-lucide="map" class="h-4 w-4"></i>
+            </span>
+            <p class="text-sm font-bold" data-i18n="overview_map_title">แผนที่มหาวิทยาลัยขอนแก่น (Google Maps)</p>
+          </div>
+          <p class="text-xs text-[#5a627a] dark:text-[#9da7c5] mt-1" data-i18n="overview_map_sub">พิกัดจริงของทุกอาคารในมหาวิทยาลัยขอนแก่น • รองรับ Google Maps เต็มรูปแบบ</p>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button type="button" onclick="resetKkuGmaps()" class="interactive-btn inline-flex items-center gap-1.5 rounded-xl border border-[#e2e8f4] dark:border-[#262845] bg-[#f7f9fd] dark:bg-[#1f2038] px-3 py-1.5 text-xs font-semibold text-[#262447] dark:text-[#c4b5fd] hover:bg-[#eef3fb] dark:hover:bg-[#252848]">
+            <i data-lucide="rotate-ccw" class="h-3.5 w-3.5"></i>
+            <span data-i18n="campus_overview">ภาพรวม มข.</span>
+          </button>
+          <a id="gmaps-external-link" href="https://maps.google.com/?q=16.4735,102.8236" target="_blank" rel="noopener noreferrer" class="interactive-btn inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] px-3 py-1.5 text-xs font-bold text-[#181b2e] dark:text-[#0e0f1a] shadow-sm hover:opacity-95">
+            <i data-lucide="external-link" class="h-3.5 w-3.5"></i>
+            <span data-i18n="open_in_google_maps">เปิดใน Google Maps</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- GOOGLE MAP EMBED CONTAINER -->
+      <div class="relative w-full h-64 sm:h-80 rounded-2xl overflow-hidden border border-[#e2e8f4] dark:border-[#262845] bg-[#eef3fb] dark:bg-[#121324] shadow-inner">
+        <iframe
+          id="kku-google-map-frame"
+          src="https://maps.google.com/maps?q=16.4735,102.8236+(Khon+Kaen+University)&z=15&t=m&output=embed"
+          class="w-full h-full border-0"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen
+          title="Khon Kaen University Google Map">
+        </iframe>
+      </div>
+
+      <!-- ACTIVE BUILDING SELECTION BADGE -->
+      <div id="gmaps-active-building-bar" class="mt-3 flex items-center justify-between p-3 rounded-xl bg-[#f1f4fb] dark:bg-[#1c1d33] border border-[#e2e8f4] dark:border-[#262845]">
+        <div class="flex items-center gap-2">
+          <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-[#96A4DD]/30 text-[#262447] dark:text-[#D9B1E6]">
+            <i data-lucide="map-pin" class="h-3.5 w-3.5"></i>
+          </span>
+          <div>
+            <span id="gmaps-active-bldg-name" class="text-xs font-bold text-[#262447] dark:text-[#c4b5fd]" data-i18n="kku_campus_title">มหาวิทยาลัยขอนแก่น</span>
+            <span id="gmaps-active-bldg-coords" class="ml-2 text-[11px] font-mono text-[#5a627a] dark:text-[#9da7c5]">16.4735° N, 102.8236° E</span>
+          </div>
+        </div>
+        <span class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full" data-i18n="exact_coordinates">พิกัดจริง</span>
+      </div>
+
+      <!-- BUILDING QUICK-FOCUS CHIPS -->
+      <div class="mt-3">
+        <p class="text-xs font-bold text-[#5a627a] dark:text-[#9da7c5] mb-2" data-i18n="kku_buildings_on_map">เลือกอาคารเพื่อซูมพิกัดบนแผนที่:</p>
+        <div class="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar" id="gmaps-building-chips"></div>
+      </div>
+      <span id="overview-map" class="hidden"></span>
     </div>
 
     <div class="mt-6 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
@@ -1133,11 +1221,49 @@ html.dark .pc-car-svg {
       <button type="button" onclick="setRouteType('fast')" id="route-type-fast" class="chip active flex-1" data-i18n="route_fast">เส้นทางที่ใกล้ที่สุด</button>
       <button type="button" onclick="setRouteType('safe')" id="route-type-safe" class="chip flex-1" data-i18n="route_safe">เส้นทางที่ปลอดภัยที่สุด</button>
     </div>
-    <svg id="route-map" viewBox="0 0 100 100" class="mt-4 h-56 w-full rounded-2xl grid-map border border-[#e2e8f4] dark:border-[#262845]"></svg>
+    <!-- 3-STAT METRIC TABLE -->
     <div class="mt-4 grid grid-cols-3 divide-x divide-[#e2e8f4] dark:divide-[#262845] rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] text-center shadow-sm">
       <div class="p-4"><b id="route-time" class="block text-xl text-[#262447] dark:text-[#c4b5fd]">-</b><span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="walk_minutes">นาที่ที่ใช้เดินทาง</span></div>
       <div class="p-4"><b id="route-distance" class="block text-xl text-[#262447] dark:text-[#c4b5fd]">-</b><span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="meters_unit">เมตร</span></div>
       <div class="p-4"><b id="route-lot-available" class="block text-xl text-[#96A4DD] dark:text-[#D9B1E6]">-</b><span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" data-i18n="nav_spots_available">ที่จอดว่างคงเหลือ</span><span id="route-lot-name" class="hidden"></span></div>
+    </div>
+
+    <!-- CLEAN NAVIGATION DETAILS TABLE -->
+    <div class="mt-4 overflow-hidden rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] shadow-sm">
+      <div class="border-b border-[#e2e8f4] dark:border-[#262845] bg-[#f8fafc] dark:bg-[#1c1d33] px-5 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i data-lucide="table" class="h-4 w-4 text-[#96A4DD]"></i>
+          <h3 class="text-xs font-bold text-[#262447] dark:text-[#c4b5fd]" data-i18n="nav_summary_table_title">รายละเอียดเส้นทางและลานจอดรถ</h3>
+        </div>
+        <span class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full" id="route-table-status" data-i18n="status_ready_nav">พร้อมนำทาง</span>
+      </div>
+      <table class="w-full text-left text-xs">
+        <tbody class="divide-y divide-[#e2e8f4] dark:divide-[#262845]">
+          <tr>
+            <td class="px-5 py-3 font-semibold text-[#5a627a] dark:text-[#9da7c5] w-2/5" data-i18n="table_col_destination">อาคารปลายทาง</td>
+            <td class="px-5 py-3 font-bold text-[#262447] dark:text-white" id="route-table-destination">-</td>
+          </tr>
+          <tr>
+            <td class="px-5 py-3 font-semibold text-[#5a627a] dark:text-[#9da7c5]" data-i18n="table_col_lot">ลานจอดรถที่แนะนำ</td>
+            <td class="px-5 py-3 font-bold text-[#96A4DD] dark:text-[#D9B1E6]" id="route-table-lot">-</td>
+          </tr>
+          <tr>
+            <td class="px-5 py-3 font-semibold text-[#5a627a] dark:text-[#9da7c5]" data-i18n="table_col_capacity">ที่ว่างคงเหลือ</td>
+            <td class="px-5 py-3 font-bold" id="route-table-spots">-</td>
+          </tr>
+          <tr>
+            <td class="px-5 py-3 font-semibold text-[#5a627a] dark:text-[#9da7c5]" data-i18n="table_col_coords">พิกัด Google Maps</td>
+            <td class="px-5 py-3 font-mono text-[11px] text-[#5a627a] dark:text-[#9da7c5]" id="route-table-coords">-</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="p-3 bg-[#f8fafc] dark:bg-[#1a1b2e] border-t border-[#e2e8f4] dark:border-[#262845] flex items-center justify-between">
+        <a id="route-gmaps-direct-btn" href="#" target="_blank" rel="noopener noreferrer" class="interactive-btn inline-flex items-center gap-1.5 text-xs font-bold text-[#96A4DD] dark:text-[#c4b5fd] hover:underline">
+          <i data-lucide="map-pin" class="h-3.5 w-3.5"></i>
+          <span data-i18n="open_in_google_maps">เปิดตำแหน่งใน Google Maps</span>
+          <i data-lucide="external-link" class="h-3 w-3"></i>
+        </a>
+      </div>
     </div>
     
     <!-- ACTIVE PARKING CHECKOUT SECTION (In Destination View) -->
@@ -1254,7 +1380,7 @@ html.dark .pc-car-svg {
         <i data-lucide="database" class="text-[#96A4DD] dark:text-[#D9B1E6]"></i>
         <div>
           <span class="font-semibold block" data-i18n="sheets_settings_btn">การตั้งค่าฐานข้อมูล Google Sheets</span>
-          <span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" id="profile-db-status">เชื่อมต่อแล้ว (Live)</span>
+          <span class="text-xs text-[#5a627a] dark:text-[#9da7c5]" id="profile-db-status" data-i18n="db_status_connected">เชื่อมต่อแล้ว (Live)</span>
         </div>
       </span>
       <i data-lucide="chevron-right" class="text-[#8f9bb3] group-hover:text-[#96A4DD] transition"></i>
@@ -1394,7 +1520,7 @@ html.dark .pc-car-svg {
     <div class="mt-4 rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 text-center shadow-sm">
       <p class="text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="avg_rating_label">คะแนนเฉลี่ยจากผู้ใช้งาน</p>
       <p id="review-average" class="mt-1 text-4xl font-extrabold text-[#96A4DD] dark:text-[#c4b5fd]">-</p>
-      <p id="review-count" class="text-sm text-[#5a627a] dark:text-[#9da7c5]">ยังไม่มีรีวิว</p>
+      <p id="review-count" class="text-sm text-[#5a627a] dark:text-[#9da7c5]" data-i18n="no_reviews">ยังไม่มีรีวิว</p>
     </div>
     <div class="mt-5 rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
       <p class="font-bold" data-i18n="rate_prompt">ให้คะแนนการใช้งาน</p>
@@ -1607,7 +1733,7 @@ html.dark .pc-car-svg {
 
 <!-- EDIT LOT MODAL -->
 <div id="edit-lot-modal" class="modal-wrapper">
-  <div class="modal-panel w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
+  <div class="modal-panel no-scrollbar w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
     <div class="flex items-center justify-between pb-4 border-b border-[#edf1f8] dark:border-[#262845]">
       <div class="flex items-center gap-2">
         <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] text-[#181b2e] dark:text-[#0e0f1a] shadow-sm"><i data-lucide="edit-3" class="h-4 w-4"></i></span>
@@ -1653,7 +1779,7 @@ html.dark .pc-car-svg {
 <!-- CONFIRM DIALOG -->
 <div id="confirm-dialog" class="modal-wrapper">
   <div class="modal-panel w-full max-w-sm rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
-    <p id="confirm-message" class="font-semibold text-lg">ยืนยันการลบหรือไม่</p>
+    <p id="confirm-message" class="font-semibold text-lg" data-i18n="confirm_dialog_msg">ยืนยันการดำเนินการหรือไม่</p>
     <div class="mt-5 flex gap-3">
       <button type="button" onclick="closeConfirm(false)" class="interactive-btn flex-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] py-3 font-bold hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" data-i18n="cancel_btn">ยกเลิก</button>
       <button type="button" onclick="closeConfirm(true)" class="interactive-btn flex-1 rounded-xl bg-gradient-to-r from-[#BF87C9] to-[#A680C2] py-3 font-bold text-white hover:opacity-90 shadow-sm" data-i18n="delete_btn">ลบ</button>
@@ -1748,7 +1874,7 @@ const i18n = {
     toast_guest_welcome_desc: "คุณสามารถค้นหาและนำทางไปยังลานจอดรถได้ทันที",
     admin_only_badge: "เฉพาะผู้ดูแลระบบ",
     sheets_admin_only_hint: "การตั้งค่าฐานข้อมูล Google Sheets สงวนไว้สำหรับผู้ดูแลระบบเท่านั้น",
-    beta_badge: "เว็บแอพพลิเคชั่นนี้เป็นเพียงโปรเจกต์ Vibe Coding ในรายวิชาเท่านั้น ไม่ใช่ผลิตภัณฑ์จริงแต่อย่างใด",
+    beta_badge: "เว็บแอปพลิเคชันนี้อยู่ระหว่างการปรับปรุงและบำรุงรักษา เพื่อมอบประสบการณ์ที่ดีและอบอุ่นแก่ผู้ใช้งานทุกคน",
     hero_title: "ค้นหาที่จอดรถในช่วงเวลาเร่งด่วน",
     hero_subtitle: "ค้นหาลานจอดรถอย่างรวดเร็วทันใจ ด้วยระบบแนะนำลานจอดรถที่ใกล้ที่สุดพร้อมเส้นทางการเดินทางในทันที",
     start_finding: "เริ่มค้นหาที่จอด",
@@ -1783,8 +1909,21 @@ const i18n = {
     greeting_user: "สวัสดี {name}",
     dashboard_headline: "ที่จอดรถวันนี้เป็นอย่างไรบ้าง",
     from_total: "จาก {cap} ช่อง",
-    overview_map_title: "แผนที่ลานจอดรถโดยรวม",
-    overview_map_sub: "ตำแหน่งลานจอดรถเทียบกับอาคารทั้งหมด",
+    overview_map_title: "แผนที่มหาวิทยาลัยขอนแก่น (Google Maps)",
+    overview_map_sub: "พิกัดจริงของทุกอาคารในมหาวิทยาลัยขอนแก่น • รองรับ Google Maps เต็มรูปแบบ",
+    kku_gmaps_title: "แผนที่มหาวิทยาลัยขอนแก่น (Google Maps)",
+    kku_gmaps_sub: "พิกัดจริงของทุกอาคารในมหาวิทยาลัยขอนแก่น • รองรับ Google Maps เต็มรูปแบบ",
+    open_in_google_maps: "เปิดใน Google Maps",
+    campus_overview: "ภาพรวม มข.",
+    exact_coordinates: "พิกัดจริง",
+    kku_buildings_on_map: "เลือกอาคารเพื่อซูมพิกัดบนแผนที่:",
+    nav_summary_table_title: "รายละเอียดเส้นทางและลานจอดรถ",
+    table_col_destination: "อาคารปลายทาง",
+    table_col_lot: "ลานจอดรถที่แนะนำ",
+    table_col_capacity: "ที่ว่างคงเหลือ",
+    table_col_distance: "ระยะทาง",
+    table_col_duration: "ระยะเวลาเดิน",
+    table_col_coords: "พิกัด Google Maps",
     recommended_for_you: "แนะนำสำหรับคุณ",
     nearest_lot_now: "ลานจอดรถที่ใกล้ที่สุดตอนนี้",
     select_destination: "เลือกอาคารปลายทาง",
@@ -2065,7 +2204,17 @@ const i18n = {
     kku_stat_zones: "20 โซน",
     kku_official_map_notice: "ภาพผังแม่บทมหาวิทยาลัยขอนแก่นจากเว็บไซต์ทางการ สามารถเลื่อนและซูมดูรายละเอียดอาคารได้",
     kku_gmaps_notice: "แผนที่ดาวเทียมและข้อมูลการจราจรแบบเรียลไทม์จาก Google Maps",
-    kku_drag_hint: "ลากเพื่อเลื่อนแผนที่ • ใช้ปุ่ม +/- เพื่อซูม"
+    kku_drag_hint: "ลากเพื่อเลื่อนแผนที่ • ใช้ปุ่ม +/- เพื่อซูม",
+    status_ready_nav: "พร้อมนำทาง",
+    status_no_route: "ไม่มีเส้นทางที่พร้อมใช้งาน",
+    kku_campus_title: "มหาวิทยาลัยขอนแก่น",
+    no_buildings_in_system: "ยังไม่มีอาคารในระบบ",
+    confirm_dialog_msg: "ยืนยันการดำเนินการหรือไม่",
+    navigate_btn: "นำทาง",
+    spots_unit: "ลานจอด",
+    slots_unit: "ช่อง",
+    toast_notification_fallback: "แจ้งเตือน",
+    toast_just_now: "เมื่อสักครู่"
   },
   en: {
     quick_settings_title: "System Settings",
@@ -2096,7 +2245,7 @@ const i18n = {
     toast_guest_welcome_desc: "You can find and navigate to parking lots immediately.",
     admin_only_badge: "Admin Only",
     sheets_admin_only_hint: "Google Sheets database settings are restricted to administrators only.",
-    beta_badge: "This web-application is a part of a Vibe Coding project in class. Not indicative of a final product.",
+    beta_badge: "This web-application is currently under maintenance to ensure a good and cozy experience for all users.",
     hero_title: "Find parking spots right within busy hours.",
     hero_subtitle: "Search for parking lots and get the nearest parking spots with fastest routes instantly.",
     start_finding: "Find Parking",
@@ -2131,8 +2280,21 @@ const i18n = {
     greeting_user: "Hello, {name}",
     dashboard_headline: "How is your parking today?",
     from_total: "out of {cap} spots",
-    overview_map_title: "Campus Parking Map",
-    overview_map_sub: "Parking lots relative to campus buildings",
+    overview_map_title: "Khon Kaen University Map (Google Maps)",
+    overview_map_sub: "Exact real-world coordinates of KKU campus buildings on Google Maps",
+    kku_gmaps_title: "Khon Kaen University Map (Google Maps)",
+    kku_gmaps_sub: "Exact real-world coordinates of KKU campus buildings on Google Maps",
+    open_in_google_maps: "Open in Google Maps",
+    campus_overview: "KKU Overview",
+    exact_coordinates: "Real GPS",
+    kku_buildings_on_map: "Select building to focus on Google Maps:",
+    nav_summary_table_title: "Route & Parking Details",
+    table_col_destination: "Destination Building",
+    table_col_lot: "Recommended Lot",
+    table_col_capacity: "Spots Remaining",
+    table_col_distance: "Distance",
+    table_col_duration: "Walk Time",
+    table_col_coords: "Google Maps Coords",
     recommended_for_you: "Recommended For You",
     nearest_lot_now: "Nearest Available Lot",
     select_destination: "Select Destination Building",
@@ -2346,7 +2508,7 @@ const i18n = {
     already_parked_title: "Already Parked",
     already_parked_desc: "You already have an active parking session. Please check out before parking again.",
     dest_active_parking_title: "Active Parking Session",
-    dest_active_parking_desc: "You're currenly parking your car in {lot name}, have fun with your destination!",
+    dest_active_parking_desc: "You're currently parking your car in {lot name}, have fun with your destination!",
     spots_list_title: "All Parking Spots",
     spots_list_sub: "Real-time availability and live capacity of all parking spots",
     show_all_lots_btn: "Show all ({count} spots)",
@@ -2413,7 +2575,17 @@ const i18n = {
     kku_stat_zones: "20 Zones",
     kku_official_map_notice: "Official Khon Kaen University master plan map. Drag and zoom to view details.",
     kku_gmaps_notice: "Satellite map and real-time navigation view powered by Google Maps",
-    kku_drag_hint: "Drag to pan map • Use +/- buttons to zoom"
+    kku_drag_hint: "Drag to pan map • Use +/- buttons to zoom",
+    status_ready_nav: "Ready to Navigate",
+    status_no_route: "No Available Route",
+    kku_campus_title: "Khon Kaen University",
+    no_buildings_in_system: "No buildings registered in system",
+    confirm_dialog_msg: "Are you sure you want to proceed?",
+    navigate_btn: "Navigate",
+    spots_unit: "spots",
+    slots_unit: "slots",
+    toast_notification_fallback: "Notification",
+    toast_just_now: "Just now"
   }
 };
 
@@ -2747,20 +2919,20 @@ function defaultState() {
       sheetsApiUrl: configuredSheets || DEFAULT_SHEETS_URL
     },
     buildings: [
-      {id:'b1', name:'อาคารเรียนรวม', nameEn:'Complex Lecture Building', category:'classroom', lat:16.4735, lng:102.8240, x:50, y:48},
-      {id:'b2', name:'คณะวิศวกรรมศาสตร์', nameEn:'Faculty of Engineering', category:'classroom', lat:16.4743, lng:102.8236, x:48, y:37},
-      {id:'b3', name:'หอสมุดกลาง', nameEn:'Central Library', category:'classroom', lat:16.4722, lng:102.8232, x:47, y:44},
-      {id:'b4', name:'อาคารสำนักงานอธิการบดี', nameEn:"President's Office Building", category:'office', lat:16.4678, lng:102.8245, x:52, y:59},
-      {id:'b5', name:'คณะเกษตรศาสตร์', nameEn:'Faculty of Agriculture', category:'classroom', lat:16.4760, lng:102.8250, x:60, y:31},
-      {id:'b6', name:'สำนักบริการวิชาการ', nameEn:'Academic Services Bureau', category:'office', lat:16.4650, lng:102.8310, x:79, y:69},
-      {id:'b7', name:'คณะนิติศาสตร์', nameEn:'Faculty of Law', category:'classroom', lat:16.4632, lng:102.8275, x:65, y:75},
-      {id:'srinagarind', name:'โรงพยาบาลศรีนครินทร์', nameEn:'Srinagarind Hospital', category:'hospital', lat:16.4817, lng:102.8300, x:46.5, y:11.5}
+      {id:'b1', name:'อาคารเรียนรวม', nameEn:'Complex Lecture Building', category:'classroom', lat:16.4777, lng:102.8232, x:50, y:48},
+      {id:'b2', name:'คณะวิศวกรรมศาสตร์', nameEn:'Faculty of Engineering', category:'classroom', lat:16.4725, lng:102.8229, x:48, y:37},
+      {id:'b3', name:'หอสมุดกลาง', nameEn:'Central Library', category:'classroom', lat:16.4766, lng:102.8232, x:47, y:44},
+      {id:'b4', name:'อาคารสำนักงานอธิการบดี', nameEn:"President's Office Building", category:'office', lat:16.4707, lng:102.8151, x:52, y:59},
+      {id:'b5', name:'คณะเกษตรศาสตร์', nameEn:'Faculty of Agriculture', category:'classroom', lat:16.4764, lng:102.8219, x:60, y:31},
+      {id:'b6', name:'สำนักบริการวิชาการ', nameEn:'Academic Services Bureau', category:'office', lat:16.4745, lng:102.8272, x:79, y:69},
+      {id:'b7', name:'คณะนิติศาสตร์', nameEn:'Faculty of Law', category:'classroom', lat:16.4502, lng:102.8153, x:65, y:75},
+      {id:'srinagarind', name:'โรงพยาบาลศรีนครินทร์', nameEn:'Srinagarind Hospital', category:'hospital', lat:16.4683, lng:102.8302, x:46.5, y:11.5}
     ],
     lots: [
-      {id:'lot-1788616909712', name:'ลานจอดรถคณะวิศวกรรมศาสตร์', nameEn:'Faculty of Engineering Parking Lot', buildingId:'b2', capacity:200, available:200, lat:16.4746, lng:102.8239, x:50, y:36},
-      {id:'lot-1788618155580', name:'ลานจอดรถคณะนิติศาสตร์ - ลาน A', nameEn:'Faculty of Law - Lot A', buildingId:'b7', capacity:300, available:300, lat:16.4635, lng:102.8278, x:66, y:74},
-      {id:'lot-1788618208479', name:'ลานจอดรถคณะนิติศาสตร์ - ลาน B', nameEn:'Faculty of Law - Lot B', buildingId:'b7', capacity:300, available:300, lat:16.4630, lng:102.8272, x:64, y:76},
-      {id:'lot-srinagarind', name:'ลานจอดรถโรงพยาบาลศรีนครินทร์', nameEn:'Srinagarind Hospital Parking Lot', buildingId:'srinagarind', capacity:350, available:350, lat:16.4820, lng:102.8305, x:48, y:12}
+      {id:'lot-1788616909712', name:'ลานจอดรถคณะวิศวกรรมศาสตร์', nameEn:'Faculty of Engineering Parking Lot', buildingId:'b2', capacity:200, available:200, lat:16.4728, lng:102.8233, x:50, y:36},
+      {id:'lot-1788618155580', name:'ลานจอดรถคณะนิติศาสตร์ - ลาน A', nameEn:'Faculty of Law - Lot A', buildingId:'b7', capacity:300, available:300, lat:16.4506, lng:102.8156, x:66, y:74},
+      {id:'lot-1788618208479', name:'ลานจอดรถคณะนิติศาสตร์ - ลาน B', nameEn:'Faculty of Law - Lot B', buildingId:'b7', capacity:300, available:300, lat:16.4498, lng:102.8150, x:64, y:76},
+      {id:'lot-srinagarind', name:'ลานจอดรถโรงพยาบาลศรีนครินทร์', nameEn:'Srinagarind Hospital Parking Lot', buildingId:'srinagarind', capacity:350, available:350, lat:16.4686, lng:102.8306, x:48, y:12}
     ],
     users: getStoredUsers(),
     currentUser: null,
@@ -2832,7 +3004,7 @@ function loadState() {
     });
     s.lots.forEach(l => {
       const def = defLots.find(dl => dl.id === l.id);
-      if (def && (!l.lat || l.lat < 16.0 || l.lat > 17.0)) {
+      if (def) {
         l.lat = def.lat;
         l.lng = def.lng;
         l.x = def.x;
@@ -2849,7 +3021,7 @@ function loadState() {
     });
     s.buildings.forEach(b => {
       const def = defBuildings.find(db => db.id === b.id);
-      if (def && (!b.lat || b.lat < 16.0 || b.lat > 17.0)) {
+      if (def) {
         b.lat = def.lat;
         b.lng = def.lng;
         b.x = def.x;
@@ -4141,8 +4313,78 @@ function renderAll() {
   renderNotifications();
   renderAdmin();
   renderRoute();
+  renderKkuGoogleMap();
   drawAllMaps();
   if (window.lucide) lucide.createIcons();
+}
+
+function renderKkuGoogleMap() {
+  const container = document.getElementById('gmaps-building-chips');
+  if (!container) return;
+
+  const activeBldg = state.ui.selectedGmapsBuildingId ? buildingById(state.ui.selectedGmapsBuildingId) : null;
+  const nameEl = document.getElementById('gmaps-active-bldg-name');
+  if (nameEl) {
+    nameEl.textContent = activeBldg ? bName(activeBldg) : t('kku_campus_title');
+  }
+
+  const validBldgs = (state.buildings || []).filter(b => b && b.id && b.id !== 'undefined' && (b.name || b.nameEn));
+  container.innerHTML = validBldgs.map(b => {
+    const isSelected = state.ui.selectedGmapsBuildingId === b.id;
+    const name = bName(b);
+    let catIcon = 'graduation-cap';
+    if (b.category === 'hospital') catIcon = 'cross';
+    else if (b.category === 'office') catIcon = 'briefcase';
+    else if (b.category === 'cafeteria') catIcon = 'utensils';
+
+    return `<button type="button" onclick="focusBuildingOnGmaps('${b.id}')" class="interactive-btn shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs transition ${isSelected ? 'bg-gradient-to-r from-[#96A4DD] to-[#A680C2] text-[#181b2e] dark:text-[#0e0f1a] font-extrabold shadow-sm ring-2 ring-[#96A4DD]' : 'bg-white dark:bg-[#161729] text-[#262447] dark:text-[#c4b5fd] border border-[#e2e8f4] dark:border-[#262845] hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038] font-semibold'}">
+      <i data-lucide="${catIcon}" class="h-3 w-3"></i>
+      <span>${name}</span>
+    </button>`;
+  }).join('');
+
+  if (window.lucide) lucide.createIcons();
+}
+
+function focusBuildingOnGmaps(bldgId) {
+  state.ui.selectedGmapsBuildingId = bldgId;
+  const bldg = buildingById(bldgId);
+  if (!bldg) return;
+
+  const frame = document.getElementById('kku-google-map-frame');
+  const name = bName(bldg);
+  const lat = Number(bldg.lat);
+  const lng = Number(bldg.lng);
+
+  if (frame && !isNaN(lat) && !isNaN(lng)) {
+    frame.src = `https://maps.google.com/maps?q=${lat},${lng}+(${encodeURIComponent(name)})&z=17&t=m&output=embed`;
+  }
+
+  const nameEl = document.getElementById('gmaps-active-bldg-name');
+  if (nameEl) nameEl.textContent = name;
+  const coordsEl = document.getElementById('gmaps-active-bldg-coords');
+  if (coordsEl) coordsEl.textContent = `${lat.toFixed(4)}° N, ${lng.toFixed(4)}° E`;
+
+  const extLink = document.getElementById('gmaps-external-link');
+  if (extLink) extLink.href = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+
+  renderKkuGoogleMap();
+}
+
+function resetKkuGmaps() {
+  state.ui.selectedGmapsBuildingId = null;
+  const frame = document.getElementById('kku-google-map-frame');
+  if (frame) {
+    frame.src = "https://maps.google.com/maps?q=16.4735,102.8236+(Khon+Kaen+University)&z=15&t=m&output=embed";
+  }
+  const nameEl = document.getElementById('gmaps-active-bldg-name');
+  if (nameEl) nameEl.textContent = t('kku_campus_title');
+  const coordsEl = document.getElementById('gmaps-active-bldg-coords');
+  if (coordsEl) coordsEl.textContent = "16.4735° N, 102.8236° E";
+  const extLink = document.getElementById('gmaps-external-link');
+  if (extLink) extLink.href = "https://maps.google.com/?q=16.4735,102.8236";
+
+  renderKkuGoogleMap();
 }
 
 function drawAllMaps() {
@@ -4268,8 +4510,8 @@ function initialsAvatar(user) {
 }
 
 function formatDuration(startTime) {
-  if (!startTime) return '0 นาที';
   const isEn = state.settings?.lang === 'en';
+  if (!startTime) return isEn ? '0 min' : '0 นาที';
   const diffMs = Math.max(0, Date.now() - startTime);
   const totalMinutes = Math.floor(diffMs / 60000);
   if (totalMinutes < 1) {
@@ -4382,6 +4624,7 @@ function renderDashboard() {
   } else {
     box.innerHTML = `<p class="text-sm text-[#5a627a] dark:text-[#9da7c5]">${t('no_lots_in_system')}</p>`;
   }
+  renderKkuGoogleMap();
 }
 
 function setSpotsStatusFilter(status) {
@@ -4437,7 +4680,7 @@ function renderSpotsList() {
 
   const countBadge = document.getElementById('spots-count-text');
   if (countBadge) {
-    countBadge.textContent = `${filtered.length} ${state.settings?.lang === 'en' ? 'spots' : 'ลานจอด'}`;
+    countBadge.textContent = `${filtered.length} ${t('spots_unit')}`;
   }
 
   if (!filtered.length) {
@@ -4491,7 +4734,7 @@ function renderSpotsList() {
             </button>
             <button type="button" onclick="goToLot('${l.id}', 'user-spots-list')" class="interactive-btn inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] px-3 py-2 text-xs font-bold text-[#181b2e] dark:text-[#0e0f1a] shadow-sm hover:opacity-95">
               <i data-lucide="navigation" class="h-3.5 w-3.5"></i>
-              <span>${state.settings?.lang === 'en' ? 'Navigate' : 'นำทาง'}</span>
+              <span>${t('navigate_btn')}</span>
             </button>
           </div>
         </div>
@@ -4675,12 +4918,24 @@ function renderRoute() {
     if (finishRouteBtn) finishRouteBtn.classList.remove('hidden');
   }
 
+  const destBldgName = building ? bName(building) : '-';
+  const tableDestEl = document.getElementById('route-table-destination');
+  if (tableDestEl) tableDestEl.textContent = destBldgName;
+
   if (!best) {
     document.getElementById('route-description').textContent = t('no_lots_in_system');
     document.getElementById('route-time').textContent = '-';
     document.getElementById('route-distance').textContent = '-';
     const availEl = document.getElementById('route-lot-available');
     if (availEl) availEl.textContent = '-';
+    const tableLotEl = document.getElementById('route-table-lot');
+    if (tableLotEl) tableLotEl.textContent = '-';
+    const tableSpotsEl = document.getElementById('route-table-spots');
+    if (tableSpotsEl) tableSpotsEl.textContent = '-';
+    const tableCoordsEl = document.getElementById('route-table-coords');
+    if (tableCoordsEl) tableCoordsEl.textContent = building && building.lat ? `${Number(building.lat).toFixed(4)}° N, ${Number(building.lng).toFixed(4)}° E` : '-';
+    const tableStatusEl = document.getElementById('route-table-status');
+    if (tableStatusEl) tableStatusEl.textContent = t('status_no_route');
     return;
   }
   const multiplier = state.ui.routeType === 'safe' ? 1.35 : 1;
@@ -4695,6 +4950,23 @@ function renderRoute() {
   const lotNameEl = document.getElementById('route-lot-name');
   if (lotNameEl) {
     lotNameEl.textContent = lName(best.lot);
+  }
+  const tableLotEl = document.getElementById('route-table-lot');
+  if (tableLotEl) tableLotEl.textContent = lName(best.lot);
+  const tableSpotsEl = document.getElementById('route-table-spots');
+  if (tableSpotsEl) {
+    const avail = best.lot.available || 0;
+    const cap = best.lot.capacity || 0;
+    tableSpotsEl.innerHTML = `<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-bold ${avail > 0 ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400' : 'bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400'}"><span class="h-1.5 w-1.5 rounded-full ${avail > 0 ? 'bg-emerald-500' : 'bg-rose-500'}"></span>${avail} / ${cap} ${t('slots_unit')}</span>`;
+  }
+  const tableStatusEl = document.getElementById('route-table-status');
+  if (tableStatusEl) tableStatusEl.textContent = t('status_ready_nav');
+  const tableCoordsEl = document.getElementById('route-table-coords');
+  const gmapsBtn = document.getElementById('route-gmaps-direct-btn');
+  const targetGps = building && building.lat ? building : (best.lot && best.lot.lat ? best.lot : null);
+  if (targetGps) {
+    if (tableCoordsEl) tableCoordsEl.textContent = `${Number(targetGps.lat).toFixed(4)}° N, ${Number(targetGps.lng).toFixed(4)}° E`;
+    if (gmapsBtn) gmapsBtn.href = `https://www.google.com/maps/search/?api=1&query=${targetGps.lat},${targetGps.lng}`;
   }
   if (!state.activeParking) {
     document.getElementById('route-finished').classList.add('hidden');
@@ -5748,7 +6020,7 @@ function renderAdmin() {
   const bldgList = document.getElementById('admin-building-list');
   if (bldgList) {
     if (!state.buildings.length) {
-      bldgList.innerHTML = `<p class="text-center text-sm text-[#5a627a] dark:text-[#9da7c5] py-4">ยังไม่มีอาคารในระบบ</p>`;
+      bldgList.innerHTML = `<p class="text-center text-sm text-[#5a627a] dark:text-[#9da7c5] py-4">${t('no_buildings_in_system')}</p>`;
     } else {
       bldgList.innerHTML = state.buildings.map(b => {
         const lotCount = state.lots.filter(l => l.buildingId === b.id).length;
@@ -5757,7 +6029,7 @@ function renderAdmin() {
             <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-[#95BBE6]/20 dark:bg-[#252347] text-[#96A4DD] dark:text-[#D9B1E6]"><i data-lucide="${b.category === 'office' ? 'briefcase' : (b.category === 'parking' ? 'parking-circle' : (b.category === 'cafeteria' ? 'utensils' : (b.category === 'hospital' ? 'heart-pulse' : 'building')))}" class="h-4 w-4"></i></span>
             <div>
               <p class="font-bold text-[#262447] dark:text-[#c4b5fd]">${bName(b)}</p>
-              <p class="text-xs text-[#8f9bb3] dark:text-[#6d7796] mt-0.5">${categoryLabel(b.category)} · ${lotCount} ลานจอด · (${b.lat}, ${b.lng})</p>
+              <p class="text-xs text-[#8f9bb3] dark:text-[#6d7796] mt-0.5">${categoryLabel(b.category)} · ${lotCount} ${t('spots_unit')} · (${b.lat}, ${b.lng})</p>
             </div>
           </div>
           <button type="button" onclick="deleteBuilding('${b.id}')" class="interactive-btn rounded-xl border border-[#BF87C9]/60 dark:border-[#BF87C9]/40 p-2 text-[#BF87C9] dark:text-[#D9B1E6] hover:bg-[#BF87C9]/15 dark:hover:bg-[#BF87C9]/20" title="${t('delete_btn')}" aria-label="Delete building"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
