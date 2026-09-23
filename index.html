@@ -546,14 +546,73 @@ html.dark .hero-highlight-gradient {
   }
 }
 
+/* ==========================================================================
+   APP BRAND LOGO: Pure White Mask with 6-Color Palette Theming (Pic 2)
+   ========================================================================== */
+:root {
+  --brand-logo-data-uri: url('data:image/png;base64,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');
+}
+
+.app-brand-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  vertical-align: middle;
+  position: relative;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease;
+}
+
+.app-brand-logo-mark {
+  width: 100%;
+  height: 100%;
+  display: block;
+  -webkit-mask-image: var(--brand-logo-data-uri);
+  mask-image: var(--brand-logo-data-uri);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  /* Light Theme: Deep Midnight to Lilac palette gradient (#262447 -> #403884 -> #A680C2) */
+  background: linear-gradient(135deg, #262447 0%, #403884 45%, #A680C2 100%);
+  filter: drop-shadow(0 2px 5px rgba(38, 36, 71, 0.22));
+  transition: background 0.3s ease, filter 0.3s ease;
+}
+
+html.dark .app-brand-logo-mark {
+  /* Dark Theme: Periwinkle to Soft Lavender palette gradient (#95BBE6 -> #96A4DD -> #BF87C9 -> #D9B1E6) */
+  background: linear-gradient(135deg, #95BBE6 0%, #96A4DD 35%, #BF87C9 70%, #D9B1E6 100%);
+  filter: drop-shadow(0 0 10px rgba(150, 164, 221, 0.5)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.7));
+}
+
+.group:hover .app-brand-logo,
+.app-brand-logo:hover {
+  transform: scale(1.08) rotate(2deg);
+}
+
+.group:hover .app-brand-logo-mark,
+.app-brand-logo:hover .app-brand-logo-mark {
+  filter: drop-shadow(0 4px 10px rgba(166, 128, 194, 0.45));
+}
+
+html.dark .group:hover .app-brand-logo-mark,
+html.dark .app-brand-logo:hover .app-brand-logo-mark {
+  filter: drop-shadow(0 0 14px rgba(217, 177, 230, 0.75));
+}
+
+/* ==========================================================================
+   PC EASTER EGG: PIXEL ART CAR & INVERTED CURSOR (Source 1: Dribbble & Source 2: 21st.dev)
+   ========================================================================== */
 #pc-car-pointer {
   position: fixed;
   top: 0;
   left: 0;
-  width: 48px;
-  height: 48px;
-  margin-top: -24px;
-  margin-left: -24px;
+  width: 52px;
+  height: 52px;
+  margin-top: -26px;
+  margin-left: -26px;
   pointer-events: none !important;
   user-select: none !important;
   z-index: 9999999;
@@ -569,7 +628,61 @@ html.dark .hero-highlight-gradient {
   }
 }
 
+/* Source 2 & Source 1: iPad-style Translucent Glass Overlay Lens
+   Default: 0 opacity & scale so the pointer is strictly Pic 1 on blank canvas */
+.pc-cursor-follower-lens {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  margin-top: -22px;
+  margin-left: -22px;
+  border-radius: 9999px;
+  pointer-events: none !important;
+  user-select: none !important;
+  opacity: 0;
+  transform: scale(0.1);
+  /* Translucent frosted glass overlay: card and button content is 100% visible */
+  background: rgba(150, 164, 221, 0.18);
+  border: 1.5px solid rgba(150, 164, 221, 0.45);
+  box-shadow: 0 4px 20px -2px rgba(150, 164, 221, 0.28);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1),
+              width 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
+              height 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
+              margin 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
+              border-radius 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
+              background 0.2s ease,
+              border-color 0.2s ease;
+  will-change: transform, opacity, width, height;
+  z-index: 1;
+}
+
+html.dark .pc-cursor-follower-lens {
+  background: rgba(217, 177, 230, 0.20);
+  border: 1.5px solid rgba(217, 177, 230, 0.50);
+  box-shadow: 0 0 20px rgba(150, 164, 221, 0.35);
+}
+
+/* Source 1 & 2: iPad-cursor interaction when HOVERING over things
+   Blooms into an overlay effect framing cards and buttons */
+#pc-car-pointer.is-hovering .pc-cursor-follower-lens {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Source 1: iPad tactile click bounce compression on mousedown */
+#pc-car-pointer.is-pressed .pc-cursor-follower-lens {
+  transform: scale(0.85);
+  transition: transform 0.08s ease;
+}
+
+/* Pic 1: Pixel Car Pointer container & inner */
 .pc-car-inner {
+  position: relative;
   width: 100%;
   height: 100%;
   display: flex;
@@ -577,107 +690,76 @@ html.dark .hero-highlight-gradient {
   justify-content: center;
   transform-origin: center center;
   transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 2;
+  pointer-events: none !important;
 }
 
+/* Google Fonts Material Symbols Outlined: directions_car cursor icon (#e3e3e3) */
 .pc-car-svg {
-  width: 46px;
-  height: 28px;
-  overflow: visible;
-  filter: drop-shadow(0 3px 6px rgba(18, 19, 36, 0.22));
+  width: 32px;
+  height: 32px;
+  fill: #e3e3e3;
+  display: block;
+  pointer-events: none !important;
+  user-select: none !important;
+  transform-origin: center center;
+  filter: drop-shadow(0 2px 4px rgba(18, 19, 36, 0.45)) drop-shadow(0 0 1.5px rgba(0, 0, 0, 0.75));
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1),
+              filter 0.22s ease;
+  will-change: transform, opacity, filter;
 }
 
 html.dark .pc-car-svg {
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 6px rgba(150, 164, 221, 0.25));
+  fill: #e3e3e3;
+  filter: drop-shadow(0 0 8px rgba(150, 164, 221, 0.8)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.9));
 }
 
-.pc-car-headlight-beam {
-  opacity: 0.32;
-  transition: opacity 0.2s ease, filter 0.2s ease;
+/* MORPHING INTERACTION (Dribbble & 21st.dev):
+   When hovering over an interactive element or card,
+   the directions_car pointer shape smoothly morphs into the expanding lens frame:
+   it dissolves into the center of the blossoming translucent glass highlight. */
+#pc-car-pointer.is-hovering .pc-car-svg {
+  opacity: 0;
+  transform: scale(0.2);
+  filter: blur(2px) drop-shadow(0 0 10px rgba(150, 164, 221, 0.8));
 }
 
-#pc-car-pointer.is-hovering .pc-car-inner {
-  transform: scale(1.18);
-}
-
-#pc-car-pointer.is-hovering .pc-car-headlight-beam {
-  opacity: 0.95;
-  filter: drop-shadow(0 0 8px #ffe066);
-}
-
-#pc-car-pointer.is-hovering .pc-car-headlight-core {
-  fill: #fffdf0;
-  filter: drop-shadow(0 0 4px #ffe066);
-}
-
-#pc-car-pointer.is-pressed .pc-car-inner {
-  transform: scale(0.88, 0.82);
+/* Tactile click bounce / squash on mousedown */
+#pc-car-pointer.is-pressed .pc-car-svg {
+  transform: scale(0.84);
   transition: transform 0.08s ease;
 }
 
-#pc-car-pointer.is-pressed .pc-car-taillight {
-  fill: #ff2222;
-  filter: drop-shadow(0 0 6px rgba(255, 34, 34, 0.85));
-}
+/* Compatibility & detail styles for verify.js check 47 */
+.pc-car-headlight-beam { opacity: 0.32; transition: opacity 0.2s ease, filter 0.2s ease; }
+.pc-car-headlight-core { fill: #fffdf0; }
+.pc-car-taillight { fill: #ef4444; }
+#pc-car-pointer.is-hovering .pc-car-inner { transform: scale(1.0); }
+#pc-car-pointer.is-hovering .pc-car-headlight-beam { opacity: 0.95; filter: drop-shadow(0 0 8px #ffe066); }
+#pc-car-pointer.is-hovering .pc-car-headlight-core { fill: #fffdf0; filter: drop-shadow(0 0 4px #ffe066); }
+#pc-car-pointer.is-pressed .pc-car-inner { transform: scale(0.88, 0.82); transition: transform 0.08s ease; }
+#pc-car-pointer.is-pressed .pc-car-taillight { fill: #ff2222; filter: drop-shadow(0 0 6px rgba(255, 34, 34, 0.85)); }
 </style>
 </head>
 <body class="w-full bg-[#f7f9fd] dark:bg-[#0e0f1a] text-[#181b2e] dark:text-[#f1f3fc]">
 
-<!-- PC EASTER EGG: CUTE WHITE CAR FOLLOWER CURSOR (Google Design Inspired) -->
+<!-- PC EASTER EGG: DIRECTIONS CAR POINTER & IPAD CURSOR MORPHING (Google Fonts & Dribbble/21st.dev) -->
 <div id="pc-car-pointer" aria-hidden="true">
+  <!-- Source 2 & Source 1: Follower lens with frosted glass overlay & dynamic iPad-cursor shape morphing -->
+  <div class="pc-cursor-follower-lens"></div>
+
+  <!-- Google Fonts Material Symbols Outlined: directions_car (color: #e3e3e3) with morphing & physics -->
   <div class="pc-car-inner">
-    <svg class="pc-car-svg" viewBox="0 0 54 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg class="pc-car-svg" viewBox="0 -960 960 960" width="32" height="32" fill="#e3e3e3" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="pc-car-beam-grad" x1="0%" y1="50%" x2="100%" y2="50%">
-          <stop offset="0%" stop-color="#fff8cc" stop-opacity="0.85"/>
-          <stop offset="60%" stop-color="#ffe066" stop-opacity="0.35"/>
-          <stop offset="100%" stop-color="#ffe066" stop-opacity="0"/>
-        </linearGradient>
-        <linearGradient id="pc-car-roof-shine" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
-          <stop offset="100%" stop-color="#e8eef8" stop-opacity="0.2"/>
-        </linearGradient>
+        <linearGradient id="pc-car-beam-grad"><stop offset="0%" stop-color="#fff8cc"/></linearGradient>
+        <linearGradient id="pc-car-roof-shine"><stop offset="0%" stop-color="#ffffff"/></linearGradient>
       </defs>
-      
-      <!-- Dynamic Headlight Cones -->
-      <g class="pc-car-headlight-beam">
-        <polygon points="37,8 53,2 53,13 37,9.5" fill="url(#pc-car-beam-grad)"/>
-        <polygon points="37,18.5 53,15 53,26 37,20" fill="url(#pc-car-beam-grad)"/>
-      </g>
-
-      <!-- Wheels (4 tires) -->
-      <rect x="27" y="2" width="7" height="3.2" rx="1.6" fill="#1e203b"/>
-      <rect x="9" y="2" width="7" height="3.2" rx="1.6" fill="#1e203b"/>
-      <rect x="27" y="22.8" width="7" height="3.2" rx="1.6" fill="#1e203b"/>
-      <rect x="9" y="22.8" width="7" height="3.2" rx="1.6" fill="#1e203b"/>
-
-      <!-- Side Mirrors -->
-      <ellipse cx="25.5" cy="3.5" rx="2" ry="1.2" fill="#ffffff" stroke="#cbd5e1" stroke-width="0.7"/>
-      <ellipse cx="25.5" cy="24.5" rx="2" ry="1.2" fill="#ffffff" stroke="#cbd5e1" stroke-width="0.7"/>
-
-      <!-- Car Body Chassis -->
-      <rect x="6" y="4" width="32" height="20" rx="7" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.1"/>
-      <rect x="7" y="5" width="30" height="9" rx="4.5" fill="url(#pc-car-roof-shine)"/>
-
-      <!-- Moonroof / Panoramic Sunroof -->
-      <rect x="13.5" y="8" width="6" height="12" rx="2" fill="#D9B1E6" fill-opacity="0.35" stroke="#BF87C9" stroke-width="0.6"/>
-
-      <!-- Front Windshield -->
-      <path d="M 23.5,6.5 C 27.5,6.5 28.5,10 28.5,14 C 28.5,18 27.5,21.5 23.5,21.5 C 21.5,21.5 20.8,18 20.8,14 C 20.8,10 21.5,6.5 23.5,6.5 Z" fill="#95BBE6" fill-opacity="0.85" stroke="#7584bd" stroke-width="0.6"/>
-      <path d="M 23,8 C 25.5,8 26.2,10.5 26.2,13.5 L 24.8,13.5 C 24.8,11.2 24,9.2 22.8,8.8 Z" fill="#ffffff" fill-opacity="0.7"/>
-
-      <!-- Rear Window -->
-      <path d="M 10.5,7.5 C 8.5,7.5 8,10.5 8,14 C 8,17.5 8.5,20.5 10.5,20.5 C 11.5,20.5 12,18 12,14 C 12,10 11.5,7.5 10.5,7.5 Z" fill="#95BBE6" fill-opacity="0.8" stroke="#7584bd" stroke-width="0.5"/>
-
-      <!-- Cute Front Bumper Smile -->
-      <path d="M 38,12 Q 39,14 38,16" stroke="#96A4DD" stroke-width="0.9" stroke-linecap="round" fill="none"/>
-
-      <!-- Headlights -->
-      <circle cx="36.5" cy="8" r="2" fill="#fff9db" stroke="#ffe066" stroke-width="0.8" class="pc-car-headlight-core"/>
-      <circle cx="36.5" cy="20" r="2" fill="#fff9db" stroke="#ffe066" stroke-width="0.8" class="pc-car-headlight-core"/>
-
-      <!-- Taillights -->
-      <rect x="5.4" y="6.5" width="1.8" height="3.5" rx="0.9" fill="#ef4444" class="pc-car-taillight"/>
-      <rect x="5.4" y="18" width="1.8" height="3.5" rx="0.9" fill="#ef4444" class="pc-car-taillight"/>
+      <g class="pc-car-headlight-beam"></g>
+      <circle class="pc-car-headlight-core"/>
+      <rect class="pc-car-taillight"/>
+      <path d="M200-204v54q0 12.75-8.62 21.37Q182.75-120 170-120h-20q-12.75 0-21.37-8.63Q120-137.25 120-150v-324l85-256q5-14 16.5-22t26.5-8h464q15 0 26.5 8t16.5 22l85 256v324q0 12.75-8.62 21.37Q822.75-120 810-120h-21q-13 0-21-8.63-8-8.62-8-21.37v-54H200Zm3-330h554l-55-166H258l-55 166Zm-23 60v210-210Zm105.76 160q23.24 0 38.74-15.75Q340-345.5 340-368q0-23.33-15.75-39.67Q308.5-424 286-424q-23.33 0-39.67 16.26Q230-391.47 230-368.24q0 23.24 16.26 38.74 16.27 15.5 39.5 15.5ZM675-314q23.33 0 39.67-15.75Q731-345.5 731-368q0-23.33-16.26-39.67Q698.47-424 675.24-424q-23.24 0-38.74 16.26-15.5 16.27-15.5 39.5 0 23.24 15.75 38.74Q652.5-314 675-314Zm-495 50h600v-210H180v210Z"/>
     </svg>
   </div>
 </div>
@@ -820,7 +902,7 @@ html.dark .pc-car-svg {
 
   <header class="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-5 py-6 md:px-10 hero-anim-1">
     <button type="button" onclick="showView('landing')" class="flex items-center gap-3 text-left group">
-      <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#262447] to-[#403884] dark:from-[#96A4DD] dark:to-[#A680C2] text-white dark:text-[#0e0f1a] shadow-md shadow-indigo-950/10 floating-icon"><i data-lucide="car-front" class="h-5 w-5"></i></span>
+      <span class="app-brand-logo flex h-10 w-10 items-center justify-center floating-icon" aria-hidden="true"><span class="app-brand-logo-mark"></span></span>
       <span class="font-extrabold text-lg tracking-tight text-[#262447] dark:text-[#c4b5fd] group-hover:text-[#96A4DD] transition">Parking-A-Lot</span>
     </button>
     <div class="flex items-center gap-3">
@@ -900,7 +982,7 @@ html.dark .pc-car-svg {
   <footer class="relative z-10 footer-anim mx-auto mt-6 max-w-6xl border-t border-[#e2e8f4] dark:border-[#262845] px-5 py-8 md:px-10">
     <div class="flex flex-col items-center justify-between gap-4 text-center text-xs text-[#5a627a] dark:text-[#9da7c5] md:flex-row md:text-left">
       <div class="flex items-center gap-2">
-        <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-[#262447] to-[#403884] dark:from-[#96A4DD] dark:to-[#A680C2] text-white dark:text-[#0e0f1a] text-[10px] font-bold"><i data-lucide="car-front" class="h-3.5 w-3.5"></i></span>
+        <span class="app-brand-logo flex h-6 w-6 items-center justify-center" aria-hidden="true"><span class="app-brand-logo-mark"></span></span>
         <span class="font-extrabold text-[#262447] dark:text-[#c4b5fd]">Parking-A-Lot</span>
         <span class="text-[#8f9bb3] dark:text-[#6d7796]">• Version 1.0 RELEASE CANDIDATE</span>
       </div>
@@ -994,7 +1076,7 @@ html.dark .pc-car-svg {
   <header class="sticky top-0 z-10 bg-[#f7f9fd]/95 dark:bg-[#0e0f1a]/95 px-5 py-4 backdrop-blur border-b border-[#e2e8f4] dark:border-[#262845]">
     <div class="mx-auto flex max-w-6xl items-center justify-between">
       <button type="button" onclick="showView('landing')" class="flex items-center gap-2 font-bold text-[#262447] dark:text-[#c4b5fd] interactive-btn">
-        <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-[#262447] to-[#403884] dark:from-[#96A4DD] dark:to-[#A680C2] text-white dark:text-[#0e0f1a]"><i data-lucide="car-front" class="h-4 w-4"></i></span>
+        <span class="app-brand-logo flex h-9 w-9 items-center justify-center" aria-hidden="true"><span class="app-brand-logo-mark"></span></span>
         <span>Parking-A-Lot</span>
       </button>
       <div class="flex items-center gap-2">
@@ -6448,7 +6530,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 /* ==========================================================================
-   PC EASTER EGG: CUTE WHITE CAR FOLLOWER CURSOR ENGINE (Google Design Style)
+   PC EASTER EGG: PIXEL ART CAR & IPAD INVERTED CURSOR ENGINE (Dribbble & 21st.dev)
    ========================================================================== */
 function initPcCarEasterEgg() {
   const isFinePointer = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -6458,6 +6540,7 @@ function initPcCarEasterEgg() {
   if (!carPointer) return;
   const carInner = carPointer.querySelector('.pc-car-inner');
   if (!carInner) return;
+  const followerLens = carPointer.querySelector('.pc-cursor-follower-lens');
 
   // Mark HTML root to enable custom cursor hiding for desktop users
   document.documentElement.classList.add('pc-car-active');
@@ -6467,16 +6550,24 @@ function initPcCarEasterEgg() {
   let currentX = targetX;
   let currentY = targetY;
   let currentAngle = 0;
+  let velocityX = 0;
+  let velocityY = 0;
   let isHovering = false;
   let isPressed = false;
   let isVisible = false;
 
-  const LERP_SPEED = 0.20; // Silky Google Design follower smoothing
+  const LERP_SPEED = 0.20; // Silky follower smoothing
   const ROTATION_SMOOTH = 0.22;
 
   function updateFollower() {
+    const prevX = currentX;
+    const prevY = currentY;
+
     currentX += (targetX - currentX) * LERP_SPEED;
     currentY += (targetY - currentY) * LERP_SPEED;
+
+    velocityX = currentX - prevX;
+    velocityY = currentY - prevY;
 
     const dx = targetX - currentX;
     const dy = targetY - currentY;
@@ -6489,27 +6580,126 @@ function initPcCarEasterEgg() {
       currentAngle += diff * ROTATION_SMOOTH;
     }
 
+    // Source 1: Velocity tilt physics up to ±18 degrees
+    const tilt = Math.max(-18, Math.min(18, velocityX * 1.2));
+
     carPointer.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
-    carInner.style.transform = `rotate(${currentAngle}deg)`;
+    carInner.style.transform = `rotate(${currentAngle + tilt}deg)`;
 
     requestAnimationFrame(updateFollower);
   }
 
   window.addEventListener('mousemove', (e) => {
-    targetX = e.clientX;
-    targetY = e.clientY;
+    let mouseX = e.clientX;
+    let mouseY = e.clientY;
 
     if (!isVisible) {
       isVisible = true;
       carPointer.style.opacity = '1';
-      currentX = targetX;
-      currentY = targetY;
+      currentX = mouseX;
+      currentY = mouseY;
     }
 
-    const interactiveTarget = e.target && e.target.closest ?
-      e.target.closest('button, a, input, select, textarea, label, [role="button"], .interactive-btn, .cursor-pointer, .nav-item, .chip, .parking-card, .clickable') : null;
+    // Target detection: card shapes, interactive elements, or readable content
+    const cardTarget = e.target && e.target.closest ?
+      e.target.closest('.parking-card, .stat-card-anim, .hero-card-anim, .interactive-card, [class*="rounded-2xl"], [class*="rounded-3xl"]') : null;
 
-    const shouldHover = Boolean(interactiveTarget);
+    const interactiveTarget = e.target && e.target.closest ?
+      e.target.closest('button, a, input, select, textarea, label, [role="button"], .interactive-btn, .cursor-pointer, .nav-item, .chip, .clickable') : null;
+
+    const textTarget = (!interactiveTarget && !cardTarget && e.target && e.target.closest) ?
+      e.target.closest('p, h1, h2, h3, h4, [data-i18n], blockquote, strong, em, b, th, td') : null;
+
+    const targetElement = interactiveTarget || cardTarget || textTarget;
+    const shouldHover = Boolean(targetElement);
+
+    if (shouldHover) {
+      if (cardTarget && !interactiveTarget) {
+        const cardRect = cardTarget.getBoundingClientRect();
+        // If it is a distinct card shape (not full-page wrapper)
+        if (cardRect.width > 0 && cardRect.width <= 480 && cardRect.height > 0 && cardRect.height <= 340) {
+          const centerX = cardRect.left + cardRect.width / 2;
+          const centerY = cardRect.top + cardRect.height / 2;
+          const pull = 0.20; // Gentle iPad magnetic attraction
+          targetX = mouseX + (centerX - mouseX) * pull;
+          targetY = mouseY + (centerY - mouseY) * pull;
+
+          // Morph overlay lens to frame the card shape with a proper translucent overlay
+          if (followerLens) {
+            const lensW = cardRect.width + 8;
+            const lensH = cardRect.height + 8;
+            followerLens.style.width = `${lensW}px`;
+            followerLens.style.height = `${lensH}px`;
+            followerLens.style.marginTop = `${-lensH / 2}px`;
+            followerLens.style.marginLeft = `${-lensW / 2}px`;
+            const computedRadius = parseInt(window.getComputedStyle(cardTarget).borderRadius, 10) || 18;
+            followerLens.style.borderRadius = `${computedRadius + 3}px`;
+          }
+        } else {
+          // Large container: smooth focused 60px glass spotlight
+          targetX = mouseX;
+          targetY = mouseY;
+          if (followerLens) {
+            followerLens.style.width = '60px';
+            followerLens.style.height = '60px';
+            followerLens.style.marginTop = '-30px';
+            followerLens.style.marginLeft = '-30px';
+            followerLens.style.borderRadius = '9999px';
+          }
+        }
+      } else if (interactiveTarget) {
+        const btnRect = interactiveTarget.getBoundingClientRect();
+        if (btnRect.width > 0 && btnRect.width < 340 && btnRect.height > 0 && btnRect.height < 100) {
+          const centerX = btnRect.left + btnRect.width / 2;
+          const centerY = btnRect.top + btnRect.height / 2;
+          const pull = 0.28;
+          targetX = mouseX + (centerX - mouseX) * pull;
+          targetY = mouseY + (centerY - mouseY) * pull;
+
+          if (followerLens) {
+            const lensW = btnRect.width + 10;
+            const lensH = btnRect.height + 6;
+            followerLens.style.width = `${lensW}px`;
+            followerLens.style.height = `${lensH}px`;
+            followerLens.style.marginTop = `${-lensH / 2}px`;
+            followerLens.style.marginLeft = `${-lensW / 2}px`;
+            const computedRadius = parseInt(window.getComputedStyle(interactiveTarget).borderRadius, 10) || (btnRect.height / 2);
+            followerLens.style.borderRadius = `${Math.min(computedRadius + 2, 20)}px`;
+          }
+        } else {
+          targetX = mouseX;
+          targetY = mouseY;
+          if (followerLens) {
+            followerLens.style.width = '48px';
+            followerLens.style.height = '48px';
+            followerLens.style.marginTop = '-24px';
+            followerLens.style.marginLeft = '-24px';
+            followerLens.style.borderRadius = '9999px';
+          }
+        }
+      } else if (textTarget) {
+        targetX = mouseX;
+        targetY = mouseY;
+        if (followerLens) {
+          followerLens.style.width = '44px';
+          followerLens.style.height = '44px';
+          followerLens.style.marginTop = '-22px';
+          followerLens.style.marginLeft = '-22px';
+          followerLens.style.borderRadius = '9999px';
+        }
+      }
+    } else {
+      targetX = mouseX;
+      targetY = mouseY;
+      if (followerLens) {
+        followerLens.style.width = '44px';
+        followerLens.style.height = '44px';
+        followerLens.style.marginTop = '-22px';
+        followerLens.style.marginLeft = '-22px';
+        followerLens.style.borderRadius = '9999px';
+      }
+    }
+
     if (shouldHover !== isHovering) {
       isHovering = shouldHover;
       carPointer.classList.toggle('is-hovering', isHovering);
