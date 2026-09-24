@@ -1337,6 +1337,18 @@ html.dark .pc-car-svg {
             <td class="px-5 py-3 font-semibold text-[#5a627a] dark:text-[#9da7c5]" data-i18n="table_col_coords">พิกัด Google Maps</td>
             <td class="px-5 py-3 font-mono text-[11px] text-[#5a627a] dark:text-[#9da7c5]" id="route-table-coords">-</td>
           </tr>
+          <tr>
+            <td class="px-5 py-3 font-semibold text-[#5a627a] dark:text-[#9da7c5]" data-i18n="user_gps_label">ตำแหน่ง GPS ของคุณ</td>
+            <td class="px-5 py-3">
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-mono text-[11px] text-[#262447] dark:text-[#c4b5fd]" id="route-user-coords">16.4740° N, 102.8240° E</span>
+                <button type="button" onclick="updateUserGps(true)" class="interactive-btn inline-flex items-center gap-1 rounded-lg border border-[#96A4DD]/40 bg-[#96A4DD]/10 px-2 py-0.5 text-[10px] font-bold text-[#96A4DD] dark:text-[#D9B1E6] hover:bg-[#96A4DD]/20">
+                  <i data-lucide="crosshair" class="h-3 w-3"></i>
+                  <span id="route-gps-status" data-i18n="refresh_gps_btn">อัปเดต GPS</span>
+                </button>
+              </div>
+            </td>
+          </tr>
         </tbody>
       </table>
       <div class="p-3 bg-[#f8fafc] dark:bg-[#1a1b2e] border-t border-[#e2e8f4] dark:border-[#262845] flex items-center justify-between">
@@ -1858,6 +1870,54 @@ html.dark .pc-car-svg {
   </div>
 </div>
 
+<!-- EDIT BUILDING MODAL -->
+<div id="edit-building-modal" class="modal-wrapper">
+  <div class="modal-panel no-scrollbar w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
+    <div class="flex items-center justify-between pb-4 border-b border-[#edf1f8] dark:border-[#262845]">
+      <div class="flex items-center gap-2">
+        <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] text-[#181b2e] dark:text-[#0e0f1a] shadow-sm"><i data-lucide="building" class="h-4 w-4"></i></span>
+        <h3 class="font-bold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="edit_bldg_title">แก้ไขข้อมูลอาคาร</h3>
+      </div>
+      <button type="button" onclick="closeEditBuilding()" class="rounded-full p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition"><i data-lucide="x" class="h-5 w-5"></i></button>
+    </div>
+    
+    <input id="edit-bldg-id" type="hidden">
+    
+    <div class="mt-5 space-y-4">
+      <div>
+        <label class="mb-1 block text-sm font-bold" data-i18n="bldg_name_th">ชื่ออาคาร (ภาษาไทย)</label>
+        <input id="edit-bldg-name" type="text" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-bold" data-i18n="bldg_name_en">ชื่ออาคาร (English)</label>
+        <input id="edit-bldg-name-en" type="text" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-bold" data-i18n="bldg_category">หมวดหมู่อาคาร</label>
+        <select id="edit-bldg-category" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+          <option value="classroom">อาคารเรียน (Classrooms)</option>
+          <option value="cafeteria">โรงอาหาร (Cafeteria)</option>
+          <option value="hospital">โรงพยาบาล (Hospital)</option>
+          <option value="office">อาคารสำนักงาน (Offices)</option>
+          <option value="parking">ลานจอดรถ (Parking)</option>
+        </select>
+      </div>
+      <div>
+        <label class="mb-1 block text-sm font-bold" data-i18n="bldg_lat_lng">ตำแหน่งบนแผนที่ (Lat, Lng: 5-95)</label>
+        <div class="grid grid-cols-2 gap-2">
+          <input id="edit-bldg-lat" type="number" step="any" placeholder="Latitude" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+          <input id="edit-bldg-lng" type="number" step="any" placeholder="Longitude" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3">
+        </div>
+      </div>
+    </div>
+    
+    <div class="mt-6 flex gap-3">
+      <button type="button" onclick="closeEditBuilding()" class="interactive-btn flex-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] py-3 font-bold hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" data-i18n="cancel_btn">ยกเลิก</button>
+      <button type="button" id="btn-save-bldg" onclick="saveEditedBuilding()" class="interactive-btn flex-1 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3 font-extrabold text-[#181b2e] dark:text-[#0e0f1a] shadow hover:opacity-95" data-i18n="save_bldg_btn">บันทึกการแก้ไข</button>
+    </div>
+  </div>
+</div>
+
 <!-- CONFIRM DIALOG -->
 <div id="confirm-dialog" class="modal-wrapper">
   <div class="modal-panel w-full max-w-sm rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
@@ -2296,7 +2356,20 @@ const i18n = {
     spots_unit: "ลานจอด",
     slots_unit: "ช่อง",
     toast_notification_fallback: "แจ้งเตือน",
-    toast_just_now: "เมื่อสักครู่"
+    toast_just_now: "เมื่อสักครู่",
+    edit_bldg_title: "แก้ไขข้อมูลอาคาร",
+    edit_bldg_btn: "แก้ไขอาคาร",
+    save_bldg_btn: "บันทึกการแก้ไข",
+    toast_bldg_updated: "อัปเดตข้อมูลอาคารเรียบร้อยแล้ว",
+    bldg_name_th: "ชื่ออาคาร (ภาษาไทย)",
+    bldg_name_en: "ชื่ออาคาร (English)",
+    user_gps_label: "ตำแหน่ง GPS ของคุณ",
+    user_gps_active: "คำนวณจาก GPS จริง",
+    user_gps_fallback: "คำนวณจาก GPS มข.",
+    refresh_gps_btn: "อัปเดต GPS",
+    gps_calculating: "กำลังค้นหา GPS...",
+    toast_gps_updated: "อัปเดตตำแหน่ง GPS แล้ว",
+    toast_gps_error: "ใช้พิกัดเริ่มต้นในมหาวิทยาลัยขอนแก่น"
   },
   en: {
     quick_settings_title: "System Settings",
@@ -2667,7 +2740,20 @@ const i18n = {
     spots_unit: "spots",
     slots_unit: "slots",
     toast_notification_fallback: "Notification",
-    toast_just_now: "Just now"
+    toast_just_now: "Just now",
+    edit_bldg_title: "Edit Building Information",
+    edit_bldg_btn: "Edit Building",
+    save_bldg_btn: "Save Changes",
+    toast_bldg_updated: "Building information updated successfully",
+    bldg_name_th: "Building Name (Thai)",
+    bldg_name_en: "Building Name (English)",
+    user_gps_label: "Your GPS Location",
+    user_gps_active: "Calculated from live GPS",
+    user_gps_fallback: "Calculated from campus GPS",
+    refresh_gps_btn: "Update GPS",
+    gps_calculating: "Detecting GPS...",
+    toast_gps_updated: "GPS location updated",
+    toast_gps_error: "Using Khon Kaen University default GPS"
   }
 };
 
@@ -4033,6 +4119,9 @@ function showView(id) {
     document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
     const target = document.getElementById(id);
     if (target) target.classList.add('active');
+    if (id === 'user-map') {
+      updateUserGps(false);
+    }
     renderAll();
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
@@ -4964,6 +5053,46 @@ function setRouteType(tType) {
   renderRoute();
 }
 
+function updateUserGps(showFeedback = false) {
+  if (navigator && navigator.geolocation) {
+    const gpsStatusEl = document.getElementById('route-gps-status');
+    if (gpsStatusEl) gpsStatusEl.textContent = t('gps_calculating');
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        state.userGps = {
+          lat: Number(pos.coords.latitude),
+          lng: Number(pos.coords.longitude),
+          accuracy: Math.round(pos.coords.accuracy || 0),
+          isLive: true,
+          timestamp: Date.now()
+        };
+        saveState();
+        renderRoute();
+        if (showFeedback) {
+          showToast(t('toast_gps_updated'), `${Number(pos.coords.latitude).toFixed(4)}° N, ${Number(pos.coords.longitude).toFixed(4)}° E`, 'success');
+        }
+      },
+      (err) => {
+        console.warn('Geolocation unavailable or denied:', err.message);
+        if (!state.userGps || !state.userGps.lat) {
+          state.userGps = { lat: 16.4740, lng: 102.8240, isLive: false, accuracy: null, timestamp: Date.now() };
+        }
+        renderRoute();
+        if (showFeedback) {
+          showToast(t('toast_gps_error'), t('user_gps_fallback'), 'info');
+        }
+      },
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 }
+    );
+  } else {
+    if (!state.userGps || !state.userGps.lat) {
+      state.userGps = { lat: 16.4740, lng: 102.8240, isLive: false, accuracy: null, timestamp: Date.now() };
+    }
+    renderRoute();
+  }
+}
+
 function renderRoute() {
   const view = document.getElementById('user-map');
   if (!view.classList.contains('active')) return;
@@ -5020,10 +5149,40 @@ function renderRoute() {
     if (tableStatusEl) tableStatusEl.textContent = t('status_no_route');
     return;
   }
+
+  // USER'S GPS NAVIGATION CALCULATION
+  const userGps = state.userGps || { lat: 16.4740, lng: 102.8240, isLive: false };
+  const userCoordsEl = document.getElementById('route-user-coords');
+  if (userCoordsEl) {
+    userCoordsEl.textContent = `${Number(userGps.lat).toFixed(4)}° N, ${Number(userGps.lng).toFixed(4)}° E`;
+  }
+  const gpsStatusEl = document.getElementById('route-gps-status');
+  if (gpsStatusEl) {
+    gpsStatusEl.textContent = userGps.isLive ? t('user_gps_active') : t('user_gps_fallback');
+  }
+
+  // Calculate distance based on user's GPS:
+  // 1. Driving leg from User GPS to Recommended Parking Lot
+  const distUserToLot = distanceMeters(userGps, best.lot);
+  // 2. Walking leg from Parking Lot to Destination Building
+  const distLotToBldg = distanceMeters(best.lot, building);
+  // Total Navigation Distance
+  const totalNavDistance = distUserToLot + distLotToBldg;
+
   const multiplier = state.ui.routeType === 'safe' ? 1.35 : 1;
-  const dist = Math.round(best.dist * multiplier);
-  document.getElementById('route-description').textContent = t('route_rec_desc', { lot: lName(best.lot) });
-  document.getElementById('route-time').textContent = walkMinutes(dist);
+  const dist = Math.round(totalNavDistance * multiplier);
+
+  // Calculate navigation minutes based on user's GPS:
+  // Driving from User GPS to Lot (~30 km/h = 500 m/min in campus)
+  const driveMinutes = Math.max(1, Math.round(distUserToLot / 500));
+  // Walking from Lot to Building (~4.5 km/h = 75 m/min)
+  const walkMinutesVal = Math.max(1, Math.round(distLotToBldg / 75));
+  // Total travel time (driving to lot + walking to building)
+  const navMinutes = Math.round((driveMinutes + walkMinutesVal) * multiplier);
+
+  const gpsTag = userGps.isLive ? t('user_gps_active') : t('user_gps_fallback');
+  document.getElementById('route-description').textContent = `${t('route_rec_desc', { lot: lName(best.lot) })} • ${gpsTag}`;
+  document.getElementById('route-time').textContent = navMinutes;
   document.getElementById('route-distance').textContent = dist;
   const availEl = document.getElementById('route-lot-available');
   if (availEl) {
@@ -5045,10 +5204,12 @@ function renderRoute() {
   if (tableStatusEl) tableStatusEl.textContent = t('status_ready_nav');
   const tableCoordsEl = document.getElementById('route-table-coords');
   const gmapsBtn = document.getElementById('route-gmaps-direct-btn');
-  const targetGps = building && building.lat ? building : (best.lot && best.lot.lat ? best.lot : null);
+  const targetGps = best.lot && best.lot.lat ? best.lot : (building && building.lat ? building : null);
   if (targetGps) {
     if (tableCoordsEl) tableCoordsEl.textContent = `${Number(targetGps.lat).toFixed(4)}° N, ${Number(targetGps.lng).toFixed(4)}° E`;
-    if (gmapsBtn) gmapsBtn.href = `https://www.google.com/maps/search/?api=1&query=${targetGps.lat},${targetGps.lng}`;
+    if (gmapsBtn) {
+      gmapsBtn.href = `https://www.google.com/maps/dir/?api=1&origin=${userGps.lat},${userGps.lng}&destination=${targetGps.lat},${targetGps.lng}&travelmode=driving`;
+    }
   }
   if (!state.activeParking) {
     document.getElementById('route-finished').classList.add('hidden');
@@ -6098,7 +6259,7 @@ function renderAdmin() {
     }).join('');
   }
 
-  // 2. Render Supported Buildings List with Delete button
+  // 2. Render Supported Buildings List with Edit + Delete buttons
   const bldgList = document.getElementById('admin-building-list');
   if (bldgList) {
     if (!state.buildings.length) {
@@ -6114,7 +6275,10 @@ function renderAdmin() {
               <p class="text-xs text-[#8f9bb3] dark:text-[#6d7796] mt-0.5">${categoryLabel(b.category)} · ${lotCount} ${t('spots_unit')} · (${b.lat}, ${b.lng})</p>
             </div>
           </div>
-          <button type="button" onclick="deleteBuilding('${b.id}')" class="interactive-btn rounded-xl border border-[#BF87C9]/60 dark:border-[#BF87C9]/40 p-2 text-[#BF87C9] dark:text-[#D9B1E6] hover:bg-[#BF87C9]/15 dark:hover:bg-[#BF87C9]/20" title="${t('delete_btn')}" aria-label="Delete building"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="openEditBuilding('${b.id}')" class="interactive-btn rounded-xl border border-[#96A4DD]/60 dark:border-[#96A4DD]/40 p-2 text-[#96A4DD] dark:text-[#D9B1E6] hover:bg-[#96A4DD]/15 dark:hover:bg-[#96A4DD]/20" title="${t('edit_bldg_btn')}" aria-label="Edit building"><i data-lucide="pencil" class="h-4 w-4"></i></button>
+            <button type="button" onclick="deleteBuilding('${b.id}')" class="interactive-btn rounded-xl border border-[#BF87C9]/60 dark:border-[#BF87C9]/40 p-2 text-[#BF87C9] dark:text-[#D9B1E6] hover:bg-[#BF87C9]/15 dark:hover:bg-[#BF87C9]/20" title="${t('delete_btn')}" aria-label="Delete building"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
+          </div>
         </div>`;
       }).join('');
     }
@@ -6377,6 +6541,90 @@ function deleteBuilding(id) {
     showToast(t('toast_bldg_deleted'), bName(building), 'info');
     renderAll();
   });
+}
+
+function openEditBuilding(id) {
+  const building = buildingById(id);
+  if (!building) return;
+  const idEl = document.getElementById('edit-bldg-id');
+  const nameEl = document.getElementById('edit-bldg-name');
+  const nameEnEl = document.getElementById('edit-bldg-name-en');
+  const catEl = document.getElementById('edit-bldg-category');
+  const latEl = document.getElementById('edit-bldg-lat');
+  const lngEl = document.getElementById('edit-bldg-lng');
+
+  if (idEl) idEl.value = building.id;
+  if (nameEl) nameEl.value = building.name || '';
+  if (nameEnEl) nameEnEl.value = building.nameEn || building.name || '';
+  if (catEl) catEl.value = building.category || 'classroom';
+  if (latEl) latEl.value = building.lat !== undefined ? building.lat : 16.4740;
+  if (lngEl) lngEl.value = building.lng !== undefined ? building.lng : 102.8240;
+
+  const modal = document.getElementById('edit-building-modal');
+  if (modal) modal.classList.add('modal-open');
+  if (window.lucide) lucide.createIcons();
+}
+
+function closeEditBuilding() {
+  const modal = document.getElementById('edit-building-modal');
+  if (modal) modal.classList.remove('modal-open');
+}
+
+async function saveEditedBuilding() {
+  const id = document.getElementById('edit-bldg-id')?.value;
+  const name = (document.getElementById('edit-bldg-name')?.value || '').trim();
+  const nameEn = (document.getElementById('edit-bldg-name-en')?.value || '').trim() || name;
+  const category = document.getElementById('edit-bldg-category')?.value || 'classroom';
+  const rawLat = parseFloat(document.getElementById('edit-bldg-lat')?.value);
+  const rawLng = parseFloat(document.getElementById('edit-bldg-lng')?.value);
+
+  if (!id || !name) {
+    showToast(t('toast_missing_info_title'), t('fill_bldg_fields'), 'error');
+    return;
+  }
+
+  const building = buildingById(id);
+  if (!building) return;
+
+  let lat = 16.4740, lng = 102.8240, x = 50, y = 50;
+  if (!isNaN(rawLat) && !isNaN(rawLng)) {
+    if (rawLat > 16.0 && rawLat < 17.0 && rawLng > 102.0 && rawLng < 103.5) {
+      lat = rawLat;
+      lng = rawLng;
+      const coords = getMapCoords({ lat, lng });
+      x = coords.x;
+      y = coords.y;
+    } else {
+      x = Math.max(5, Math.min(95, rawLat));
+      y = Math.max(5, Math.min(95, rawLng));
+      const gps = getNormalizedGps({ x, y });
+      lat = gps.lat;
+      lng = gps.lng;
+    }
+  }
+
+  const btn = document.getElementById('btn-save-bldg');
+  if (btn) btn.innerHTML = '<i data-lucide="loader-2" class="h-4 w-4 animate-spin inline mr-1"></i> ' + t('saving_data');
+  if (window.lucide) lucide.createIcons();
+
+  building.name = name;
+  building.nameEn = nameEn;
+  building.category = category;
+  building.lat = lat;
+  building.lng = lng;
+  building.x = x;
+  building.y = y;
+
+  saveState();
+
+  if (SheetsDB.isConfigured()) {
+    await SheetsDB.saveBuilding(building);
+  }
+
+  if (btn) btn.innerHTML = t('save_bldg_btn');
+  closeEditBuilding();
+  showToast(t('toast_bldg_updated'), bName(building), 'success');
+  renderAll();
 }
 
 async function addLot() {
