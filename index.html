@@ -719,10 +719,28 @@ html.dark .pc-car-svg {
    When hovering over an interactive element or card,
    the directions_car pointer shape smoothly morphs into the expanding lens frame:
    it dissolves into the center of the blossoming translucent glass highlight. */
-#pc-car-pointer.is-hovering .pc-car-svg {
+#pc-car-pointer.is-hovering .pc-car-svg,
+#pc-car-pointer.is-text-hover .pc-car-svg {
   opacity: 0;
   transform: scale(0.2);
   filter: blur(2px) drop-shadow(0 0 10px rgba(150, 164, 221, 0.8));
+}
+
+/* Text Selection Morphing Shape: Sleek vertical I-beam capsule when hovering over texts */
+#pc-car-pointer.is-text-hover .pc-cursor-follower-lens {
+  opacity: 1;
+  transform: scale(1);
+  background: #96A4DD;
+  border: 1px solid #7c8ec8;
+  box-shadow: 0 0 12px rgba(150, 164, 221, 0.85);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html.dark #pc-car-pointer.is-text-hover .pc-cursor-follower-lens {
+  background: #D9B1E6;
+  border: 1px solid #c298d0;
+  box-shadow: 0 0 14px rgba(217, 177, 230, 0.90);
 }
 
 /* Tactile click bounce / squash on mousedown */
@@ -1084,6 +1102,7 @@ html.dark .pc-car-svg {
           <span class="h-2 w-2 rounded-full bg-emerald-500 pulse-dot" id="cloud-status-dot"></span>
           <span id="cloud-status-text" data-i18n="cloud_db_live">Google Sheets Live</span>
         </button>
+        <button type="button" onclick="openReportModal()" aria-label="Report Issue" title="Report Issue / แจ้งปัญหา" class="rounded-lg p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition interactive-btn"><i data-lucide="flag" class="h-5 w-5"></i></button>
         <button type="button" onclick="toggleQuickSettings(true)" aria-label="Quick Settings" class="rounded-lg p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition interactive-btn"><i data-lucide="settings" class="h-5 w-5"></i></button>
         <button type="button" onclick="showView('user-notifications')" aria-label="Notifications" class="relative rounded-lg p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition interactive-btn"><i data-lucide="bell" class="h-5 w-5"></i><span id="notif-dot" class="pulse-dot absolute right-2 top-2 hidden h-2 w-2 rounded-full bg-[#BF87C9]"></span></button>
         <button type="button" onclick="showView('user-profile')" aria-label="Profile" class="avatar-circle flex h-9 w-9 shrink-0 aspect-square items-center justify-center overflow-hidden rounded-full bg-[#f0f4fc] dark:bg-[#222442] font-bold text-[#4c5aa6] dark:text-[#D9B1E6] shadow-sm interactive-btn" id="header-avatar">?</button>
@@ -1172,7 +1191,7 @@ html.dark .pc-car-svg {
       <div class="relative w-full h-64 sm:h-80 rounded-2xl overflow-hidden border border-[#e2e8f4] dark:border-[#262845] bg-[#eef3fb] dark:bg-[#121324] shadow-inner">
         <iframe
           id="kku-google-map-frame"
-          src="https://maps.google.com/maps?q=16.4735,102.8236+(Khon+Kaen+University)&z=15&t=m&output=embed"
+          src="https://maps.google.com/maps?q=16.4735,102.8236&ll=16.4735,102.8236&z=15&t=m&output=embed"
           class="w-full h-full border-0"
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
@@ -1382,12 +1401,26 @@ html.dark .pc-car-svg {
         <i data-lucide="log-out" class="h-4 w-4"></i>
         <span data-i18n="checkout_btn">เช็คเอาท์ / ออกจากที่จอดรถ</span>
       </button>
+
+      <div class="pt-1 flex justify-end">
+        <button type="button" onclick="openReportModal('overstay', state.activeParking ? state.activeParking.lotId : '')" class="interactive-btn inline-flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 hover:underline font-semibold">
+          <i data-lucide="flag" class="h-3.5 w-3.5"></i>
+          <span data-i18n="report_unvacated_btn">แจ้งรถไม่เช็คเอาท์</span>
+        </button>
+      </div>
     </div>
 
     <button type="button" id="finish-route-btn" onclick="finishRoute()" class="interactive-btn mt-5 w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-4 font-extrabold text-[#181b2e] dark:text-[#0e0f1a] shadow-lg shadow-[#96A4DD]/30 hover:opacity-95">
       <i data-lucide="check" class="h-5 w-5" id="finish-btn-icon"></i>
       <span data-i18n="finish_nav" id="finish-btn-text">ถึงลานจอดรถแล้ว / จบการนำทาง</span>
     </button>
+
+    <div class="mt-3 flex justify-center">
+      <button type="button" onclick="openReportModal('bug', '')" class="interactive-btn inline-flex items-center gap-1.5 text-xs text-[#5a627a] dark:text-[#9da7c5] hover:text-[#96A4DD] dark:hover:text-[#D9B1E6] font-semibold">
+        <i data-lucide="flag" class="h-3.5 w-3.5"></i>
+        <span data-i18n="nav_report">แจ้งปัญหา</span>
+      </button>
+    </div>
     
     <p id="route-finished" class="mt-4 hidden rounded-xl bg-[#f0f4fc] dark:bg-[#222442] p-4 text-center font-semibold text-[#262447] dark:text-[#D9B1E6] border border-[#96A4DD]/40" aria-live="polite" data-i18n="finish_success">บันทึกการจอดรถแล้ว — ขอบคุณที่ใช้บริการครับ/ค่ะ</p>
   </div>
@@ -1821,6 +1854,29 @@ html.dark .pc-car-svg {
       <div id="admin-user-list" class="mt-4 space-y-3"></div>
     </div>
 
+    <!-- USER REPORTS MANAGEMENT SECTION -->
+    <div id="admin-reports-section" class="mt-8 rounded-3xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-5 shadow-sm">
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400">
+              <i data-lucide="flag" class="h-4 w-4"></i>
+            </span>
+            <p class="text-sm font-bold text-[#96A4DD] dark:text-[#D9B1E6]" data-i18n="admin_reports_title">รายการแจ้งปัญหาจากผู้ใช้</p>
+          </div>
+          <h2 class="mt-1 font-extrabold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="admin_reports_desc">ตรวจสอบและจัดการรายงานปัญหาการจอดรถและบั๊ก</h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="admin-reports-count" class="rounded-full bg-amber-100 dark:bg-amber-950/60 px-3 py-1 text-xs font-bold text-amber-700 dark:text-amber-300">0 รายการ</span>
+          <button type="button" onclick="SheetsDB.fetchReports().then(() => renderAdminReports())" class="interactive-btn flex items-center gap-1.5 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] px-3 py-1.5 text-xs font-bold text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442]">
+            <i data-lucide="refresh-cw" class="h-3.5 w-3.5"></i>
+            <span data-i18n="refresh_btn">รีเฟรช</span>
+          </button>
+        </div>
+      </div>
+      <div id="admin-reports-list" class="mt-4 space-y-3"></div>
+    </div>
+
     <p class="mt-8 text-center text-xs text-[#5a627a] dark:text-[#9da7c5]">Developed by ให้รถในวงเวียนไปก่อน</p>
   </main>
 </section>
@@ -1914,6 +1970,60 @@ html.dark .pc-car-svg {
     <div class="mt-6 flex gap-3">
       <button type="button" onclick="closeEditBuilding()" class="interactive-btn flex-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] py-3 font-bold hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" data-i18n="cancel_btn">ยกเลิก</button>
       <button type="button" id="btn-save-bldg" onclick="saveEditedBuilding()" class="interactive-btn flex-1 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3 font-extrabold text-[#181b2e] dark:text-[#0e0f1a] shadow hover:opacity-95" data-i18n="save_bldg_btn">บันทึกการแก้ไข</button>
+    </div>
+  </div>
+</div>
+
+<!-- REPORT ISSUE MODAL -->
+<div id="report-issue-modal" class="modal-wrapper">
+  <div class="modal-panel no-scrollbar w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-[#161729] p-6 shadow-2xl border border-[#e2e8f4] dark:border-[#262845]">
+    <div class="flex items-center justify-between pb-4 border-b border-[#edf1f8] dark:border-[#262845]">
+      <div class="flex items-center gap-2">
+        <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-r from-[#BF87C9] to-[#D9B1E6] text-[#181b2e] dark:text-[#0e0f1a] shadow-sm">
+          <i data-lucide="flag" class="h-4 w-4"></i>
+        </span>
+        <h3 class="font-bold text-lg text-[#262447] dark:text-[#c4b5fd]" data-i18n="report_modal_title">แจ้งปัญหาหรือรายงานข้อผิดพลาด</h3>
+      </div>
+      <button type="button" onclick="closeReportModal()" class="rounded-full p-2 text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] transition"><i data-lucide="x" class="h-5 w-5"></i></button>
+    </div>
+
+    <div class="mt-5 space-y-4">
+      <div>
+        <label class="mb-1 block text-sm font-bold" data-i18n="report_type_label">ประเภทรายงาน</label>
+        <select id="report-type" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 text-sm font-semibold">
+          <option value="overstay" data-i18n="report_type_overstay">รถจอดไม่เช็คเอาท์ / จอดแช่ / ช่องจอดไม่ตรง</option>
+          <option value="bug" data-i18n="report_type_bug">ข้อผิดพลาดของระบบ / บั๊กในแอป</option>
+          <option value="map" data-i18n="report_type_map">ตำแหน่งแผนที่หรืออาคารไม่ถูกต้อง</option>
+          <option value="other" data-i18n="report_type_other">ปัญหาอื่นๆ หรือข้อเสนอแนะ</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="mb-1 block text-sm font-bold" data-i18n="report_lot_label">ลานจอดรถที่เกี่ยวข้อง (ถ้ามี)</label>
+        <select id="report-lot-id" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 text-sm font-semibold">
+          <option value="" data-i18n="report_lot_none">ไม่ระบุ / ไม่เกี่ยวข้อง</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="mb-1 block text-sm font-bold" data-i18n="report_slot_label">เลขช่องจอด หรือ ทะเบียนรถ</label>
+        <input id="report-slot-details" type="text" placeholder="เช่น ช่อง B12 หรือ ทะเบียน กข 1234" data-i18n-placeholder="report_slot_placeholder" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 text-sm font-semibold">
+      </div>
+
+      <div>
+        <label class="mb-1 block text-sm font-bold" data-i18n="report_desc_label">รายละเอียดปัญหา</label>
+        <textarea id="report-description" rows="3" placeholder="อธิบายปัญหาที่พบอย่างละเอียด เพื่อให้ทีมงานตรวจสอบได้" data-i18n-placeholder="report_desc_placeholder" class="w-full rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] bg-white dark:bg-[#161729] px-4 py-3 text-sm font-semibold"></textarea>
+      </div>
+
+      <div class="rounded-xl bg-[#f7f9fd] dark:bg-[#1f2038] p-3 text-xs text-[#5a627a] dark:text-[#9da7c5] flex items-center justify-between">
+        <span data-i18n="report_reporter_label">ผู้รายงาน</span>
+        <span id="report-reporter-name" class="font-bold text-[#262447] dark:text-[#c4b5fd]">guest</span>
+      </div>
+    </div>
+
+    <div class="mt-6 flex gap-3">
+      <button type="button" onclick="closeReportModal()" class="interactive-btn flex-1 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] py-3 font-bold hover:bg-[#f1f4fb] dark:hover:bg-[#1f2038]" data-i18n="cancel_btn">ยกเลิก</button>
+      <button type="button" id="btn-submit-report" onclick="submitReportAction()" class="interactive-btn flex-1 rounded-xl bg-gradient-to-r from-[#96A4DD] to-[#A680C2] py-3 font-extrabold text-[#181b2e] dark:text-[#0e0f1a] shadow hover:opacity-95" data-i18n="report_submit_btn">ส่งรายงาน</button>
     </div>
   </div>
 </div>
@@ -2369,7 +2479,37 @@ const i18n = {
     refresh_gps_btn: "อัปเดต GPS",
     gps_calculating: "กำลังค้นหา GPS...",
     toast_gps_updated: "อัปเดตตำแหน่ง GPS แล้ว",
-    toast_gps_error: "ใช้พิกัดเริ่มต้นในมหาวิทยาลัยขอนแก่น"
+    toast_gps_error: "ใช้พิกัดเริ่มต้นในมหาวิทยาลัยขอนแก่น",
+    nav_report: "แจ้งปัญหา",
+    report_modal_title: "แจ้งปัญหาหรือรายงานข้อผิดพลาด",
+    report_type_label: "ประเภทรายงาน",
+    report_type_overstay: "รถจอดไม่เช็คเอาท์ / จอดแช่ / ช่องจอดไม่ตรง",
+    report_type_bug: "ข้อผิดพลาดของระบบ / บั๊กในแอป",
+    report_type_map: "ตำแหน่งแผนที่หรืออาคารไม่ถูกต้อง",
+    report_type_other: "ปัญหาอื่นๆ หรือข้อเสนอแนะ",
+    report_lot_label: "ลานจอดรถที่เกี่ยวข้อง (ถ้ามี)",
+    report_lot_none: "ไม่ระบุ / ไม่เกี่ยวข้อง",
+    report_slot_label: "เลขช่องจอด หรือ ทะเบียนรถ",
+    report_slot_placeholder: "เช่น ช่อง B12 หรือ ทะเบียน กข 1234",
+    report_desc_label: "รายละเอียดปัญหา",
+    report_desc_placeholder: "อธิบายปัญหาที่พบอย่างละเอียด เพื่อให้ทีมงานตรวจสอบได้",
+    report_reporter_label: "ผู้รายงาน",
+    report_submit_btn: "ส่งรายงาน",
+    report_submitting: "กำลังส่งรายงาน...",
+    toast_report_success_title: "ส่งรายงานเรียบร้อยแล้ว",
+    toast_report_success_desc: "ขอบคุณสำหรับการแจ้งปัญหา ทีมงานจะตรวจสอบโดยเร็ว",
+    toast_report_err_title: "ไม่สามารถส่งรายงานได้",
+    toast_report_err_desc: "กรุณาระบุรายละเอียดปัญหาอย่างน้อย 5 ตัวอักษร",
+    admin_reports_title: "รายการแจ้งปัญหาจากผู้ใช้",
+    admin_reports_desc: "ตรวจสอบและจัดการรายงานปัญหาการจอดรถและบั๊ก",
+    admin_tab_reports: "รายงานปัญหา",
+    report_status_pending: "รอดำเนินการ",
+    report_status_resolved: "แก้ไขแล้ว",
+    report_resolve_btn: "แก้ไขแล้ว",
+    report_delete_btn: "ลบ",
+    report_no_items: "ไม่มีรายงานปัญหาในขณะนี้",
+    report_unvacated_btn: "แจ้งรถไม่เช็คเอาท์",
+    confirm_delete_report: "คุณต้องการลบรายงานนี้ใช่หรือไม่?"
   },
   en: {
     quick_settings_title: "System Settings",
@@ -2753,7 +2893,37 @@ const i18n = {
     refresh_gps_btn: "Update GPS",
     gps_calculating: "Detecting GPS...",
     toast_gps_updated: "GPS location updated",
-    toast_gps_error: "Using Khon Kaen University default GPS"
+    toast_gps_error: "Using Khon Kaen University default GPS",
+    nav_report: "Report Issue",
+    report_modal_title: "Report an Issue or Bug",
+    report_type_label: "Report Type",
+    report_type_overstay: "Unvacated Spot / Overstay / Mismatch",
+    report_type_bug: "System Bug / Application Glitch",
+    report_type_map: "Map or Building Inaccuracy",
+    report_type_other: "Other Issue or Feedback",
+    report_lot_label: "Related Parking Lot (if applicable)",
+    report_lot_none: "None / Not Applicable",
+    report_slot_label: "Spot # or Vehicle Plate",
+    report_slot_placeholder: "e.g. Slot B12 or Plate 1AB-2345",
+    report_desc_label: "Problem Description",
+    report_desc_placeholder: "Describe the issue in detail for our team to investigate",
+    report_reporter_label: "Reporter",
+    report_submit_btn: "Submit Report",
+    report_submitting: "Submitting Report...",
+    toast_report_success_title: "Report Submitted",
+    toast_report_success_desc: "Thank you for reporting. Our team will investigate promptly.",
+    toast_report_err_title: "Unable to Submit Report",
+    toast_report_err_desc: "Please enter a problem description of at least 5 characters",
+    admin_reports_title: "User Issue Reports",
+    admin_reports_desc: "Review and manage parking overstay reports and bug submissions",
+    admin_tab_reports: "Reports",
+    report_status_pending: "Pending",
+    report_status_resolved: "Resolved",
+    report_resolve_btn: "Mark Resolved",
+    report_delete_btn: "Delete",
+    report_no_items: "No issue reports at this time",
+    report_unvacated_btn: "Report Unvacated Spot",
+    confirm_delete_report: "Are you sure you want to delete this report?"
   }
 };
 
@@ -3110,6 +3280,7 @@ function defaultState() {
     navHistory: [],
     notifications: [],
     reviews: [],
+    reports: [],
     ui: {
       routeType:'fast',
       destinationBuilding:null,
@@ -3146,6 +3317,8 @@ function loadState() {
     }
   } catch(e) {}
 
+  s.reports = Array.isArray(s.reports) ? s.reports : [];
+
   const allUsers = getStoredUsers();
   const map = new Map();
   allUsers.forEach(u => map.set(u.username.trim().toLowerCase(), { ...u, username: u.username.trim() }));
@@ -3173,10 +3346,10 @@ function loadState() {
     s.lots.forEach(l => {
       const def = defLots.find(dl => dl.id === l.id);
       if (def) {
-        l.lat = def.lat;
-        l.lng = def.lng;
-        l.x = def.x;
-        l.y = def.y;
+        l.lat = (typeof l.lat === 'number' && !isNaN(l.lat) && l.lat > 0) ? l.lat : def.lat;
+        l.lng = (typeof l.lng === 'number' && !isNaN(l.lng) && l.lng > 0) ? l.lng : def.lng;
+        l.x = (typeof l.x === 'number' && !isNaN(l.x)) ? l.x : def.x;
+        l.y = (typeof l.y === 'number' && !isNaN(l.y)) ? l.y : def.y;
       }
     });
   }
@@ -3190,10 +3363,10 @@ function loadState() {
     s.buildings.forEach(b => {
       const def = defBuildings.find(db => db.id === b.id);
       if (def) {
-        b.lat = def.lat;
-        b.lng = def.lng;
-        b.x = def.x;
-        b.y = def.y;
+        b.lat = (typeof b.lat === 'number' && !isNaN(b.lat) && b.lat > 0) ? b.lat : def.lat;
+        b.lng = (typeof b.lng === 'number' && !isNaN(b.lng) && b.lng > 0) ? b.lng : def.lng;
+        b.x = (typeof b.x === 'number' && !isNaN(b.x)) ? b.x : def.x;
+        b.y = (typeof b.y === 'number' && !isNaN(b.y)) ? b.y : def.y;
       }
     });
   }
@@ -3254,6 +3427,7 @@ const SheetsDB = {
   },
 
   _consecutiveFailures: 0,
+  _inFlight: new Map(),
 
   async request(method, params = {}, body = null) {
     const url = this.getUrl();
@@ -3262,108 +3436,126 @@ const SheetsDB = {
     }
 
     const action = params.action || (body && body.action) || 'ping';
-    const mergedPayload = Object.assign({}, params, body || {});
-    const maxRetries = 3;
-    const baseDelay = 500;
+    const isGet = method === 'GET';
+    const flightKey = isGet ? `${url}::${action}::${JSON.stringify(params)}` : null;
+    if (flightKey && this._inFlight.has(flightKey)) {
+      return await this._inFlight.get(flightKey);
+    }
 
-    for (let attempt = 0; attempt <= maxRetries; attempt++) {
-      const controller = new AbortController();
-      const timeoutMs = 25000 + (attempt * 5000);
-      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    const execPromise = (async () => {
+      const mergedPayload = Object.assign({}, params, body || {});
+      const maxRetries = 3;
+      const baseDelay = 500;
 
-      try {
-        // Strategy 1: URL query string (action + payload) + POST body for 100% redirect preservation
-        const qsParams = { action };
-        if (Object.keys(mergedPayload).length > 0) {
-          qsParams.payload = JSON.stringify(mergedPayload);
-        }
-        const qs = new URLSearchParams(qsParams).toString();
-        const targetUrl = url + (url.includes('?') ? '&' : '?') + qs;
+      for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        const controller = new AbortController();
+        const timeoutMs = 25000 + (attempt * 5000);
+        const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-        const fetchOptions = {
-          method: method,
-          signal: controller.signal,
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8'
-          }
-        };
-
-        if (method === 'POST' && body) {
-          fetchOptions.body = JSON.stringify(body);
-        }
-
-        const res = await fetch(targetUrl, fetchOptions);
-        clearTimeout(timeoutId);
-
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status} ${res.statusText}`);
-        }
-
-        const rawText = await res.text();
-        // Catch HTML responses from Google server contention / rate-limit pages
-        if (rawText.trim().startsWith('<') || rawText.includes('<!DOCTYPE') || rawText.includes('<html>')) {
-          throw new Error('Transient HTML error page returned by Google Sheets server');
-        }
-
-        let data;
         try {
-          data = JSON.parse(rawText);
-        } catch (parseErr) {
-          throw new Error('Malformed JSON response from Sheets API: ' + rawText.slice(0, 80));
-        }
-
-        // If backend reports server_busy flag under heavy lock contention, retry with backoff
-        if (data && data.server_busy && attempt < maxRetries) {
-          const delay = Math.round(baseDelay * Math.pow(2, attempt) + Math.random() * 400);
-          console.warn(`[SheetsDB] Server busy on action "${action}", retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})...`);
-          await new Promise(r => setTimeout(r, delay));
-          continue;
-        }
-
-        return data;
-      } catch (primaryErr) {
-        clearTimeout(timeoutId);
-        console.warn(`[SheetsDB] Request attempt ${attempt + 1} for action "${action}" failed:`, primaryErr.message);
-
-        // Fallback GET request if POST was blocked or dropped
-        if (method === 'POST' && attempt === maxRetries) {
-          try {
-            const fallbackController = new AbortController();
-            const fbTimeout = setTimeout(() => fallbackController.abort(), 20000);
-
-            const fbQs = new URLSearchParams({
-              action: action,
-              payload: JSON.stringify(mergedPayload)
-            }).toString();
-
-            const fbUrl = url + (url.includes('?') ? '&' : '?') + fbQs;
-            const fbRes = await fetch(fbUrl, {
-              method: 'GET',
-              signal: fallbackController.signal,
-              headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-            });
-            clearTimeout(fbTimeout);
-
-            if (fbRes.ok) {
-              const fbText = await fbRes.text();
-              if (!fbText.trim().startsWith('<')) {
-                return JSON.parse(fbText);
-              }
-            }
-          } catch (fbErr) {
-            console.warn('[SheetsDB] GET fallback also failed:', fbErr.message);
+          // Strategy 1: URL query string (action + payload) + POST body for 100% redirect preservation
+          const qsParams = { action };
+          if (Object.keys(mergedPayload).length > 0) {
+            qsParams.payload = JSON.stringify(mergedPayload);
           }
-        }
+          const qs = new URLSearchParams(qsParams).toString();
+          const targetUrl = url + (url.includes('?') ? '&' : '?') + qs;
 
-        if (attempt < maxRetries) {
-          const delay = Math.round(baseDelay * Math.pow(2, attempt) + Math.random() * 400);
-          console.warn(`[SheetsDB] Retrying in ${delay}ms...`);
-          await new Promise(r => setTimeout(r, delay));
-        } else {
-          return { success: false, error: primaryErr.message };
+          const fetchOptions = {
+            method: method,
+            signal: controller.signal,
+            headers: {
+              'Content-Type': 'text/plain;charset=utf-8'
+            }
+          };
+
+          if (method === 'POST' && body) {
+            fetchOptions.body = JSON.stringify(body);
+          }
+
+          const res = await fetch(targetUrl, fetchOptions);
+          clearTimeout(timeoutId);
+
+          if (!res.ok) {
+            throw new Error(`HTTP ${res.status} ${res.statusText}`);
+          }
+
+          const rawText = await res.text();
+          // Catch HTML responses from Google server contention / rate-limit pages
+          if (rawText.trim().startsWith('<') || rawText.includes('<!DOCTYPE') || rawText.includes('<html>')) {
+            throw new Error('Transient HTML error page returned by Google Sheets server');
+          }
+
+          let data;
+          try {
+            data = JSON.parse(rawText);
+          } catch (parseErr) {
+            throw new Error('Malformed JSON response from Sheets API: ' + rawText.slice(0, 80));
+          }
+
+          // If backend reports server_busy flag under heavy lock contention, retry with backoff
+          if (data && data.server_busy && attempt < maxRetries) {
+            const delay = Math.round(baseDelay * Math.pow(2, attempt) + Math.random() * 400);
+            console.warn(`[SheetsDB] Server busy on action "${action}", retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})...`);
+            await new Promise(r => setTimeout(r, delay));
+            continue;
+          }
+
+          return data;
+        } catch (primaryErr) {
+          clearTimeout(timeoutId);
+          console.warn(`[SheetsDB] Request attempt ${attempt + 1} for action "${action}" failed:`, primaryErr.message);
+
+          // Fallback GET request if POST was blocked or dropped
+          if (method === 'POST' && attempt === maxRetries) {
+            try {
+              const fallbackController = new AbortController();
+              const fbTimeout = setTimeout(() => fallbackController.abort(), 20000);
+
+              const fbQs = new URLSearchParams({
+                action: action,
+                payload: JSON.stringify(mergedPayload)
+              }).toString();
+
+              const fbUrl = url + (url.includes('?') ? '&' : '?') + fbQs;
+              const fbRes = await fetch(fbUrl, {
+                method: 'GET',
+                signal: fallbackController.signal,
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+              });
+              clearTimeout(fbTimeout);
+
+              if (fbRes.ok) {
+                const fbText = await fbRes.text();
+                if (!fbText.trim().startsWith('<')) {
+                  return JSON.parse(fbText);
+                }
+              }
+            } catch (fbErr) {
+              console.warn('[SheetsDB] GET fallback also failed:', fbErr.message);
+            }
+          }
+
+          if (attempt < maxRetries) {
+            const delay = Math.round(baseDelay * Math.pow(2, attempt) + Math.random() * 400);
+            console.warn(`[SheetsDB] Retrying in ${delay}ms...`);
+            await new Promise(r => setTimeout(r, delay));
+          } else {
+            return { success: false, error: primaryErr.message };
+          }
         }
       }
+    })();
+
+    if (flightKey) {
+      this._inFlight.set(flightKey, execPromise);
+      try {
+        return await execPromise;
+      } finally {
+        this._inFlight.delete(flightKey);
+      }
     }
+    return await execPromise;
   },
 
   async ping() {
@@ -3398,14 +3590,21 @@ const SheetsDB = {
       if (Array.isArray(res.data.buildings) && res.data.buildings.length) {
         const remoteBuildings = res.data.buildings
           .filter(b => b && String(b.id || '').trim() && String(b.id || '').trim() !== 'undefined' && String(b.id || '').trim() !== 'null' && (b.name_th || b.name || b.name_en || b.nameEn))
-          .map(b => ({
-            id: String(b.id).trim(),
-            name: (b.name_th || b.name || '').trim(),
-            nameEn: (b.name_en || b.nameEn || b.name_th || b.name || '').trim(),
-            category: b.category || 'classroom',
-            lat: parseFloat(b.lat) || 50,
-            lng: parseFloat(b.lng) || 50
-          }));
+          .map(b => {
+            const rawLat = parseFloat(b.lat);
+            const rawLng = parseFloat(b.lng);
+            const hasValidGps = !isNaN(rawLat) && !isNaN(rawLng) && rawLat > 15.0 && rawLat < 18.0 && rawLng > 100.0 && rawLng < 105.0;
+            return {
+              id: String(b.id).trim(),
+              name: (b.name_th || b.name || '').trim(),
+              nameEn: (b.name_en || b.nameEn || b.name_th || b.name || '').trim(),
+              category: b.category || 'classroom',
+              lat: hasValidGps ? rawLat : (!isNaN(rawLat) && rawLat > 0 ? rawLat : 16.4740),
+              lng: hasValidGps ? rawLng : (!isNaN(rawLng) && rawLng > 0 ? rawLng : 102.8240),
+              x: typeof b.x !== 'undefined' && !isNaN(parseFloat(b.x)) ? parseFloat(b.x) : 50,
+              y: typeof b.y !== 'undefined' && !isNaN(parseFloat(b.y)) ? parseFloat(b.y) : 50
+            };
+          });
 
         // Merge: keep all remote buildings, plus any local buildings that aren't in remote yet
         const bMap = new Map();
@@ -3428,16 +3627,23 @@ const SheetsDB = {
       if (Array.isArray(res.data.lots) && res.data.lots.length) {
         const remoteLots = res.data.lots
           .filter(l => l && String(l.id || '').trim() && String(l.id || '').trim() !== 'undefined' && String(l.id || '').trim() !== 'null' && (l.name_th || l.name || l.name_en || l.nameEn))
-          .map(l => ({
-            id: String(l.id).trim(),
-            name: (l.name_th || l.name || '').trim(),
-            nameEn: (l.name_en || l.nameEn || l.name_th || l.name || '').trim(),
-            buildingId: String(l.building_id || l.buildingId || '').trim(),
-            capacity: parseInt(l.capacity, 10) || 20,
-            available: typeof l.available !== 'undefined' && l.available !== '' ? Math.max(0, parseInt(l.available, 10)) : (parseInt(l.capacity, 10) || 20),
-            lat: parseFloat(l.lat) || 50,
-            lng: parseFloat(l.lng) || 50
-          }));
+          .map(l => {
+            const rawLat = parseFloat(l.lat);
+            const rawLng = parseFloat(l.lng);
+            const hasValidGps = !isNaN(rawLat) && !isNaN(rawLng) && rawLat > 15.0 && rawLat < 18.0 && rawLng > 100.0 && rawLng < 105.0;
+            return {
+              id: String(l.id).trim(),
+              name: (l.name_th || l.name || '').trim(),
+              nameEn: (l.name_en || l.nameEn || l.name_th || l.name || '').trim(),
+              buildingId: String(l.building_id || l.buildingId || '').trim(),
+              capacity: parseInt(l.capacity, 10) || 20,
+              available: typeof l.available !== 'undefined' && l.available !== '' ? Math.max(0, parseInt(l.available, 10)) : (parseInt(l.capacity, 10) || 20),
+              lat: hasValidGps ? rawLat : (!isNaN(rawLat) && rawLat > 0 ? rawLat : 16.4740),
+              lng: hasValidGps ? rawLng : (!isNaN(rawLng) && rawLng > 0 ? rawLng : 102.8240),
+              x: typeof l.x !== 'undefined' && !isNaN(parseFloat(l.x)) ? parseFloat(l.x) : 50,
+              y: typeof l.y !== 'undefined' && !isNaN(parseFloat(l.y)) ? parseFloat(l.y) : 50
+            };
+          });
 
         const lMap = new Map();
         remoteLots.forEach(l => {
@@ -3722,6 +3928,67 @@ const SheetsDB = {
       action: 'logEvents',
       logs: events
     });
+  },
+
+  async submitReport(report) {
+    if (!this.isConfigured() || !report) return false;
+    return await this.request('POST', { action: 'submitReport' }, {
+      action: 'submitReport',
+      ...report
+    });
+  },
+
+  async fetchReports() {
+    if (!this.isConfigured()) return false;
+    const res = await this.request('GET', { action: 'getReports' });
+    if (res && res.success && Array.isArray(res.data)) {
+      const remoteReports = res.data.map(r => ({
+        id: String(r.id || ''),
+        type: r.type || 'other',
+        lotId: r.lot_id || r.lotId || '',
+        buildingId: r.building_id || r.buildingId || '',
+        plateNumber: r.plate_number || r.plateNumber || '',
+        description: r.description || '',
+        reporter: r.reporter || 'guest',
+        status: r.status || 'pending',
+        resolutionNote: r.resolution_note || r.resolutionNote || '',
+        resolvedBy: r.resolved_by || r.resolvedBy || '',
+        resolvedAt: r.resolved_at || r.resolvedAt || '',
+        createdAt: r.created_at || r.createdAt || ''
+      }));
+
+      const rMap = new Map();
+      remoteReports.forEach(r => {
+        if (r.id) rMap.set(r.id, r);
+      });
+      (state.reports || []).forEach(lr => {
+        if (lr && lr.id && !rMap.has(lr.id)) {
+          rMap.set(lr.id, lr);
+        }
+      });
+      state.reports = Array.from(rMap.values()).sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+      saveState();
+      return true;
+    }
+    return false;
+  },
+
+  async resolveReport(id, resolutionNote = '', resolvedBy = '') {
+    if (!this.isConfigured() || !id) return false;
+    return await this.request('POST', { action: 'resolveReport' }, {
+      action: 'resolveReport',
+      id,
+      resolution_note: resolutionNote,
+      resolved_by: resolvedBy || state.currentUser || 'admin'
+    });
+  },
+
+  async deleteReport(id) {
+    if (!this.isConfigured() || !id) return false;
+    return await this.request('POST', { action: 'deleteReport' }, {
+      action: 'deleteReport',
+      id
+    });
   }
 };
 
@@ -3906,6 +4173,7 @@ async function syncWithSheets(userTriggered = false) {
   }
   if (SheetsDB.isConfigured()) {
     await SheetsDB.fetchUsers();
+    await SheetsDB.fetchReports();
   }
 
   if (syncIcon) syncIcon.classList.remove('animate-spin');
@@ -4528,7 +4796,7 @@ function focusBuildingOnGmaps(bldgId) {
   const lng = Number(bldg.lng);
 
   if (frame && !isNaN(lat) && !isNaN(lng)) {
-    frame.src = `https://maps.google.com/maps?q=${lat},${lng}+(${encodeURIComponent(name)})&z=17&t=m&output=embed`;
+    frame.src = `https://maps.google.com/maps?q=${lat.toFixed(6)},${lng.toFixed(6)}&ll=${lat.toFixed(6)},${lng.toFixed(6)}&z=17&t=m&output=embed`;
   }
 
   const nameEl = document.getElementById('gmaps-active-bldg-name');
@@ -4537,7 +4805,7 @@ function focusBuildingOnGmaps(bldgId) {
   if (coordsEl) coordsEl.textContent = `${lat.toFixed(4)}° N, ${lng.toFixed(4)}° E`;
 
   const extLink = document.getElementById('gmaps-external-link');
-  if (extLink) extLink.href = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+  if (extLink) extLink.href = `https://www.google.com/maps/search/?api=1&query=${lat.toFixed(6)},${lng.toFixed(6)}`;
 
   renderKkuGoogleMap();
 }
@@ -4546,7 +4814,7 @@ function resetKkuGmaps() {
   state.ui.selectedGmapsBuildingId = null;
   const frame = document.getElementById('kku-google-map-frame');
   if (frame) {
-    frame.src = "https://maps.google.com/maps?q=16.4735,102.8236+(Khon+Kaen+University)&z=15&t=m&output=embed";
+    frame.src = "https://maps.google.com/maps?q=16.4735,102.8236&ll=16.4735,102.8236&z=15&t=m&output=embed";
   }
   const nameEl = document.getElementById('gmaps-active-bldg-name');
   if (nameEl) nameEl.textContent = t('kku_campus_title');
@@ -5583,13 +5851,29 @@ async function saveProfile() {
   user.name = name;
   if (pw) user.password = pw;
   if (usernameChanged) {
+    const oldLower = oldUsername.toLowerCase();
+    const legacyKeys = ['parkingalot-state-v5', 'parkingalot-state-v4', 'parkingalot-state-v3', 'parkingalot-state-v2', STORAGE_KEY];
+    legacyKeys.forEach(k => {
+      try {
+        const raw = localStorage.getItem(k);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && Array.isArray(parsed.users)) {
+            parsed.users = parsed.users.filter(u => (u.username || '').toLowerCase() !== oldLower);
+            localStorage.setItem(k, JSON.stringify(parsed));
+          }
+        }
+      } catch(e) {}
+    });
+
     user.username = rawNewUsername;
     state.currentUser = rawNewUsername;
-    const uIdx = (state.users || []).findIndex(u => (u.username || '').toLowerCase() === oldUsername.toLowerCase());
-    if (uIdx >= 0) {
-      state.users[uIdx].username = rawNewUsername;
-      state.users[uIdx].name = name;
-    }
+    state.users = (state.users || []).map(u => {
+      if ((u.username || '').toLowerCase() === oldLower) {
+        return { ...u, username: rawNewUsername, name: name, password: pw || u.password };
+      }
+      return u;
+    }).filter((u, idx, arr) => arr.findIndex(x => (x.username || '').toLowerCase() === (u.username || '').toLowerCase()) === idx);
   }
   saveStoredUsers(state.users);
   saveState();
@@ -5599,7 +5883,8 @@ async function saveProfile() {
     const payload = { 
       name, 
       password: pw || user.password,
-      avatar: user.avatar || ''
+      avatar: user.avatar || '',
+      id: user.id || ''
     };
     if (usernameChanged) {
       payload.newUsername = rawNewUsername;
@@ -5614,6 +5899,7 @@ async function saveProfile() {
         user.username = res.data.username;
         state.currentUser = res.data.username;
       }
+      state.users = (state.users || []).filter(u => (u.username || '').toLowerCase() !== oldUsername.toLowerCase() || (u.username || '') === user.username);
       saveStoredUsers(state.users);
       saveState();
     }
@@ -6366,7 +6652,251 @@ function renderAdmin() {
       }).join('');
     }
   }
+  renderAdminReports();
   if (window.lucide) lucide.createIcons();
+}
+
+/* ==========================================================================
+   REPORT SYSTEM (Unvacated Spots, Overstays, Maps & System Bug Reports)
+   ========================================================================== */
+function openReportModal(prefillType = 'overstay', prefillLotId = '', prefillBuildingId = '') {
+  const modal = document.getElementById('report-issue-modal');
+  if (!modal) return;
+
+  const typeEl = document.getElementById('report-type');
+  const lotEl = document.getElementById('report-lot-id');
+  const slotEl = document.getElementById('report-slot-details');
+  const descEl = document.getElementById('report-description');
+  const repNameEl = document.getElementById('report-reporter-name');
+
+  if (typeEl && prefillType) typeEl.value = prefillType;
+  if (slotEl) slotEl.value = '';
+  if (descEl) descEl.value = '';
+  if (repNameEl) repNameEl.textContent = state.currentUser ? `@${state.currentUser}` : 'guest';
+
+  if (lotEl) {
+    const validLots = (state.lots || []).filter(l => l && l.id && (l.name || l.nameEn));
+    lotEl.innerHTML = `<option value="">${t('report_lot_none')}</option>` +
+      validLots.map(l => {
+        const b = buildingById(l.buildingId);
+        const bLabel = b ? ` (${bName(b)})` : '';
+        return `<option value="${l.id}">${lName(l)}${bLabel}</option>`;
+      }).join('');
+
+    if (prefillLotId) {
+      lotEl.value = prefillLotId;
+    } else if (prefillBuildingId) {
+      const matchingLot = validLots.find(l => l.buildingId === prefillBuildingId);
+      if (matchingLot) lotEl.value = matchingLot.id;
+    } else if (state.activeParking?.lotId) {
+      lotEl.value = state.activeParking.lotId;
+    }
+  }
+
+  modal.classList.add('modal-open');
+  if (window.lucide) lucide.createIcons();
+}
+
+function closeReportModal() {
+  const modal = document.getElementById('report-issue-modal');
+  if (modal) modal.classList.remove('modal-open');
+}
+
+async function submitReportAction() {
+  const typeEl = document.getElementById('report-type');
+  const lotEl = document.getElementById('report-lot-id');
+  const slotEl = document.getElementById('report-slot-details');
+  const descEl = document.getElementById('report-description');
+  const btn = document.getElementById('btn-submit-report');
+
+  const type = typeEl?.value || 'overstay';
+  const lotId = lotEl?.value || '';
+  const plateNumber = (slotEl?.value || '').trim();
+  const description = (descEl?.value || '').trim();
+
+  let buildingId = '';
+  if (lotId) {
+    const lot = lotById(lotId);
+    if (lot && lot.buildingId) buildingId = lot.buildingId;
+  }
+
+  if (!description && !plateNumber) {
+    showToast(t('toast_report_err_title'), t('toast_report_err_desc'), 'error');
+    if (descEl) descEl.focus();
+    return;
+  }
+
+  const reportId = 'rep-' + Date.now() + '-' + Math.random().toString(36).substring(2, 7);
+  const newReport = {
+    id: reportId,
+    type,
+    lotId,
+    buildingId,
+    plateNumber,
+    description,
+    reporter: state.currentUser || 'guest',
+    status: 'pending',
+    createdAt: new Date().toISOString()
+  };
+
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<i data-lucide="loader-2" class="h-4 w-4 animate-spin inline mr-1"></i> ${t('report_submitting')}`;
+    if (window.lucide) lucide.createIcons();
+  }
+
+  if (!Array.isArray(state.reports)) {
+    state.reports = [];
+  }
+  state.reports.unshift(newReport);
+  saveState();
+
+  if (SheetsDB.isConfigured()) {
+    try {
+      await SheetsDB.submitReport(newReport);
+    } catch(err) {
+      console.warn('[Report] Failed to submit to Sheets:', err);
+    }
+  }
+
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = t('report_submit_btn');
+  }
+
+  closeReportModal();
+  showToast(t('toast_report_success_title'), t('toast_report_success_desc'), 'success');
+  renderAdminReports();
+}
+
+function renderAdminReports() {
+  const reportsList = document.getElementById('admin-reports-list');
+  const countEl = document.getElementById('admin-reports-count');
+  const reports = Array.isArray(state.reports) ? state.reports : [];
+
+  const pendingCount = reports.filter(r => r.status !== 'resolved').length;
+  if (countEl) {
+    countEl.textContent = `${pendingCount} ${t('spots_unit')}`;
+  }
+
+  if (!reportsList) return;
+
+  if (!reports.length) {
+    reportsList.innerHTML = `
+      <div class="rounded-2xl bg-white dark:bg-[#161729] p-6 text-center text-[#5a627a] dark:text-[#9da7c5] shadow-sm border border-[#e2e8f4] dark:border-[#262845]">
+        <i data-lucide="check-circle" class="h-6 w-6 mx-auto text-emerald-500 mb-1"></i>
+        <p class="font-bold text-sm">${t('report_no_items')}</p>
+      </div>`;
+    if (window.lucide) lucide.createIcons();
+    return;
+  }
+
+  reportsList.innerHTML = reports.map(r => {
+    const isResolved = r.status === 'resolved';
+    const lot = r.lotId ? lotById(r.lotId) : null;
+    const bldg = r.buildingId ? buildingById(r.buildingId) : (lot ? buildingById(lot.buildingId) : null);
+
+    let typeLabel = t('report_type_other');
+    let typeClass = 'bg-[#95BBE6]/20 text-[#262447] dark:text-[#95BBE6] border border-[#95BBE6]/30';
+    if (r.type === 'overstay') {
+      typeLabel = t('report_type_overstay');
+      typeClass = 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800';
+    } else if (r.type === 'bug') {
+      typeLabel = t('report_type_bug');
+      typeClass = 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-800';
+    } else if (r.type === 'map') {
+      typeLabel = t('report_type_map');
+      typeClass = 'bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-800';
+    }
+
+    const statusBadge = isResolved
+      ? `<span class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800"><i data-lucide="check" class="h-3 w-3"></i> ${t('report_status_resolved')}</span>`
+      : `<span class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800"><i data-lucide="clock" class="h-3 w-3"></i> ${t('report_status_pending')}</span>`;
+
+    const resolveAction = !isResolved ? `
+      <button type="button" onclick="adminResolveReport('${r.id}')" class="interactive-btn flex items-center gap-1.5 rounded-xl border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition">
+        <i data-lucide="check-circle" class="h-3.5 w-3.5"></i>
+        <span>${t('report_resolve_btn')}</span>
+      </button>` : '';
+
+    const deleteAction = `
+      <button type="button" onclick="adminDeleteReport('${r.id}')" class="interactive-btn flex items-center gap-1.5 rounded-xl border border-[#d5deed] dark:border-[#2a2d4a] px-2.5 py-1.5 text-xs font-bold text-[#5a627a] dark:text-[#9da7c5] hover:bg-[#f0f4fc] dark:hover:bg-[#222442] hover:text-rose-600 transition" title="${t('report_delete_btn')}">
+        <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
+      </button>`;
+
+    const timeStr = r.createdAt ? fmtTime(new Date(r.createdAt).getTime()) : '';
+    const locationStr = lot ? `${lName(lot)}${bldg ? ` (${bName(bldg)})` : ''}` : (bldg ? bName(bldg) : '');
+
+    return `
+      <div class="rounded-2xl border border-[#e2e8f4] dark:border-[#262845] bg-white dark:bg-[#161729] p-4 shadow-sm space-y-2">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="rounded-full px-2.5 py-0.5 text-xs font-bold ${typeClass}">${typeLabel}</span>
+            ${statusBadge}
+          </div>
+          <span class="text-xs text-[#8f9bb3] dark:text-[#6d7796]">${timeStr}</span>
+        </div>
+
+        ${r.plateNumber ? `
+          <div class="flex items-center gap-1.5 text-xs font-bold text-[#262447] dark:text-[#c4b5fd]">
+            <i data-lucide="car" class="h-3.5 w-3.5 text-[#96A4DD]"></i>
+            <span>${t('report_slot_label')}: ${r.plateNumber}</span>
+          </div>` : ''}
+
+        ${locationStr ? `
+          <div class="flex items-center gap-1.5 text-xs text-[#5a627a] dark:text-[#9da7c5]">
+            <i data-lucide="map-pin" class="h-3.5 w-3.5 text-[#96A4DD]"></i>
+            <span>${locationStr}</span>
+          </div>` : ''}
+
+        ${r.description ? `
+          <p class="text-sm text-[#181b2e] dark:text-[#e0e4f7] bg-[#f8fafd] dark:bg-[#121324] p-2.5 rounded-xl border border-[#edf1f8] dark:border-[#222442]">${r.description}</p>` : ''}
+
+        <div class="flex items-center justify-between pt-2 border-t border-[#edf1f8] dark:border-[#222442] flex-wrap gap-2 text-xs">
+          <span class="text-[#8f9bb3] dark:text-[#6d7796]">${t('report_reporter_label')}: <b class="text-[#262447] dark:text-[#c4b5fd]">@${r.reporter || 'guest'}</b></span>
+          <div class="flex items-center gap-2">
+            ${resolveAction}
+            ${deleteAction}
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  if (window.lucide) lucide.createIcons();
+}
+
+async function adminResolveReport(id) {
+  if (!id) return;
+  const report = (state.reports || []).find(r => r.id === id);
+  if (!report) return;
+
+  report.status = 'resolved';
+  report.resolvedBy = state.currentUser || 'admin';
+  report.resolvedAt = new Date().toISOString();
+  saveState();
+
+  if (SheetsDB.isConfigured()) {
+    SheetsDB.resolveReport(id, 'Resolved by admin', state.currentUser || 'admin').catch(() => {});
+  }
+
+  renderAdminReports();
+  showToast(t('report_resolve_btn'), t('toast_profile_saved_sheets'), 'success');
+}
+
+async function adminDeleteReport(id) {
+  if (!id) return;
+  const confirmed = await askConfirm(t('confirm_delete_report') || t('confirm_dialog_msg'));
+  if (!confirmed) return;
+
+  state.reports = (state.reports || []).filter(r => r.id !== id);
+  saveState();
+
+  if (SheetsDB.isConfigured()) {
+    SheetsDB.deleteReport(id).catch(() => {});
+  }
+
+  renderAdminReports();
+  showToast(t('report_delete_btn'), t('toast_profile_saved_sheets'), 'success');
 }
 
 async function adminTerminateUser(username) {
@@ -6801,6 +7331,7 @@ function initPcCarEasterEgg() {
   let velocityX = 0;
   let velocityY = 0;
   let isHovering = false;
+  let isTextHover = false;
   let isPressed = false;
   let isVisible = false;
 
@@ -6848,95 +7379,79 @@ function initPcCarEasterEgg() {
       currentY = mouseY;
     }
 
-    // Target detection: card shapes, interactive elements, or readable content
-    const cardTarget = e.target && e.target.closest ?
-      e.target.closest('.parking-card, .stat-card-anim, .hero-card-anim, .interactive-card, [class*="rounded-2xl"], [class*="rounded-3xl"]') : null;
-
+    // Target detection: interactive buttons/links/controls or readable text content (NO cards)
     const interactiveTarget = e.target && e.target.closest ?
       e.target.closest('button, a, input, select, textarea, label, [role="button"], .interactive-btn, .cursor-pointer, .nav-item, .chip, .clickable') : null;
 
-    const textTarget = (!interactiveTarget && !cardTarget && e.target && e.target.closest) ?
-      e.target.closest('p, h1, h2, h3, h4, [data-i18n], blockquote, strong, em, b, th, td') : null;
+    let textTarget = null;
+    if (!interactiveTarget && e.target && e.target.closest) {
+      const textCandidate = e.target.closest('p, h1, h2, h3, h4, h5, h6, [data-i18n], blockquote, strong, em, b, th, td, li');
+      if (textCandidate && (textCandidate.textContent || '').trim().length > 0) {
+        textTarget = textCandidate;
+      }
+    }
 
-    const targetElement = interactiveTarget || cardTarget || textTarget;
-    const shouldHover = Boolean(targetElement);
+    if (interactiveTarget) {
+      const btnRect = interactiveTarget.getBoundingClientRect();
+      if (btnRect.width > 0 && btnRect.width < 340 && btnRect.height > 0 && btnRect.height < 100) {
+        const centerX = btnRect.left + btnRect.width / 2;
+        const centerY = btnRect.top + btnRect.height / 2;
+        const pull = 0.28;
+        targetX = mouseX + (centerX - mouseX) * pull;
+        targetY = mouseY + (centerY - mouseY) * pull;
 
-    if (shouldHover) {
-      if (cardTarget && !interactiveTarget) {
-        const cardRect = cardTarget.getBoundingClientRect();
-        // If it is a distinct card shape (not full-page wrapper)
-        if (cardRect.width > 0 && cardRect.width <= 480 && cardRect.height > 0 && cardRect.height <= 340) {
-          const centerX = cardRect.left + cardRect.width / 2;
-          const centerY = cardRect.top + cardRect.height / 2;
-          const pull = 0.20; // Gentle iPad magnetic attraction
-          targetX = mouseX + (centerX - mouseX) * pull;
-          targetY = mouseY + (centerY - mouseY) * pull;
-
-          // Morph overlay lens to frame the card shape with a proper translucent overlay
-          if (followerLens) {
-            const lensW = cardRect.width + 8;
-            const lensH = cardRect.height + 8;
-            followerLens.style.width = `${lensW}px`;
-            followerLens.style.height = `${lensH}px`;
-            followerLens.style.marginTop = `${-lensH / 2}px`;
-            followerLens.style.marginLeft = `${-lensW / 2}px`;
-            const computedRadius = parseInt(window.getComputedStyle(cardTarget).borderRadius, 10) || 18;
-            followerLens.style.borderRadius = `${computedRadius + 3}px`;
-          }
-        } else {
-          // Large container: smooth focused 60px glass spotlight
-          targetX = mouseX;
-          targetY = mouseY;
-          if (followerLens) {
-            followerLens.style.width = '60px';
-            followerLens.style.height = '60px';
-            followerLens.style.marginTop = '-30px';
-            followerLens.style.marginLeft = '-30px';
-            followerLens.style.borderRadius = '9999px';
-          }
+        if (followerLens) {
+          const lensW = btnRect.width + 10;
+          const lensH = btnRect.height + 6;
+          followerLens.style.width = `${lensW}px`;
+          followerLens.style.height = `${lensH}px`;
+          followerLens.style.marginTop = `${-lensH / 2}px`;
+          followerLens.style.marginLeft = `${-lensW / 2}px`;
+          const computedRadius = parseInt(window.getComputedStyle(interactiveTarget).borderRadius, 10) || (btnRect.height / 2);
+          followerLens.style.borderRadius = `${Math.min(computedRadius + 2, 20)}px`;
         }
-      } else if (interactiveTarget) {
-        const btnRect = interactiveTarget.getBoundingClientRect();
-        if (btnRect.width > 0 && btnRect.width < 340 && btnRect.height > 0 && btnRect.height < 100) {
-          const centerX = btnRect.left + btnRect.width / 2;
-          const centerY = btnRect.top + btnRect.height / 2;
-          const pull = 0.28;
-          targetX = mouseX + (centerX - mouseX) * pull;
-          targetY = mouseY + (centerY - mouseY) * pull;
-
-          if (followerLens) {
-            const lensW = btnRect.width + 10;
-            const lensH = btnRect.height + 6;
-            followerLens.style.width = `${lensW}px`;
-            followerLens.style.height = `${lensH}px`;
-            followerLens.style.marginTop = `${-lensH / 2}px`;
-            followerLens.style.marginLeft = `${-lensW / 2}px`;
-            const computedRadius = parseInt(window.getComputedStyle(interactiveTarget).borderRadius, 10) || (btnRect.height / 2);
-            followerLens.style.borderRadius = `${Math.min(computedRadius + 2, 20)}px`;
-          }
-        } else {
-          targetX = mouseX;
-          targetY = mouseY;
-          if (followerLens) {
-            followerLens.style.width = '48px';
-            followerLens.style.height = '48px';
-            followerLens.style.marginTop = '-24px';
-            followerLens.style.marginLeft = '-24px';
-            followerLens.style.borderRadius = '9999px';
-          }
-        }
-      } else if (textTarget) {
+      } else {
         targetX = mouseX;
         targetY = mouseY;
         if (followerLens) {
-          followerLens.style.width = '44px';
-          followerLens.style.height = '44px';
-          followerLens.style.marginTop = '-22px';
-          followerLens.style.marginLeft = '-22px';
+          followerLens.style.width = '48px';
+          followerLens.style.height = '48px';
+          followerLens.style.marginTop = '-24px';
+          followerLens.style.marginLeft = '-24px';
           followerLens.style.borderRadius = '9999px';
         }
       }
+      if (!isHovering) {
+        isHovering = true;
+        carPointer.classList.add('is-hovering');
+      }
+      if (isTextHover) {
+        isTextHover = false;
+        carPointer.classList.remove('is-text-hover');
+      }
+    } else if (textTarget) {
+      targetX = mouseX;
+      targetY = mouseY;
+      if (followerLens) {
+        const computedFs = parseInt(window.getComputedStyle(textTarget).fontSize, 10) || 16;
+        const beamH = Math.min(32, Math.max(18, Math.round(computedFs * 1.3)));
+        const beamW = 4;
+        followerLens.style.width = `${beamW}px`;
+        followerLens.style.height = `${beamH}px`;
+        followerLens.style.marginTop = `${-beamH / 2}px`;
+        followerLens.style.marginLeft = `${-beamW / 2}px`;
+        followerLens.style.borderRadius = '9999px';
+      }
+      if (isHovering) {
+        isHovering = false;
+        carPointer.classList.remove('is-hovering');
+      }
+      if (!isTextHover) {
+        isTextHover = true;
+        carPointer.classList.add('is-text-hover');
+      }
     } else {
+      // Free canvas, cards, containers: clean directions_car pointer without morphing
       targetX = mouseX;
       targetY = mouseY;
       if (followerLens) {
@@ -6946,11 +7461,14 @@ function initPcCarEasterEgg() {
         followerLens.style.marginLeft = '-22px';
         followerLens.style.borderRadius = '9999px';
       }
-    }
-
-    if (shouldHover !== isHovering) {
-      isHovering = shouldHover;
-      carPointer.classList.toggle('is-hovering', isHovering);
+      if (isHovering) {
+        isHovering = false;
+        carPointer.classList.remove('is-hovering');
+      }
+      if (isTextHover) {
+        isTextHover = false;
+        carPointer.classList.remove('is-text-hover');
+      }
     }
   }, { passive: true });
 

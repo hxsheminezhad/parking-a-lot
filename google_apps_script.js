@@ -44,7 +44,8 @@ const SHEETS = {
   FAVORITES: 'Favorites',
   REVIEWS: 'Reviews',
   NOTIFICATIONS: 'Notifications',
-  LOGS: 'Logs'
+  LOGS: 'Logs',
+  REPORTS: 'Reports'
 };
 
 const SCHEMAS = {
@@ -56,7 +57,8 @@ const SCHEMAS = {
   Favorites: ['id', 'username', 'lot_id', 'created_at'],
   Reviews: ['id', 'username', 'name', 'stars', 'text', 'timestamp', 'status'],
   Notifications: ['id', 'username', 'text', 'timestamp', 'is_read'],
-  Logs: ['id', 'timestamp', 'username', 'event_type', 'action', 'details', 'user_agent', 'url']
+  Logs: ['id', 'timestamp', 'username', 'event_type', 'action', 'details', 'user_agent', 'url'],
+  Reports: ['id', 'type', 'lot_id', 'slot_details', 'description', 'reporter', 'status', 'created_at', 'resolved_at']
 };
 
 /**
@@ -137,6 +139,22 @@ function doPost(e) {
   }
 }
 
+/**
+ * Invalidate cached read endpoints across cluster when writes occur
+ */
+function invalidateDataCache() {
+  try {
+    const cache = CacheService.getScriptCache();
+    if (cache) {
+      cache.remove('cache_initial_data');
+      cache.remove('cache_buildings');
+      cache.remove('cache_lots');
+      cache.remove('cache_reviews');
+      cache.remove('cache_reports');
+    }
+  } catch (e) {}
+}
+
 const WRITE_ACTIONS = new Set([
   'init', 'testWrite', 'cleanupDatabase',
   'saveBuilding', 'deleteBuilding',
@@ -146,7 +164,8 @@ const WRITE_ACTIONS = new Set([
   'saveSearch', 'toggleFavorite',
   'saveReview', 'saveNotification', 'updateNotification',
   'markAllNotificationsRead', 'deleteNotification', 'clearNotifications',
-  'logEvent', 'logEvents'
+  'logEvent', 'logEvents',
+  'submitReport', 'resolveReport', 'deleteReport'
 ]);
 
 /**
@@ -213,9 +232,19 @@ function handleAction(action, body) {
       });
     }
 
-    case 'getInitialData':
+    case 'getInitialData': {
+      try {
+        const cache = CacheService.getScriptCache();
+        if (cache) {
+          const cached = cache.get('cache_initial_data');
+          if (cached) {
+            return ContentService.createTextOutput(cached).setMimeType(ContentService.MimeType.JSON);
+          }
+        }
+      } catch (e) {}
+
       cleanupEmptyRows();
-      return jsonResponse({
+      const payload = {
         success: true,
         data: {
           buildings: getRows(SHEETS.BUILDINGS),
@@ -223,20 +252,70 @@ function handleAction(action, body) {
           reviews: getRows(SHEETS.REVIEWS),
           timestamp: Date.now()
         }
-      });
+      };
+      const jsonStr = JSON.stringify(payload);
+      try {
+        const cache = CacheService.getScriptCache();
+        if (cache) cache.put('cache_initial_data', jsonStr, 25);
+      } catch (e) {}
+      return ContentService.createTextOutput(jsonStr).setMimeType(ContentService.MimeType.JSON);
+    }
 
     case 'cleanupDatabase':
       cleanupEmptyRows();
+      invalidateDataCache();
       return jsonResponse({ success: true, message: 'Database cleaned up successfully' });
 
-    case 'getBuildings':
-      return jsonResponse({ success: true, data: getRows(SHEETS.BUILDINGS) });
+    case 'getBuildings': {
+      try {
+        const cache = CacheService.getScriptCache();
+        if (cache) {
+          const cached = cache.get('cache_buildings');
+          if (cached) return ContentService.createTextOutput(cached).setMimeType(ContentService.MimeType.JSON);
+        }
+      } catch (e) {}
+      const data = getRows(SHEETS.BUILDINGS);
+      const res = JSON.stringify({ success: true, data });
+      try {
+        const cache = CacheService.getScriptCache();
+        if (cache) cache.put('cache_buildings', res, 30);
+      } catch (e) {}
+      return ContentService.createTextOutput(res).setMimeType(ContentService.MimeType.JSON);
+    }
 
-    case 'getLots':
-      return jsonResponse({ success: true, data: getRows(SHEETS.LOTS) });
+    case 'getLots': {
+      try {
+        const cache = CacheService.getScriptCache();
+        if (cache) {
+          const cached = cache.get('cache_lots');
+          if (cached) return ContentService.createTextOutput(cached).setMimeType(ContentService.MimeType.JSON);
+        }
+      } catch (e) {}
+      const data = getRows(SHEETS.LOTS);
+      const res = JSON.stringify({ success: true, data });
+      try {
+        const cache = CacheService.getScriptCache();
+        if (cache) cache.put('cache_lots', res, 20);
+      } catch (e) {}
+      return ContentService.createTextOutput(res).setMimeType(ContentService.MimeType.JSON);
+    }
 
-    case 'getReviews':
-      return jsonResponse({ success: true, data: getRows(SHEETS.REVIEWS) });
+    case 'getReviews': {
+      try {
+        const cache = CacheService.getScriptCache();
+        if (cache) {
+          const cached = cache.get('cache_reviews');
+          if (cached) return ContentService.createTextOutput(cached).setMimeType(ContentService.MimeType.JSON);
+        }
+      } catch (e) {}
+      const data = getRows(SHEETS.REVIEWS);
+      const res = JSON.stringify({ success: true, data });
+      try {
+        const cache = CacheService.getScriptCache();
+        if (cache) cache.put('cache_reviews', res, 30);
+      } catch (e) {}
+      return ContentService.createTextOutput(res).setMimeType(ContentService.MimeType.JSON);
+    }
 
     case 'getUserData': {
       const username = (body.username || '').toLowerCase();
@@ -311,25 +390,56 @@ function handleAction(action, body) {
     }
 
     case 'updateProfile': {
-      const username = (body.username || '').trim().toLowerCase();
+      const username = (body.oldUsername || body.username || '').trim().toLowerCase();
       const newUsername = (body.newUsername || body.new_username || '').trim();
       const name = (body.name || '').trim();
       const password = body.password ? String(body.password) : '';
       const avatar = body.avatar || '';
+      const userId = (body.id || '').trim();
 
-      if (!username) return errorResponse('Username is required', 400);
-      const users = getRows(SHEETS.USERS);
-      const rowIndex = users.findIndex(u => (u.username || '').toLowerCase() === username);
-      if (rowIndex === -1) return errorResponse('User not found', 404);
+      if (!username && !userId) return errorResponse('Username is required', 400);
 
-      const current = users[rowIndex];
-      if (newUsername && newUsername.toLowerCase() !== username) {
+      // Locate the exact physical row in Google Sheets
+      const ss = getSpreadsheet();
+      const sheet = ss.getSheetByName(SHEETS.USERS);
+      if (!sheet) return errorResponse('Users sheet not found', 500);
+
+      const lastRow = sheet.getLastRow();
+      const lastCol = sheet.getLastColumn();
+      if (lastRow <= 1) return errorResponse('User not found', 404);
+
+      const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+      const unColIdx = headers.indexOf('username');
+      const idColIdx = headers.indexOf('id');
+      const data = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+
+      let targetRowIndex = -1;
+      let current = null;
+
+      for (let r = 0; r < data.length; r++) {
+        const row = data[r];
+        const rowUn = unColIdx >= 0 ? String(row[unColIdx] || '').trim().toLowerCase() : '';
+        const rowId = idColIdx >= 0 ? String(row[idColIdx] || '').trim() : '';
+        if ((userId && rowId && rowId === userId) || (username && rowUn === username)) {
+          targetRowIndex = r + 2;
+          current = {};
+          headers.forEach((h, i) => { current[h] = row[i]; });
+          break;
+        }
+      }
+
+      if (targetRowIndex === -1 || !current) return errorResponse('User not found', 404);
+
+      if (newUsername && newUsername.toLowerCase() !== (current.username || '').toLowerCase()) {
         if (username === 'ardeshir' || username === 'project alpine') {
           return errorResponse('Cannot change default system administrator username', 403);
         }
-        const exists = users.some((u, idx) => idx !== rowIndex && (u.username || '').toLowerCase() === newUsername.toLowerCase());
-        if (exists) {
-          return errorResponse('Username already taken', 409);
+        for (let r = 0; r < data.length; r++) {
+          if (r + 2 === targetRowIndex) continue;
+          const rowUn = unColIdx >= 0 ? String(data[r][unColIdx] || '').trim().toLowerCase() : '';
+          if (rowUn === newUsername.toLowerCase()) {
+            return errorResponse('Username already taken', 409);
+          }
         }
         current.username = newUsername;
       }
@@ -338,7 +448,9 @@ function handleAction(action, body) {
       if (avatar) current.avatar = avatar;
       current.updated_at = new Date().toISOString();
 
+      const rowIndex = targetRowIndex - 2;
       updateRow(SHEETS.USERS, rowIndex + 2, current);
+      invalidateDataCache();
       return jsonResponse({ success: true, message: 'Profile updated in Google Sheets', data: current });
     }
 
@@ -369,6 +481,7 @@ function handleAction(action, body) {
       const idx = users.findIndex(u => (u.username || '').toLowerCase() === username);
       if (idx === -1) return errorResponse('User not found', 404);
       deleteRow(SHEETS.USERS, idx + 2);
+      invalidateDataCache();
       return jsonResponse({ success: true, message: 'User deleted from Google Sheets' });
     }
 
@@ -403,6 +516,7 @@ function handleAction(action, body) {
       } else {
         appendRow(SHEETS.BUILDINGS, buildingData);
       }
+      invalidateDataCache();
 
       return jsonResponse({ success: true, message: 'Building saved successfully to Google Sheets', data: buildingData });
     }
@@ -415,6 +529,7 @@ function handleAction(action, body) {
       if (idx === -1) return errorResponse('Building not found', 404);
 
       deleteRow(SHEETS.BUILDINGS, idx + 2);
+      invalidateDataCache();
       return jsonResponse({ success: true, message: 'Building deleted successfully from Google Sheets' });
     }
 
@@ -453,6 +568,7 @@ function handleAction(action, body) {
       } else {
         appendRow(SHEETS.LOTS, lotData);
       }
+      invalidateDataCache();
 
       return jsonResponse({ success: true, message: 'Lot saved successfully to Google Sheets', data: lotData });
     }
@@ -473,6 +589,7 @@ function handleAction(action, body) {
       lot.updated_at = new Date().toISOString();
 
       updateRow(SHEETS.LOTS, idx + 2, lot);
+      invalidateDataCache();
       return jsonResponse({ success: true, message: 'Availability updated in Google Sheets', data: lot });
     }
 
@@ -484,6 +601,7 @@ function handleAction(action, body) {
       if (idx === -1) return errorResponse('Lot not found', 404);
 
       deleteRow(SHEETS.LOTS, idx + 2);
+      invalidateDataCache();
       return jsonResponse({ success: true, message: 'Lot deleted successfully from Google Sheets' });
     }
 
@@ -504,6 +622,7 @@ function handleAction(action, body) {
       };
 
       appendRow(SHEETS.REVIEWS, reviewData);
+      invalidateDataCache();
       return jsonResponse({ success: true, message: 'Review saved to Google Sheets', data: reviewData });
     }
 
@@ -698,6 +817,127 @@ function handleAction(action, body) {
         appendRow(SHEETS.LOGS, logEntry);
       });
       return jsonResponse({ success: true, message: 'Batch logs recorded in Google Sheets', count: logs.length });
+    }
+
+    case 'submitReport': {
+      const type = (body.type || 'other').trim();
+      const lotId = (body.lotId || body.lot_id || '').trim();
+      const slotDetails = (body.slotDetails || body.slot_details || '').trim();
+      const description = (body.description || '').trim();
+      const reporter = (body.reporter || body.username || 'guest').trim();
+
+      if (!description || description.length < 3) {
+        return errorResponse('Description is required (at least 3 characters)', 400);
+      }
+
+      const reportObj = {
+        id: 'rep_' + Date.now(),
+        type: type,
+        lot_id: lotId,
+        slot_details: slotDetails,
+        description: description,
+        reporter: reporter,
+        status: 'pending',
+        created_at: new Date().toISOString(),
+        resolved_at: ''
+      };
+
+      appendRow(SHEETS.REPORTS, reportObj);
+      invalidateDataCache();
+
+      return jsonResponse({
+        success: true,
+        message: 'Report submitted successfully',
+        data: reportObj
+      });
+    }
+
+    case 'getReports': {
+      const reports = getRows(SHEETS.REPORTS).sort((a, b) => {
+        const timeA = new Date(a.created_at || 0).getTime();
+        const timeB = new Date(b.created_at || 0).getTime();
+        return timeB - timeA;
+      });
+      return jsonResponse({
+        success: true,
+        data: reports,
+        count: reports.length
+      });
+    }
+
+    case 'resolveReport': {
+      const reportId = (body.id || body.reportId || '').trim();
+      if (!reportId) return errorResponse('Report ID is required', 400);
+
+      const ss = getSpreadsheet();
+      const sheet = ss.getSheetByName(SHEETS.REPORTS);
+      if (!sheet) return errorResponse('Reports sheet not found', 500);
+
+      const lastRow = sheet.getLastRow();
+      const lastCol = sheet.getLastColumn();
+      if (lastRow <= 1) return errorResponse('No reports found', 404);
+
+      const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+      const idIdx = headers.indexOf('id');
+      const statusIdx = headers.indexOf('status');
+      const resolvedAtIdx = headers.indexOf('resolved_at');
+
+      const data = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+      let foundRow = -1;
+      for (let r = 0; r < data.length; r++) {
+        if (idIdx >= 0 && String(data[r][idIdx]).trim() === reportId) {
+          foundRow = r + 2;
+          break;
+        }
+      }
+
+      if (foundRow === -1) return errorResponse('Report not found', 404);
+
+      if (statusIdx >= 0) sheet.getRange(foundRow, statusIdx + 1).setValue('resolved');
+      if (resolvedAtIdx >= 0) sheet.getRange(foundRow, resolvedAtIdx + 1).setValue(new Date().toISOString());
+      SpreadsheetApp.flush();
+      invalidateDataCache();
+
+      return jsonResponse({
+        success: true,
+        message: 'Report marked as resolved'
+      });
+    }
+
+    case 'deleteReport': {
+      const reportId = (body.id || body.reportId || '').trim();
+      if (!reportId) return errorResponse('Report ID is required', 400);
+
+      const ss = getSpreadsheet();
+      const sheet = ss.getSheetByName(SHEETS.REPORTS);
+      if (!sheet) return errorResponse('Reports sheet not found', 500);
+
+      const lastRow = sheet.getLastRow();
+      const lastCol = sheet.getLastColumn();
+      if (lastRow <= 1) return errorResponse('No reports found', 404);
+
+      const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+      const idIdx = headers.indexOf('id');
+      const data = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+
+      let foundRow = -1;
+      for (let r = 0; r < data.length; r++) {
+        if (idIdx >= 0 && String(data[r][idIdx]).trim() === reportId) {
+          foundRow = r + 2;
+          break;
+        }
+      }
+
+      if (foundRow === -1) return errorResponse('Report not found', 404);
+
+      sheet.deleteRow(foundRow);
+      SpreadsheetApp.flush();
+      invalidateDataCache();
+
+      return jsonResponse({
+        success: true,
+        message: 'Report deleted successfully'
+      });
     }
 
     default:
